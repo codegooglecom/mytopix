@@ -1,0 +1,66 @@
+I. LICENSE:
+
+Jaia Interactive, referred to as Company, grants you a non-exclusive license to use MyTopix | Personal Message Board, referred to as Software, on one installation to be accessable by one URL (web address) subject to the provisions in all sections of this Agreement.
+
+II. TERM:
+
+Software is offered under yearly and lifetime licensing. Both license terms feature technical support and service plus access to upgrades to the software as they are available. In the event a one year license expires without being renewed, the software will remain completely functional but will be unsupported and no access to upgrades will be made available.
+
+III. SCOPE OF GRANT:
+
+You may:
+
+	1. Customize the Software's design and operation to suit the internal needs of your web site except to the extent not permitted in this 
+	   Agreement.
+	2. Produce and distribute modification instructions, Skin packs, or Language packs provided that they contain notification that the Skin and 
+	   Language packs were exported from and originally created by Software and/or Company. The modifications instructions you personally create are 
+	   not owned by Company so long as they contain no proprietary coding from Software.
+	3. Create applications which interface with the operation of the Software provided said application is an original work.
+	4. Use one PUBLICLY VIEWABLE instance of Software per location (URL, domain, subdomain, etc.).
+
+You may not:
+
+	1. Permit other individuals to use the Software except under the terms listed above.
+	   reverse engineer, disassemble, or create derivative works based on the Software for distribution or usage outside your web site.
+	2. Use the Software in such as way as to condone or encourage terrorism, promote or provide pirated Software, or any other form of illegal or 
+	   damaging activity.
+	3. Modify and/or remove any copyright notices or labels on the Software on each page (unless copyright output removal license is purchased) and 
+	   in the header of each script source file.
+	4. Distribute the Software.
+	5. Distribute individual copies of files, libraries, or other programming material in the Software package unless otherwise noted within the 
+	   commenting of files, libraries or other programming material.
+	6. Distribute or modify proprietary graphics, HTML, or CSS packaged with the Software for use in Software applications other than Software or 
+	   web sites without written permission from Company.
+	7. Modify the software to function in more than instance or location (URL, domain, subdomain, etc.) from a single set of source program files 
+	   unless each location is separately licensed.
+
+
+IV. DISCLAIMER OF WARRANTY:
+
+The Software is provided on an "AS IS" basis, without warranty of any kind, including without limitation the warranties of merchantability, fitness for a particular purpose, and non-infringement. The entire risk as to the quality and performance of the Software is borne by you. Should the Software prove defective, you and not Company assume the entire cost of any service and repair. In addition, the security mechanisms implemented by Company Software have inherent limitations, and you must determine that the Software sufficiently meets your requirements. This disclaimer of warranty constitutes an essential part of the Agreement.
+
+V. TITLE:
+
+Title, ownership rights, and intellectual property rights in the Software shall remain with Company. The Software is protected by copyright laws and treaties. Title and related rights in the content generated through the Software is the property of the applicable content owner and may be protected by applicable law. This License gives Company no rights to such content.
+
+VI. TERMINATION:
+
+This Agreement will terminate automatically upon failure to comply with the limitations described herein or on written notice from an authorized representative of Company. On termination, you must destroy all copies of the Software within 48 hours. Termination of the license due to noncompliance will not result in any refunds of license fees.
+
+VII. MISCELLANEOUS:
+
+	1. Company reserves the right to publish a selected list of users of the Software. Company reserves the right to change the terms of this 
+	   Agreement at any time. Failure to receive notification of a change does not make those changes invalid.
+
+	2. Skin packs and Language packs are defined as the group of code, text, and graphics that are exported from the Software using the provided 
+	   functions of the Software Administration Control Panel.
+
+	3. Technical support will not be provided for ANY third-party modifications to the Software.
+
+VIII. PROPRIETARY LABELS:
+
+Authorization to remove or modify output of copyright notices can be obtained from Company for a fee. This fee authorizes you to remove the output of copyright notices: it does not give you authorization to remove any copyright notices in the program source files or any other rights.
+
+IX. GOVERNING LAW:
+
+This Agreement shall be binding upon Company and User of Software and shall be governed by and interpreted according to the laws of the State of Ohio.
