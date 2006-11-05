@@ -14,91 +14,91 @@ class ModuleObject extends MasterObject
 {
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
 	var $_code;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_forum;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_forum;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_PageHandler;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_PageHandler;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
 	var $_IconHandler;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
 	var $_FileHandler;
 
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function ModuleObject(& $module, & $config, $cache)
 	{
-        $this->MasterObject($module, $config, $cache);
+		$this->MasterObject($module, $config, $cache);
 
-        $this->_code  = isset($this->get['CODE'])  ? $this->get['CODE']  : 00;
-        $this->_forum = false;
+		$this->_code  = isset($this->get['CODE'])  ? $this->get['CODE']  : 00;
+		$this->_forum = false;
 
 		if(isset($this->post['forum']))
 		{
 			$this->_forum = $this->post['forum'];
 		}
-        elseif(isset($this->get['forum']))
-        {
+		elseif(isset($this->get['forum']))
+		{
 			$this->_forum = $this->get['forum'];
 		}
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1, 
-                                             $this->config['page_sep'], 
-                                             $this->config['per_page'], 
-                                             $this->DatabaseHandler,
-                                             $this->config);
+											 $this->config['page_sep'], 
+											 $this->config['per_page'], 
+											 $this->DatabaseHandler,
+											 $this->config);
 
 		require_once SYSTEM_PATH . 'lib/icon.han.php';
 		$this->_IconHandler = new IconHandler($this->config, $this->UserHandler->getField('members_lastvisit'));
 
-        require_once SYSTEM_PATH . 'lib/file.han.php';
-        $this->_FileHandler  = new FileHandler($this->config);
+		require_once SYSTEM_PATH . 'lib/file.han.php';
+		$this->_FileHandler  = new FileHandler($this->config);
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function execute()
 	{
 		switch($this->_code)
@@ -125,367 +125,359 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doIndex()
 	{
-        if(false == $forum_data = $this->ForumHandler->forumExists($this->_forum, true))
-        {
-            return $this->messenger();
-        }
+		if(false == $forum_data = $this->ForumHandler->forumExists($this->_forum, true))
+		{
+			return $this->messenger();
+		}
 
-        if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
-           false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
-        {
-            return $this->messenger(array('MSG' => 'err_forum_no_access'));
-        }
+		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
+		   false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
+		{
+			return $this->messenger(array('MSG' => 'err_forum_no_access'));
+		}
 
-        // Redirection Forum:
-        if($forum_data['forum_red_on'] && $forum_data['forum_red_url'])
-        {
-            $this->DatabaseHandler->query("
-            UPDATE " . DB_PREFIX . "forums 
-            SET forum_red_clicks = forum_red_clicks + 1
-            WHERE forum_id = {$this->_forum}", 
-            __FILE__, __LINE__);
+		// Redirection Forum:
+		if($forum_data['forum_red_on'] && $forum_data['forum_red_url'])
+		{
+			$this->DatabaseHandler->query("
+			UPDATE " . DB_PREFIX . "forums 
+			SET forum_red_clicks = forum_red_clicks + 1
+			WHERE forum_id = {$this->_forum}", 
+			__FILE__, __LINE__);
 
-            $this->CacheHandler->updateCache('forums');
+			$this->CacheHandler->updateCache('forums');
 
-            header("LOCATION: {$forum_data['forum_red_url']}");
-        }
+			header("LOCATION: {$forum_data['forum_red_url']}");
+		}
 
-        $child_forums = '';
-        if($this->ForumHandler->hasChildren($this->_forum))
-        {
-            foreach($this->ForumHandler->_forum_list as $category)
-            {
-                $has_children  = false;
+		$child_forums = '';
+		if($this->ForumHandler->hasChildren($this->_forum))
+		{
+			foreach($this->ForumHandler->_forum_list as $category)
+			{
+				$has_children  = false;
 
-                if($category['forum_id'] == $this->_forum && 
-                   $this->ForumHandler->checkAccess('can_view', $category['forum_id']))
-                {
-                    $forum_list = '';
+				if($category['forum_id'] == $this->_forum && 
+				   $this->ForumHandler->checkAccess('can_view', $category['forum_id']))
+				{
+					$forum_list = '';
 
-                    foreach($this->ForumHandler->_forum_list as $forum)
-                    {
-                        if($forum['forum_parent'] == $category['forum_id'] && 
-                           $this->ForumHandler->checkAccess('can_view', $forum['forum_id']))
-                        {
-                            $has_children = true;
+					foreach($this->ForumHandler->_forum_list as $forum)
+					{
+						if($forum['forum_parent'] == $category['forum_id'] && 
+						   $this->ForumHandler->checkAccess('can_view', $forum['forum_id']))
+						{
+							$has_children = true;
 
-                            if($forum['forum_red_url'] && $forum['forum_red_on'])
-                            {
-                                $forum['forum_red_clicks'] = number_format($forum['forum_red_clicks'], 0, '', $this->config['number_format']);
+							if($forum['forum_red_url'] && $forum['forum_red_on'])
+							{
+								$forum['forum_red_clicks'] = number_format($forum['forum_red_clicks'], 0, '', $this->config['number_format']);
 
-                                $forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_redirect'));
-                            }
-                            else {
-                                $forum_time = isset($this->read_forums[$forum['forum_id']]) 
-                                            ? $this->read_forums[$forum['forum_id']]
-                                            : 1;
+								$forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_redirect'));
+							}
+							else {
+								$forum_time = isset($this->read_forums[$forum['forum_id']]) 
+											? $this->read_forums[$forum['forum_id']]
+											: 1;
 
-                                $forum    = $this->ForumHandler->calcForumStats($forum['forum_id'], $forum, true);
-                                $marker   = $this->ForumHandler->getForumMarker($forum, $forum_time, $this->UserHandler->getField('members_lastvisit'));
+								$forum	= $this->ForumHandler->calcForumStats($forum['forum_id'], $forum, true);
+								$marker   = $this->ForumHandler->getForumMarker($forum, $forum_time, $this->UserHandler->getField('members_lastvisit'));
 
-                                $last_date = $this->LanguageHandler->blank;
+								$last_date = $this->LanguageHandler->blank;
 
-                                $mods = '';
-                                if($this->config['show_moderators'])
-                                {
-                                    if($mods = $this->ForumHandler->getForumMods($forum['forum_id']))
-                                    {
-                                        $mod_list = implode(', ', $mods); 
-                                    }
-                                    else {
-                                        $mod_list = $this->LanguageHandler->mod_none;
-                                    }
+								$mods = '';
+								if($this->config['show_moderators'])
+								{
+									if($mods = $this->ForumHandler->getForumMods($forum['forum_id']))
+									{
+										$mod_list = implode(', ', $mods); 
+									}
+									else {
+										$mod_list = $this->LanguageHandler->mod_none;
+									}
 
-                                    $mods = eval($this->TemplateHandler->fetchTemplate('topic_mod_wrapper'));
-                                }
+									$mods = eval($this->TemplateHandler->fetchTemplate('topic_mod_wrapper'));
+								}
 
-                                $subs = '';
-                                if($this->config['show_subs'])
-                                {
-                                    if($subs = $this->ForumHandler->getChildren($forum['forum_id']))
-                                    {
-                                        $sub_list = implode(', ', $subs); 
-                                    }
-                                    else {
-                                        $sub_list = $this->LanguageHandler->sub_none;
-                                    }
+								$subs = '';
+								if($this->config['show_subs'])
+								{
+									if($subs = $this->ForumHandler->getChildren($forum['forum_id']))
+									{
+										$sub_list = implode(', ', $subs); 
+									}
+									else {
+										$sub_list = $this->LanguageHandler->sub_none;
+									}
 
-                                    $subs = eval($this->TemplateHandler->fetchTemplate('topic_sub_wrapper'));            
-                                }
+									$subs = eval($this->TemplateHandler->fetchTemplate('topic_sub_wrapper'));			
+								}
 
-                                if($forum['forum_last_post_time'])
-                                {
-                                    $last_date = $this->TimeHandler->doDateFormat($this->config['date_long'], 
-                                                                                  $forum['forum_last_post_time']);
-                                }
+								if($forum['forum_last_post_time'])
+								{
+									$last_date = $this->TimeHandler->doDateFormat($this->config['date_long'], 
+																				  $forum['forum_last_post_time']);
+								}
 
-                                if($forum['forum_last_post_id'])
-                                {
-                                    if($this->config['cutoff'] && strlen($forum['forum_last_post_title']) > $this->config['cutoff'])
-                                    {
-                                        $forum['forum_last_post_title'] = substr($forum['forum_last_post_title'],
-                                                                                 0,
-                                                                                 25) . '...';
-                                    }
+								if($forum['forum_last_post_id'])
+								{
+									if($this->config['cutoff'] && strlen($forum['forum_last_post_title']) > $this->config['cutoff'])
+									{
+										$forum['forum_last_post_title'] = substr($forum['forum_last_post_title'],
+																				 0,
+																				 25) . '...';
+									}
 
-                                    $forum['forum_last_post_title'] = "<a href=\"" . GATEWAY . "?a=read&amp;CODE=02&amp;p=" . "{$forum['forum_last_post_id']}\" title=\"\">{$forum['forum_last_post_title']}</a>";
-                                }
-                                else {
-                                    $forum['forum_last_post_title'] = $this->LanguageHandler->blank;
-                                }
+									$forum['forum_last_post_title'] = "<a href=\"" . GATEWAY . "?a=read&amp;CODE=02&amp;p=" . "{$forum['forum_last_post_id']}\" title=\"\">{$forum['forum_last_post_title']}</a>";
+								}
+								else {
+									$forum['forum_last_post_title'] = $this->LanguageHandler->blank;
+								}
 
-                                if(false == $this->ForumHandler->checkAccess('can_read', $forum['forum_id']))
-                                {
-                                    $forum['forum_last_post_title'] = $this->LanguageHandler->forum_private;
-                                }
+								if(false == $this->ForumHandler->checkAccess('can_read', $forum['forum_id']))
+								{
+									$forum['forum_last_post_title'] = $this->LanguageHandler->forum_private;
+								}
 
-                                if($forum['forum_last_post_user_name'] && $forum['forum_last_post_user_id'] != 1)
-                                {
-                                    $forum['forum_last_post_user_name'] = "<a href=\"" . GATEWAY . "?getuser=" . 
-                                    "{$forum['forum_last_post_user_id']}\" title=\"\">{$forum['forum_last_post_user_name']}</a>";
-                                }
-                                else if($forum['forum_last_post_user_id'] == 1)
-                                {
-                                    $forum['forum_last_post_user_name'] = $forum['forum_last_post_user_name'];
-                                }
-                                else {
-                                    $forum['forum_last_post_user_name'] = $this->LanguageHandler->blank;
-                                }
+								if($forum['forum_last_post_user_name'] && $forum['forum_last_post_user_id'] != 1)
+								{
+									$forum['forum_last_post_user_name'] = "<a href=\"" . GATEWAY . "?getuser=" . 
+									"{$forum['forum_last_post_user_id']}\" title=\"\">{$forum['forum_last_post_user_name']}</a>";
+								}
+								else if($forum['forum_last_post_user_id'] == 1)
+								{
+									$forum['forum_last_post_user_name'] = $forum['forum_last_post_user_name'];
+								}
+								else {
+									$forum['forum_last_post_user_name'] = $this->LanguageHandler->blank;
+								}
 
-                                $forum['forum_description'] = $this->ParseHandler->parseText($forum['forum_description']);
+								$forum['forum_description'] = $this->ParseHandler->parseText($forum['forum_description']);
 
-                                $forum['forum_posts']  = number_format($forum['forum_posts'],  0, '', $this->config['number_format']);
-                                $forum['forum_topics'] = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
+								$forum['forum_posts']  = number_format($forum['forum_posts'],  0, '', $this->config['number_format']);
+								$forum['forum_topics'] = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
 
-                                $last_post   = eval($this->TemplateHandler->fetchTemplate('topic_last_post'));
-                                $forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_row'));
-                            }
-                        }
-                    }
+								$last_post   = eval($this->TemplateHandler->fetchTemplate('topic_last_post'));
+								$forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_row'));
+							}
+						}
+					}
 
-                    if($has_children)
-                    {
-                        $child_forums .= eval($this->TemplateHandler->fetchTemplate('topic_cat_wrapper'));
-                    }
-                }
-            }
-        }
+					if($has_children)
+					{
+						$child_forums .= eval($this->TemplateHandler->fetchTemplate('topic_cat_wrapper'));
+					}
+				}
+			}
+		}
 
-        $topics    = '';
-        $buttons   = '';
-        $pages     = '&nbsp;';
-        $post      = '';
-        $new_posts = false;
+		$topics	= '';
+		$buttons   = '';
+		$pages	 = '&nbsp;';
+		$post	  = '';
+		$new_posts = false;
 
-        if($forum_data['forum_allow_content'])
-        {
-            if($this->UserHandler->getField('class_canSeeHidden'))
-            {
-                $private = "";
-            }
-            else {
-                $private = " AND topics_hidden <> 1";
-            }
+		if($forum_data['forum_allow_content'])
+		{
+			$sql = $this->DatabaseHandler->query("
+			SELECT 
+				COUNT(*) as Count 
+			FROM " . DB_PREFIX . "topics 
+			WHERE 
+				topics_forum = {$this->_forum}",
+			__FILE__, __LINE__);
 
-            $sql = $this->DatabaseHandler->query("
-            SELECT 
-                COUNT(*) as Count 
-            FROM " . DB_PREFIX . "topics 
-            WHERE 
-                topics_forum = {$this->_forum}
-                {$private}", __FILE__, __LINE__);
+			$row = $sql->getRow();
 
-            $row = $sql->getRow();
+			$this->_PageHandler->setRows($row['Count']);
+			$this->_PageHandler->doPages(GATEWAY ."?getforum={$this->_forum}");
+			$pages = $this->_PageHandler->getSpan();
 
-            $this->_PageHandler->setRows($row['Count']);
-            $this->_PageHandler->doPages(GATEWAY ."?getforum={$this->_forum}");
-            $pages = $this->_PageHandler->getSpan();
+			$sql = $this->_PageHandler->getData("
+			SELECT 
+				t.*, 
+				m.members_name
+			FROM " . DB_PREFIX . "topics t
+				LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
+			WHERE
+				t.topics_forum = {$this->_forum}
+				{$private}
+			ORDER BY
+				t.topics_announce DESC,
+				t.topics_pinned DESC, 
+				t.topics_last_post_time DESC");
 
-            $sql = $this->_PageHandler->getData("
-            SELECT 
-                t.*, 
-                m.members_name
-            FROM " . DB_PREFIX . "topics t
-                LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
-            WHERE
-                t.topics_forum = {$this->_forum}
-                {$private}
-            ORDER BY
-                t.topics_announce DESC,
-                t.topics_pinned DESC, 
-                t.topics_last_post_time DESC");
+			$post	 = '';
+			$buttons  = '';
+			if($this->ForumHandler->checkAccess('can_start', $this->_forum) &&
+			   $this->UserHandler->getField('class_canStartTopics')		 &&
+			   false == $forum_data['forum_closed'])
+			{
+				$hash	= $this->UserHandler->getUserHash();
+				$length  = $this->config['max_post'] . '000';
+				$buttons = eval($this->TemplateHandler->fetchTemplate('main_buttons'));
+				$post	= eval($this->TemplateHandler->fetchTemplate('topic_bit'));
+			}
 
-            $post     = '';
-            $buttons  = '';
-            if($this->ForumHandler->checkAccess('can_start', $this->_forum) &&
-               $this->UserHandler->getField('class_canStartTopics')         &&
-               false == $forum_data['forum_closed'])
-            {
-                $hash    = $this->UserHandler->getUserHash();
-                $length  = $this->config['max_post'] . '000';
-                $buttons = eval($this->TemplateHandler->fetchTemplate('main_buttons'));
-                $post    = eval($this->TemplateHandler->fetchTemplate('topic_bit'));
-            }
+			$new_posts = false;
 
-            $new_posts = false;
+			if(false == $sql->getNumRows())
+			{
+				$list = eval($this->TemplateHandler->fetchTemplate('topic_none'));
+			}
+			else {
 
-            if(false == $sql->getNumRows())
-            {
-                $list = eval($this->TemplateHandler->fetchTemplate('topic_none'));
-            }
-            else {
+				$list = '';
 
-                $list = '';
+				while($row = $sql->getRow())
+				{
+					if(false == $row['topics_hidden'] || $this->UserHandler->getField('class_canSeeHidden'))
+					{	
+						$inlineNav = '';
 
-                while($row = $sql->getRow())
-                {
-                    if(false == $row['topics_hidden'] || $this->UserHandler->getField('class_canSeeHidden'))
-                    {	
-                        $inlineNav = '';
+						if($links = $this->_PageHandler->getInlinePages($row['topics_posts'], $row['topics_id']))
+						{
+							$inlineNav = eval($this->TemplateHandler->fetchTemplate('page_wrapper'));
+						}
 
-                        if($links = $this->_PageHandler->getInlinePages($row['topics_posts'], $row['topics_id']))
-                        {
-                            $inlineNav = eval($this->TemplateHandler->fetchTemplate('page_wrapper'));
-                        }
+						$read_time = isset($this->read_topics[$row['topics_id']]) && 
+									 $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit') 
+								   ? $this->read_topics[$row['topics_id']] 
+								   : $this->UserHandler->getField('members_lastvisit');
 
-                        $read_time = isset($this->read_topics[$row['topics_id']]) && 
-                                     $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit') 
-                                   ? $this->read_topics[$row['topics_id']] 
-                                   : $this->UserHandler->getField('members_lastvisit');
+						if(isset($this->read_forums[$this->_forum]) && 
+						  $this->read_forums[$this->_forum] > $read_time)
+						{
+							$read_time = $this->read_forums[$this->_forum];
+						}
 
-                        if(isset($this->read_forums[$this->_forum]) && 
-                          $this->read_forums[$this->_forum] > $read_time)
-                        {
-                            $read_time = $this->read_forums[$this->_forum];
-                        }
+						$row['topics_marker'] = $this->_IconHandler->getIcon($row, $read_time);
 
-                        $row['topics_marker'] = $this->_IconHandler->getIcon($row, $read_time);
+						if(false == $row['topics_subject'])
+						{
+							$row['topics_subject'] = $this->LanguageHandler->topic_no_subject;
+						}
 
-                        if(false == $row['topics_subject'])
-                        {
-                            $row['topics_subject'] = $this->LanguageHandler->topic_no_subject;
-                        }
+						if($row['topics_moved'])
+						{
+							$row['topics_views'] = $this->LanguageHandler->blank;
+							$row['topics_posts'] = $this->LanguageHandler->blank;
+						}
+						else {
+							$row['topics_views']  = number_format($row['topics_views'], 0, '', $this->config['number_format']);
+							$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
+						}
 
-                        if($row['topics_moved'])
-                        {
-                            $row['topics_views'] = $this->LanguageHandler->blank;
-                            $row['topics_posts'] = $this->LanguageHandler->blank;
-                        }
-                        else {
-                            $row['topics_views']  = number_format($row['topics_views'], 0, '', $this->config['number_format']);
-                            $row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
-                        }
+						$row['topics_prefix'] = '';
 
-                        $row['topics_prefix'] = '';
+						if($this->_IconHandler->is_new)
+						{
+							$new_posts = true;
 
-                        if($this->_IconHandler->is_new)
-                        {
-                            $new_posts = true;
+							$row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
+						}
 
-                            $row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
-                        }
+						if($row['topics_has_file'])
+						{
+							$row['topics_prefix'] .= '<macro:img_clip>';
+						}
 
-                        if($row['topics_has_file'])
-                        {
-                            $row['topics_prefix'] .= '<macro:img_clip>';
-                        }
+						$row['topics_author'] = $row['topics_author'] != 1 
+											  ? "<a href='" . GATEWAY . "?getuser=" . 
+												"{$row['topics_author']}'>{$row['members_name']}</a>"
+											  : "{$row['topics_author_name']}";
 
-                        $row['topics_author'] = $row['topics_author'] != 1 
-                                              ? "<a href='" . GATEWAY . "?getuser=" . 
-                                                "{$row['topics_author']}'>{$row['members_name']}</a>"
-                                              : "{$row['topics_author_name']}";
+						$row['topics_poster'] = $row['topics_last_poster'] != 1 
+											  ? "<a href='" . GATEWAY . "?getuser=" . 
+												"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
+											  : "{$row['topics_last_poster_name']}";
 
-                        $row['topics_poster'] = $row['topics_last_poster'] != 1 
-                                              ? "<a href='" . GATEWAY . "?getuser=" . 
-                                                "{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
-                                              : "{$row['topics_last_poster_name']}";
+						$row['topics_date']   = $this->TimeHandler->doDateFormat($this->config['date_long'],
+																				$row['topics_date']);
 
-                        $row['topics_date']   = $this->TimeHandler->doDateFormat($this->config['date_long'],
-                                                                                $row['topics_date']);
+						$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
+																				$row['topics_last_post_time']);
 
-                        $row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
-                                                                                $row['topics_last_post_time']);
+						$list .= eval($this->TemplateHandler->fetchTemplate('topic_row')) . "\n";
+					}
+				}
+			}
 
-                        $list .= eval($this->TemplateHandler->fetchTemplate('topic_row')) . "\n";
-                    }
-                }
-            }
+			$topics = eval($this->TemplateHandler->fetchTemplate('topic_table'));
+		}
 
-    		$topics = eval($this->TemplateHandler->fetchTemplate('topic_table'));
-        }
+		if(false == $new_posts)
+		{
+			if($this->CookieHandler->getVar('forums_read'))
+			{
+				$this->read_forums = unserialize(stripslashes($this->CookieHandler->getVar('forums_read')));
+			}
 
-        if(false == $new_posts)
-        {
-            if($this->CookieHandler->getVar('forums_read'))
-            {
-                $this->read_forums = unserialize(stripslashes($this->CookieHandler->getVar('forums_read')));
-            }
+			$this->read_forums[$this->_forum] = time();
 
-            $this->read_forums[$this->_forum] = time();
+			$this->CookieHandler->setVar('forums_read', addslashes(serialize($this->read_forums)), (86400 * 5));
+		}
 
-		    $this->CookieHandler->setVar('forums_read', addslashes(serialize($this->read_forums)), (86400 * 5));
-        }
+		$bread_crumb = $this->ForumHandler->fetchCrumbs($this->_forum, true);
 
-        $bread_crumb = $this->ForumHandler->fetchCrumbs($this->_forum, true);
+		$jump = '';
+		if($this->config['jump_on'])
+		{
+			$jump_list = $this->ForumHandler->makeAllowableList($this->_forum);
+			$jump = eval($this->TemplateHandler->fetchTemplate('topic_jump_list'));
+		}
 
-        $jump = '';
-        if($this->config['jump_on'])
-        {
-            $jump_list = $this->ForumHandler->makeAllowableList($this->_forum);
-            $jump = eval($this->TemplateHandler->fetchTemplate('topic_jump_list'));
-        }
+		$active = '';
+		if($this->config['forum_viewers'])
+		{
+			$active = $this->_getActive();
+		}
 
-        $active = '';
-        if($this->config['forum_viewers'])
-        {
-            $active = $this->_getActive();
-        }
-
-        $board_stats = '';
-        if($this->ForumHandler->getForumCount() == 1 && $this->config['stats_on'])
-        {
+		$board_stats = '';
+		if($this->ForumHandler->getForumCount() == 1 && $this->config['stats_on'])
+		{
 			$this->LanguageHandler->stat_totals  = sprintf($this->LanguageHandler->stat_totals, 
 												   number_format($this->config['total_members'], 0, '', $this->config['number_format']), 
 												   number_format($this->config['topics'] + $this->config['posts']));
 
 			$this->LanguageHandler->stat_online = sprintf($this->LanguageHandler->stat_online,
 												  number_format($this->config['most_online_count'], 0, '', $this->config['number_format']), 
-                                                  date($this->config['date_long'], $this->config['most_online_date']));
+												  date($this->config['date_long'], $this->config['most_online_date']));
 
 			$this->LanguageHandler->stat_newest  = sprintf($this->LanguageHandler->stat_newest, 
-                                                   "<a href='" . GATEWAY . "?getuser=" . "{$this->config['latest_member_id']}'>"       . "{$this->config['latest_member_name']}</a>");
+												   "<a href='" . GATEWAY . "?getuser=" . "{$this->config['latest_member_id']}'>"	   . "{$this->config['latest_member_name']}</a>");
 			
 			$board_stats =  eval($this->TemplateHandler->fetchTemplate('topic_stats'));
-        }
+		}
 
-    	$content = eval($this->TemplateHandler->fetchTemplate('container_main'));
-		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		$content = eval($this->TemplateHandler->fetchTemplate('container_main'));
+		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _markAsRead()
 	{
-        $this->read_forums[$this->_forum] = time();
+		$this->read_forums[$this->_forum] = time();
 
-        $this->CookieHandler->setVar('forums_read', addslashes(serialize($this->read_forums)), (86400 * 5));
+		$this->CookieHandler->setVar('forums_read', addslashes(serialize($this->read_forums)), (86400 * 5));
 
 		header("LOCATION: " . GATEWAY . "?getforum={$this->_forum}");
 	}
@@ -493,13 +485,13 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _getActive()
 	{
 		$sql = $this->DatabaseHandler->query("
@@ -514,38 +506,38 @@ class ModuleObject extends MasterObject
 			active_forum = {$this->_forum}
 		ORDER BY active_time DESC", __FILE__, __LINE__);
 
-		$list     = array();
-        $bots     = array();
+		$list	 = array();
+		$bots	 = array();
 		$members  = 0;
 		$guests   = 0;
 
 		while($row = $sql->getRow())
 		{
-            if($row['active_is_bot'])
-            {
-                $guests++;
+			if($row['active_is_bot'])
+			{
+				$guests++;
 
-                $bots[] = $row['active_user_name'];
-            }
-            else {
-                if($row['active_user'] == 1)
-                {
-                    $guests++;
-                }
-                else {
-                    $list[] = "<a href='" . GATEWAY . "?getuser={$row['active_user']}'>" .
-                              "{$row['class_prefix']}{$row['active_user_name']}{$row['class_suffix']}</a>";
+				$bots[] = $row['active_user_name'];
+			}
+			else {
+				if($row['active_user'] == 1)
+				{
+					$guests++;
+				}
+				else {
+					$list[] = "<a href='" . GATEWAY . "?getuser={$row['active_user']}'>" .
+							  "{$row['class_prefix']}{$row['active_user_name']}{$row['class_suffix']}</a>";
 
-                    $members++;
-                }
-            }
+					$members++;
+				}
+			}
 		}
 
-        $list = array_merge($list, array_unique($bots));
+		$list = array_merge($list, array_unique($bots));
 
 		$list = false == $list 
-              ? $this->LanguageHandler->err_no_viewers 
-              : implode('<macro:txt_online_sep>', $list);
+			  ? $this->LanguageHandler->err_no_viewers 
+			  : implode('<macro:txt_online_sep>', $list);
 
 		$this->LanguageHandler->viewers_user_summary = sprintf($this->LanguageHandler->viewers_user_summary,
 										  			   number_format($members, 0, '', $this->config['number_format']),
@@ -557,46 +549,46 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
-    function _forumSubscribe()
-    {
-        if(false == $forum_data = $this->ForumHandler->forumExists($this->_forum, true))
-        {
-            return $this->messenger();
-        }
-        
-        if(false == $this->UserHandler->getField('class_canSubscribe') ||
-           USER_ID == 1)
-        {
-            return $this->messenger(array('MSG' => 'err_no_perm'));
-        }
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
+	function _forumSubscribe()
+	{
+		if(false == $forum_data = $this->ForumHandler->forumExists($this->_forum, true))
+		{
+			return $this->messenger();
+		}
+		
+		if(false == $this->UserHandler->getField('class_canSubscribe') ||
+		   USER_ID == 1)
+		{
+			return $this->messenger(array('MSG' => 'err_no_perm'));
+		}
 
-        if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
-           false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
-        {
-            return $this->messenger(array('MSG' => 'err_forum_no_access'));
-        }
+		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
+		   false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
+		{
+			return $this->messenger(array('MSG' => 'err_forum_no_access'));
+		}
 
 		$sql = $this->DatabaseHandler->query("
-        SELECT track_id 
-        FROM " . DB_PREFIX . "tracker 
-        WHERE 
-            track_forum = {$this->_forum} AND 
-            track_user  = " . USER_ID, 
-        __FILE__, __LINE__);
+		SELECT track_id 
+		FROM " . DB_PREFIX . "tracker 
+		WHERE 
+			track_forum = {$this->_forum} AND 
+			track_user  = " . USER_ID, 
+		__FILE__, __LINE__);
 
 		if($sql->getNumRows())
-        {
-            return $this->messenger(array('MSG' => 'sub_err_dups'));
-        }
+		{
+			return $this->messenger(array('MSG' => 'sub_err_dups'));
+		}
 
-        $expire = (((60 * 60) * 24) * $this->config['subscribe_expire']) + time();
+		$expire = (((60 * 60) * 24) * $this->config['subscribe_expire']) + time();
 
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX ."tracker(
@@ -608,11 +600,11 @@ class ModuleObject extends MasterObject
 			" . USER_ID . ", 
 			{$this->_forum}, 
 			" . time() . ", 
-            {$expire})", 
-        __FILE__, __LINE__);
+			{$expire})", 
+		__FILE__, __LINE__);
 
-        return $this->messenger(array('MSG' => 'sub_err_done', 'LINK' => "?getforum={$this->_forum}", 'LEVEL' => 1));
-    }
+		return $this->messenger(array('MSG' => 'sub_err_done', 'LINK' => "?getforum={$this->_forum}", 'LEVEL' => 1));
+	}
 }
 
 ?>

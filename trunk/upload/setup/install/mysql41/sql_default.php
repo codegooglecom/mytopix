@@ -153,8 +153,8 @@ $query[] = 'INSERT INTO ' . DB_PREFIX . 'macros VALUES("64", "1", "img_clip", "&
 
 setup_log('... Inserting guest and admin accounts');
 
-$query[] = 'INSERT INTO ' . DB_PREFIX . 'members VALUES("1", "Guest", "", "", "", "1", "", "", "", "0", "", "0", "0", "0", "0", "0", "0", "0", "", "", "", "", "", "", "0", "' . $config['language'] . '", "' . $config['skin'] . '", "0", "1", "1", "", "", "1", "0", "0", "0", "0");';
-$query[] = 'INSERT INTO ' . DB_PREFIX . 'members VALUES("2", "' . $username . '", "' . $password . '", "' . $auto . '", "' . $salt . '", "3", "' . $email . '", "' . $_SERVER['REMOTE_ADDR'] . '", "", "' . time() . '", "' . time() . '", "' . time() . '", "0", "1", "1", "0", "1", "", "", "", "", "", "", "", "", "' . $config['language'] . '", "' . $config['skin'] . '", "0", "1", "1", "", "", "", "", "", "", "0");';
+$query[] = 'INSERT INTO ' . DB_PREFIX . 'members VALUES("1", "Guest", "", "", "", "1", "", "", "", "0", "0", "0", "0", "0", "0", "0", "0", "0", "", "", "", "", "", "", "0", "' . $config['language'] . '", "' . $config['skin'] . '", "0", "1", "1", "", "", "1", "0", "0", "0", "0");';
+$query[] = 'INSERT INTO ' . DB_PREFIX . 'members VALUES("2", "' . $username . '", "' . $password . '", "' . $auto . '", "' . $salt . '", "3", "' . $email . '", "' . $_SERVER['REMOTE_ADDR'] . '", "", "' . time() . '", "' . time() . '", "' . time() . '", "0", "1", "1", "0", "1", "", "", "", "", "", "", "", "0", "' . $config['language'] . '", "' . $config['skin'] . '", "0", "1", "1", "", "", "0", "0", "0", "0", "0");';
 
 setup_log('... Inserting welcome post');
 
