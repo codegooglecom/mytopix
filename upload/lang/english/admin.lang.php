@@ -1,4 +1,8 @@
 <?php
+$lang['layout_welcome'] = 'Welcome back, ';
+$lang['layout_link_logoff'] = 'Log Off';
+$lang['layout_link_board'] = 'View Board';
+$lang['layout_link_main'] = 'Home';
 $lang['blank'] = '--';
 $lang['yes'] = 'yes';
 $lang['no'] = 'no';
@@ -132,8 +136,9 @@ $lang['misc_form_maxp_title'] = 'Maximum Post Length:';
 $lang['misc_form_maxp_desc'] = 'Maximum length of characters a post may contain ( in Kilobytes ).';
 $lang['misc_form_minp_title'] = 'Minimum Post Length:';
 $lang['misc_form_minp_desc'] = 'Minimum length of characters a post may contain.';
-$lang['misc_form_wrap_title'] = 'Text-Wrapping Options:';
+$lang['misc_form_other'] = 'Other Options:';
 $lang['misc_form_wrap_desc'] = 'Activate text-wrapping within posts.';
+$lang['misc_form_cap_protect'] = 'Enable all-cap title protection.';
 $lang['misc_form_count_title'] = 'Text-Wrapping Word Limit:';
 $lang['misc_form_count_desc'] = 'This is the number of characters in which the wrapper will split content. Text-wrapping MUST be activated for this to function properly.';
 $lang['misc_coppa_options'] = 'COPPA Options:';

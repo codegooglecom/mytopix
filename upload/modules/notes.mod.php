@@ -605,7 +605,7 @@ class ModuleObject extends MasterObject
 			" . USER_ID . ", 
 			{$row['members_id']}, 
 			'" . time() . "', 
-			'" . ucwords(strtolower($title)) . "', 
+			'" . $this->doCapProtection($title) . "', 
 			'{$body}', 
 			0,
             {$cOption},

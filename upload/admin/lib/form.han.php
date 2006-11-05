@@ -40,7 +40,7 @@ class OneForm
    * Wraps provided content into a pretty form 
    * display.
    *
-   * @param String $tag    Form field to wrap.
+   * @param String $tag	Form field to wrap.
    * @param String $title  Wrapper title.
    * @param String $desc   Wrapper description
    * @param String $append Gives the choice to either append to current buffer or flush into variable
@@ -82,7 +82,7 @@ class OneForm
 			$sel  = $key == $offset ? " selected='selected'" : '';
 			$out .= "\t<option value='{$key}'{$sel}>{$val}</option>\n";
 		}
-        $out .= $add;
+		$out .= $add;
 		$out .= "</select>\n";
 
 		if(isset($wrap['0'])) $out = $this->addWrap($out, $wrap['1'], $wrap['2']);
@@ -100,7 +100,7 @@ class OneForm
 			$sel  = $key == $offset ? " selected='selected'" : '';
 			$out .= "\t<option value='{$key}'{$sel}>{$val}</option>\n";
 		}
-        $out .= $add;
+		$out .= $add;
 		$out .= "</select> {$label}</div>\n";
 
 		if(isset($wrap['0'])) $out = $this->addWrap($out, $wrap['1'], $wrap['2'], false);
@@ -214,10 +214,10 @@ class OneForm
    *
    * Generates a toggle checkbox based on provided parameters.
    *
-   * @param String $name    Input field name
+   * @param String $name	Input field name
    * @param String $value   Input field value
    * @param String $extra   Extra tags or data
-   * @param Array  $wrap    Field wrapper definitions
+   * @param Array  $wrap	Field wrapper definitions
    * @param Bool   $return  Gives the choice to either append to current buffer or flush into variable
    * @param Bool   $checked Checks/Unchecks current field
    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
@@ -254,10 +254,10 @@ class OneForm
    *
    * Generates a radio button based on provided parameters.
    *
-   * @param String $name    Input field name
+   * @param String $name	Input field name
    * @param String $value   Input field value
    * @param String $extra   Extra tags or data
-   * @param Array  $wrap    Field wrapper definitions
+   * @param Array  $wrap	Field wrapper definitions
    * @param Bool   $return  Gives the choice to either append to current buffer or flush into variable
    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
    * @since v1.0 BETA
@@ -265,20 +265,20 @@ class OneForm
    */
 	function addRadio($name, $value = '', $extra = '', $wrap = null, $return = false)
 	{
-        static $i;
+		static $i;
 
-        $i++;
+		$i++;
 
 		$out  = "<div class=\"checkwrap\"><input type='radio' value='{$value}' class='check' id='radio_{$name}_{$i}' name='{$name}'{$extra} />";
 
 		if(is_array($wrap['0']))
-        {
-            $out = $this->addWrap($out, $wrap['1'], $wrap['2']);
-        }
-        elseif(is_string($wrap))
-        {
-            $out .= "<label for=\"radio_{$name}_{$i}\"><strong>{$wrap}</strong></label>";
-        }
+		{
+			$out = $this->addWrap($out, $wrap['1'], $wrap['2']);
+		}
+		elseif(is_string($wrap))
+		{
+			$out .= "<label for=\"radio_{$name}_{$i}\"><strong>{$wrap}</strong></label>";
+		}
 
 		if($return)	return $out . "\n</div>";
 
@@ -302,22 +302,24 @@ class OneForm
    */
 	function addCheckBox($name, $value, $extra = '', $wrap = null, $return = false, $check = false, $label = '', $align = 'left', $style = "checkwrap")
 	{
-        static $i;
+		static $i;
 
-        $i++;
+		$i++;
 
-        if($label)
-        {
-            $label = "<label for=\"check_{$name}_{$i}\"><strong>{$label}</strong></label>";
-        }
+		$new_name = str_replace ( '[]', '', $name );
+
+		if($label)
+		{
+			$label = "<label for=\"check_{$new_name}_{$i}\"><strong>{$label}</strong></label>";
+		}
 
 		$check = $check ? " checked='checked'" : '';
-		$out   = "<div class=\"{$style}\" style=\"text-align: {$align};\"><input type='checkbox' class='check' id='check_{$name}_{$i}' name='{$name}' value='{$value}'{$check}{$extra} /> {$label}</div>";
+		$out   = "<div class=\"{$style}\" style=\"text-align: {$align};\"><input type='checkbox' class='check' id='check_{$new_name}_{$i}' name='{$name}' value='{$value}'{$check}{$extra} /> {$label}</div>";
 
 		if(is_array($wrap))
-        {
-            $out = $this->addWrap($out, $wrap['1'], $wrap['2']);
-        }
+		{
+			$out = $this->addWrap($out, $wrap['1'], $wrap['2']);
+		}
 
 		if($return)	return $out;
 
@@ -364,7 +366,7 @@ class OneForm
 	{
 		$name = $name ? "name='{$name}'" : '';
 
-        $this->buffer .= "<div id=\"formwrap\">";
+		$this->buffer .= "<div id=\"formwrap\">";
 		$this->buffer .= "<form method='{$method}' action='{$action}' {$name} {$extra}>\n";
 	}
 
@@ -388,7 +390,7 @@ class OneForm
 		$this->buffer .= "<input type='reset' class='reset' value='Reset Form' />\n";
 		$this->buffer .= "\t</p>\n";
 		$this->buffer .= "</form>\n";
-        $this->buffer .= "</div>";
+		$this->buffer .= "</div>";
 	}
 
   /**
