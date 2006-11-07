@@ -1,0 +1,330 @@
+Fri Oct 13 13:11:23 CDT 2006 - Choosing installation type.
+Fri Oct 13 13:11:43 CDT 2006 - INSTALLING MYTOPIX
+Fri Oct 13 13:11:43 CDT 2006 - Entering database information
+Fri Oct 13 13:11:57 CDT 2006 - Processing database information
+Fri Oct 13 13:11:57 CDT 2006 - Preforming database connectivity test... Pass
+Fri Oct 13 13:11:57 CDT 2006 - Updating settings.php with database connectivity information
+Fri Oct 13 13:12:01 CDT 2006 - Entering community data
+Fri Oct 13 13:12:18 CDT 2006 - Processing community data
+Fri Oct 13 13:12:18 CDT 2006 - Community data processing complete
+Fri Oct 13 13:12:19 CDT 2006 - Entering default administrator account profile
+Fri Oct 13 13:12:34 CDT 2006 - Processing default administration account
+Fri Oct 13 13:12:34 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:12:34 CDT 2006 - Installing system tables:
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating post table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:12:34 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:12:35 CDT 2006 - Installing default system information:
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:12:35 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:12:47 CDT 2006 - Processing default administration account
+Fri Oct 13 13:12:47 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:12:47 CDT 2006 - Installing system tables:
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating post table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:12:47 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:12:49 CDT 2006 - Installing default system information:
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:12:49 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:15:22 CDT 2006 - Processing default administration account
+Fri Oct 13 13:15:22 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:15:22 CDT 2006 - Installing system tables:
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating post table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:15:22 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:15:23 CDT 2006 - Installing default system information:
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:15:23 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:18:47 CDT 2006 - Processing default administration account
+Fri Oct 13 13:18:47 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:18:47 CDT 2006 - Installing system tables:
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating post table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:18:47 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:18:47 CDT 2006 - Installing default system information:
+Fri Oct 13 13:18:47 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:18:47 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:18:48 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:19:46 CDT 2006 - Processing default administration account
+Fri Oct 13 13:19:46 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:19:46 CDT 2006 - Installing system tables:
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating post table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:19:46 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:19:47 CDT 2006 - Installing default system information:
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:19:47 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:20:28 CDT 2006 - Processing default administration account
+Fri Oct 13 13:20:28 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:20:28 CDT 2006 - Installing system tables:
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating post table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:20:28 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:20:29 CDT 2006 - Installing default system information:
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:20:29 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:20:41 CDT 2006 - Processing default administration account
+Fri Oct 13 13:20:41 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:20:41 CDT 2006 - Installing system tables:
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating post table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:20:41 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:20:42 CDT 2006 - Installing default system information:
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:20:42 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:20:56 CDT 2006 - Processing default administration account
+Fri Oct 13 13:20:56 CDT 2006 - Opening database connection for admin account and default system data insertion
+Fri Oct 13 13:20:56 CDT 2006 - Installing system tables:
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating active user table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating system cache table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating user group table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating email log table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating emoticon table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating community calendar events table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating word filter table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating forum table table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating system documentation (help) table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating skin macros table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating member account table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating forum moderators table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating personal notes table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating topic poll table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating post table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating skins table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating skin templates table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating member titles table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating topic table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating subscriptions table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating file uploads table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating validation keys table
+Fri Oct 13 13:20:56 CDT 2006 - ... Creating poll voters table
+Fri Oct 13 13:20:57 CDT 2006 - Installing default system information:
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting default cache groups
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting user classes
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting emoticons
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting word filter
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting default forums
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting help system
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting default system macros
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting guest and admin accounts
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting welcome post
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting default skin
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting user titles
+Fri Oct 13 13:20:57 CDT 2006 - ... Inserting welcome topic
+Fri Oct 13 13:20:57 CDT 2006 - Table and system default information stored
+Fri Oct 13 13:20:57 CDT 2006 - Updating settings.php with default system statistics
+Fri Oct 13 13:20:57 CDT 2006 - Installing default templates
+Fri Oct 13 13:20:58 CDT 2006 - Finishing installing default templates
+Fri Oct 13 13:20:58 CDT 2006 - Updating system cache groups
+Fri Oct 13 13:20:58 CDT 2006 - Attempting to log in administrator
+Fri Oct 13 13:20:58 CDT 2006 - Locking installer
+Fri Oct 13 13:20:58 CDT 2006 - INSTALLATION COMPLETE
