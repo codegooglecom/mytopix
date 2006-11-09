@@ -281,6 +281,8 @@ class ModuleObject extends MasterObject
 			members_pass_auto,
 			members_email, 
 			members_ip, 
+			members_skin,
+			members_language,
 			members_registered, 
 			members_lastaction) 
 		VALUES(
@@ -291,6 +293,8 @@ class ModuleObject extends MasterObject
 			'{$auto}',
 			'{$email}', 
 			'" . $this->UserHandler->getField('members_ip') . "', 
+			'{$this->config['skins']}',
+			'{$this->config['language']}',
 			'" . time() . "', 
 			'" . time() . "')", 
 		__FILE__, __LINE__);

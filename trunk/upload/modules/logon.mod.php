@@ -51,9 +51,10 @@ class ModuleObject extends MasterObject
 	{
 		$this->MasterObject($module, $config, $cache);
 
-		$this->_hash = isset($this->post['hash']) ? $this->post['hash'] : null;
-		$this->_code = isset($this->get['CODE'])  ? $this->get['CODE']  : 00;
-		$this->_key  = isset($this->get['key'])   ? $this->get['key']   : '';
+		$this->_hash     = isset($this->post['hash'])    ? $this->post['hash']    : null;
+		$this->_code     = isset($this->get['CODE'])     ? $this->get['CODE']     : 00;
+		$this->_key      = isset($this->get['key'])      ? $this->get['key']      : '';
+		$this->_redirect = isset($this->post['referer']) ? $this->post['referer'] : '?a=main';
 
 		require SYSTEM_PATH . 'lib/mail.han.php';
 		$this->_MailHandler = new MailHandler($this->config['email_incoming'], 
@@ -155,7 +156,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $password || false == $username)
 		{
-			return $this->messenger(array('MSG' => 'err_blank_fields'));
+			return $this->messenger(array('MSG' => 'err_blank_fields', 'LINK' => $this->_redirect));
 		}
 
 		$sql = $this->DatabaseHandler->query("
@@ -176,12 +177,12 @@ class ModuleObject extends MasterObject
 
 		if(false == $row['members_id'])
 		{
-			return $this->messenger(array('MSG' => 'err_no_match'));
+			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => $this->_redirect));
 		}
 
 		if(md5(md5($row['members_pass_salt']) . md5($password)) != $row['members_pass'])
 		{
-			return $this->messenger(array('MSG' => 'err_no_match'));
+			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => $this->_redirect));
 		}		
 
 		if($this->config['closed'] && false == $row['class_canViewClosedBoard'])
@@ -191,12 +192,12 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "active WHERE active_user = '{$row['members_id']}'", __FILE__, __LINE__);
 
-		$this->CookieHandler->setVar('id',   $row['members_id'],		(86400 * 365));
+		$this->CookieHandler->setVar('id',   $row['members_id'],        (86400 * 365));
 		$this->CookieHandler->setVar('pass', $row['members_pass_auto'], (86400 * 365));
 
 		$this->LanguageHandler->err_welcome_back = sprintf($this->LanguageHandler->err_welcome_back, $row['members_name']);
 
-		return $this->messenger(array('MSG' => 'err_welcome_back', 'LEVEL' => 1, 'LINK' => '?a=main'));
+		return $this->messenger(array('MSG' => 'err_welcome_back', 'LEVEL' => 1, 'LINK' => $this->_redirect));
 	}
 
    // ! Action Method

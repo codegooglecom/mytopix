@@ -199,6 +199,10 @@ class ModuleObject extends MasterObject
 										   '&nbsp;',
 										   array($this->OnePanel->form->addSelect('forums[]', false, false, " size='5' style='width: 300px;' multiple='multiple'", false, true, $forum_select), ' align="right"')));
 
+				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_hidden,
+										   '&nbsp;',
+										   array($this->OnePanel->form->addYesNo('hidden', false, false, false, true, false), ' align="right"')));
+
 				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_locked,
 										   '&nbsp;',
 										   array($this->OnePanel->form->addYesNo('locked', false, false, false, true, false), ' align="right"')));
@@ -399,6 +403,7 @@ class ModuleObject extends MasterObject
 		}
 
 		if($locked)   $query[] = "AND t.topics_state	= {$locked}";
+		if($hidden)   $query[] = "AND t.topics_hidden   = {$hidden}";
 		if($stuck)	$query[] = "AND t.topics_pinned   = {$stuck}";
 		if($poll)	 $query[] = "AND t.topics_is_poll  = {$poll}";
 		if($announce) $query[] = "AND t.topics_announce = {$announce}";
@@ -486,7 +491,7 @@ class ModuleObject extends MasterObject
 										   array(number_format($row['topics_posts']), ' align="center"', 'headerb'),
 										   array("<a href=\"" . GATEWAY . "?a=forums&amp;code=04&amp;forum={$row['forum_id']}\">{$row['forum_name']}</a>", ' align="center"'),
 										   array(date($this->config['date_short'], $row['topics_date']), ' align="center"', 'headerb'),
-										   array($this->OnePanel->form->addCheckBox('prune[]', $row['topics_id'], " checked=\"checked\"", false, true, false, false, false, 'c'), " valign=\"top\" align=\"center\"")));
+										   array($this->OnePanel->form->addCheckBox("prune[{$row['topics_id']}]", $row['topics_id'], " checked=\"checked\"", false, true, false, false, false, 'c'), " valign=\"top\" align=\"center\"")));
 			}
 
 			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
@@ -528,7 +533,7 @@ class ModuleObject extends MasterObject
 		$posts  = implode(' OR ', $postList);
 		$polls  = implode(' OR ', $pollList);
 		$votes  = implode(' OR ', $voteList);
-		
+
 		$sql = $this->DatabaseHandler->query("SELECT posts_id FROM " . DB_PREFIX . "posts WHERE {$posts}");
 
 		$file_posts = array();
