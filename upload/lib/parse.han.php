@@ -994,16 +994,12 @@ class ParseHandler
 	*/
 	function doCutOff($string, $size = 30)
 	{
-		$string = str_replace(array('&quot;', '&#39;'), array('"', "'"), $string);
-		$trail  = '';
-
-		if(strlen($string) > $size)
+		if ( strlen ( $string ) > $size)
 		{
-			$string = substr($string, 0, $size - 3) . '&#8230;';
-			$trail  = '&#8230;';
+			return preg_replace( "/&(#(\d+;?)?)?\.\.\.$/", '...', substr($string,0, $size - 3) . "..." );
 		}
 
-		return preg_replace("/&(#(\d+?)?)?$/", $trail, $string);
+		return $string = preg_replace( "/&(#(\d+?)?)?$/", '', $string );
 	}
 
    // ! Action Method

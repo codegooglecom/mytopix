@@ -232,9 +232,7 @@ class ModuleObject extends MasterObject
 								{
 									if($this->config['cutoff'] && strlen($forum['forum_last_post_title']) > $this->config['cutoff'])
 									{
-										$forum['forum_last_post_title'] = substr($forum['forum_last_post_title'],
-																				 0,
-																				 25) . '...';
+										$forum['forum_last_post_title'] = $this->ParseHandler->doCutOff($forum['forum_last_post_title'], $this->config['cutoff']);
 									}
 
 									$forum['forum_last_post_title'] = "<a href=\"" . GATEWAY . "?a=read&amp;CODE=02&amp;p=" . "{$forum['forum_last_post_id']}\" title=\"\">{$forum['forum_last_post_title']}</a>";

@@ -116,7 +116,8 @@ class ModuleObject extends MasterObject
 							  'begin'   => $this->LanguageHandler->comp_begin, 
 							  'end'     => $this->LanguageHandler->comp_end);
 
-		$this->_comp2 = array('equal'      => '=', 
+		$this->_comp2 = array('none'       => '--',
+							  'equal'      => '=', 
 							  'greater'    => '>', 
 							  'lesser'     => '<', 
 							  'lessequal'  => '<=', 

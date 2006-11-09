@@ -350,13 +350,21 @@ class MasterObject
 
 				if(USER_ID == 1)
 				{
-					$referer    = '?' . $this->server['QUERY_STRING'];
+					if ( $link != '?a=main' )
+					{
+						$referer = '?' . str_replace ( '?', '', $link );
+					}
+					else {
+						$referer = '?' . $this->server['QUERY_STRING'];
+					}
+
 					$hash       = $this->UserHandler->getUserHash();
 					$logon_form = eval($this->TemplateHandler->fetchTemplate('global_message_level_2_logon'));
 				}
 
 				$content = eval($this->TemplateHandler->fetchTemplate('global_message_level_2'));
 				return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+
 				break;
 		}
 	}
