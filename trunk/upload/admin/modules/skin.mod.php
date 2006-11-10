@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -10,113 +12,112 @@
 * @company Jaia Interactive <admin@jaia-interactive.com>
 * @package MyTopix Personal Message Board
 */
-
 class ModuleObject extends MasterObject
 {
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_id;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_id;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_code;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_code;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_hash;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_hash;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_tabs;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_tabs;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_skin;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_skin;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $OnePanel;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $OnePanel;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_FileHandler;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_FileHandler;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_TarHandler;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_TarHandler;
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function ModuleObject(& $module, & $config)
 	{
-        $this->MasterObject($module, $config);
+		$this->MasterObject($module, $config);
 
-        $this->_id   = isset($this->get['id'])    ? (int) $this->get['id']    : 0;
-        $this->_code = isset($this->get['code'])  ?       $this->get['code']  : 00;
-        $this->_hash = isset($this->post['hash']) ?       $this->post['hash'] : null;
+		$this->_id   = isset($this->get['id'])	? (int) $this->get['id']	: 0;
+		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
+		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 		$this->_skin = $this->config['skin'];
 
 		if(isset($this->post['skin']))
 		{
 			$this->_skin = $this->post['skin'];
 		}
-        elseif(isset($this->get['skin']))
-        {
+		elseif(isset($this->get['skin']))
+		{
 			$this->_skin = $this->get['skin'];
 		}
 
-        require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-        $this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
+		$this->OnePanel = new OnePanel($this);
 
-        require_once SYSTEM_PATH . 'lib/file.han.php';
-        $this->_FileHandler = new FileHandler($this->config);
+		require_once SYSTEM_PATH . 'lib/file.han.php';
+		$this->_FileHandler = new FileHandler($this->config);
 
-        require_once SYSTEM_PATH . 'lib/tar.han.php';
-        $this->_TarHandler = new TarHandler();
+		require_once SYSTEM_PATH . 'lib/tar.han.php';
+		$this->_TarHandler = new TarHandler();
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function execute()
 	{
 		$this->OnePanel->addHeader($this->LanguageHandler->skin_form_header);
@@ -124,74 +125,74 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-                $this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
 				$this->_showSkins();
 				break;
 
 			case '01':
-                $this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_editForm();
 				break;
 
 			case '02':
-                $this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doEdit();
 				break;
 
 			case '03':
-                $this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doRemove();
 				break;
 
 			case '04':
-                $this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
 				$this->_createForm();
 				break;
 
 			case '05':
-                $this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
 				$this->_doCreate();
 				break;
 
 			case '06':
-                $this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
 				$this->_showInstall();
 				break;
 
 			case '07':
-                $this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
 
-                if($this->files['upload']['name'])
-                {
-                    $this->_doUpload(); 
-                }
-                else {
-                    $this->_doInstall();
-                }
+				if($this->files['upload']['name'])
+				{
+					$this->_doUpload(); 
+				}
+				else {
+					$this->_doInstall();
+				}
 				break;
 
 			case '08':
-                $this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
-                $this->_showExport();
+				$this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
+				$this->_showExport();
 				break;
 
 			case '09':
-                $this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
 				$this->_doExport();
 				break;
 
 			case '10':
-                $this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doRemFile();
 				break;
 
 			case '11':
-                $this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doDownload();
 				break;
 
 			default:
-                $this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
+				$this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
 				$this->_showSkins();
 				break;
 		}
@@ -202,17 +203,17 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _showSkins()
 	{
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_id,      " width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_name,    " align='left'");
+		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_id,	  " width='1%'");
+		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_name,	" align='left'");
 		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_author,  " align='center'");
 		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_hidden,  " align='center'");
 		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_active,  " align='center'");
@@ -247,10 +248,10 @@ class ModuleObject extends MasterObject
 				$option = false == is_dir(SYSTEM_PATH . "skins/{$row['skins_id']}/")
 						? "<b>{$this->LanguageHandler->skin_list_dir_error}</b>"
 						: "<a href=\"" . GATEWAY . "?a=skin&amp;code=01&amp;skin={$row['skins_id']}\">" .
-                          "{$this->LanguageHandler->link_edit}</a> | <a href=\"" . GATEWAY . "?a=skin"  .
-                          "&amp;code=03&amp;skin={$row['skins_id']}\" onclick='javascript:return "      .
-                          "confirm(\"{$this->LanguageHandler->skin_list_tbl_confirm}\");'><b>"            .
-                          "{$this->LanguageHandler->link_delete}</b></a>";
+						  "{$this->LanguageHandler->link_edit}</a> | <a href=\"" . GATEWAY . "?a=skin"  .
+						  "&amp;code=03&amp;skin={$row['skins_id']}\" onclick='javascript:return "	  .
+						  "confirm(\"{$this->LanguageHandler->skin_list_tbl_confirm}\");'><b>"			.
+						  "{$this->LanguageHandler->link_delete}</b></a>";
 
 				$this->OnePanel->table->addRow(array(array("<strong>{$row['skins_id']}</strong>", " align='center'", 'headera'),
 										   array($row['skins_name'], false, 'headerb'),
@@ -268,57 +269,57 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _editForm()
 	{
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+		}
 
 		$row = $sql->getRow();
 		
 		$this->OnePanel->form->startForm(GATEWAY . "?a=skin&amp;code=02&amp;skin={$this->_skin}");
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
-			$row['skins_name']          = $this->ParseHandler->parseText($row['skins_name'],          F_ENTS);
-			$row['skins_author']        = $this->ParseHandler->parseText($row['skins_author'],        F_ENTS);
+			$row['skins_name']		  = $this->ParseHandler->parseText($row['skins_name'],		  F_ENTS);
+			$row['skins_author']		= $this->ParseHandler->parseText($row['skins_author'],		F_ENTS);
 			$row['skins_author_link']   = $this->ParseHandler->parseText($row['skins_author_link'],   F_ENTS);
 
 			$this->OnePanel->form->addTextBox('name', $row['skins_name'], false, 
-                                              array(1, $this->LanguageHandler->skin_edit_form_name_title,
-                                                       $this->LanguageHandler->skin_edit_form_name_desc));
+											  array(1, $this->LanguageHandler->skin_edit_form_name_title,
+													   $this->LanguageHandler->skin_edit_form_name_desc));
 
 			$this->OnePanel->form->addTextBox('author', $row['skins_author'], false, 
-                                              array(1, $this->LanguageHandler->skin_edit_form_author_title,
-                                                       $this->LanguageHandler->skin_edit_form_author_desc));
+											  array(1, $this->LanguageHandler->skin_edit_form_author_title,
+													   $this->LanguageHandler->skin_edit_form_author_desc));
 
 			$this->OnePanel->form->addTextBox('link', $row['skins_author_link'], false, 
-                                              array(1, $this->LanguageHandler->skin_edit_form_link_title,
-                                                       $this->LanguageHandler->skin_edit_form_link_desc));
+											  array(1, $this->LanguageHandler->skin_edit_form_link_title,
+													   $this->LanguageHandler->skin_edit_form_link_desc));
 
-            $this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
+			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
 
 			$this->OnePanel->form->addCheckBox('hide', 1, false, false,
-								            false, ($row['skins_hidden'] ? true : false),$this->LanguageHandler->skin_edit_form_hide_desc);
+											false, ($row['skins_hidden'] ? true : false),$this->LanguageHandler->skin_edit_form_hide_desc);
 
-            $disable = $this->config['skin'] == $row['skins_id'] ? true : false;
+			$disable = $this->config['skin'] == $row['skins_id'] ? true : false;
 
 			$this->OnePanel->form->addCheckBox('default', 1, false, false,
-								            false, ($disable ? true : false),$this->LanguageHandler->skin_edit_form_default_desc);
+											false, ($disable ? true : false),$this->LanguageHandler->skin_edit_form_default_desc);
 
 			$this->OnePanel->form->addCheckBox('transfer', 1, false, false,
-								            false, ($this->config['closed'] ? true : false),$this->LanguageHandler->skin_edit_form_xfer_desc);
+											false, ($this->config['closed'] ? true : false),$this->LanguageHandler->skin_edit_form_xfer_desc);
 
-            $this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
 		$this->OnePanel->form->endForm();
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
@@ -327,35 +328,35 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doEdit()
 	{
-        if($this->_hash != $this->UserHandler->getUserhash())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
-        }
+		if($this->_hash != $this->UserHandler->getUserhash())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+		}
 
 		extract($this->post);
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results,
-                                       GATEWAY . '?a=skin&amp;code=01&amp;skin={$this->_skin}');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results,
+									   GATEWAY . '?a=skin&amp;code=01&amp;skin={$this->_skin}');
+		}
 
 		if(false == $name)
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, 
-                                       GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, 
+									   GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
+		}
 
 		if(isset($default))
 		{
@@ -371,63 +372,63 @@ class ModuleObject extends MasterObject
 		$author = false == $author ? $this->LanguageHandler->skin_edit_form_unknown : $author;
 
 		if($link && false == preg_match( "#^http://#", $link))
-        {
-            $link = "http://" . $link;
-        }
+		{
+			$link = "http://" . $link;
+		}
 
-        $hide = isset($hide) ? (int) $hide : 0;
+		$hide = isset($hide) ? (int) $hide : 0;
 
-        $this->DatabaseHandler->query("
-        UPDATE " . DB_PREFIX . "skins SET
-            skins_name			= '{$name}',
-            skins_author        = '{$author}',
-            skins_author_link   = '{$link}',
-            skins_hidden		= {$hide}
-        WHERE skins_id = {$this->_skin}");
+		$this->DatabaseHandler->query("
+		UPDATE " . DB_PREFIX . "skins SET
+			skins_name			= '{$name}',
+			skins_author		= '{$author}',
+			skins_author_link   = '{$link}',
+			skins_hidden		= {$hide}
+		WHERE skins_id = {$this->_skin}");
 
-        $this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('skins');
 
 		$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_done, 
-                                   GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
+								   GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doRemove()
 	{
 		if($this->_skin == 1)
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_rem_err_no_default, GATEWAY . '?a=skin');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_rem_err_no_default, GATEWAY . '?a=skin');
+		}
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
 		$row = $sql->getRow();
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+		}
 
 		if($this->_FileHandler->remDir(SYSTEM_PATH . "skins/{$this->_skin}/"))
 		{
-			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "skins     WHERE skins_id    = {$this->_skin}");
+			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "skins	 WHERE skins_id	= {$this->_skin}");
 			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "templates WHERE temp_skin   = {$this->_skin}");
-			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "emoticons WHERE emo_skin    = {$this->_skin}");
-			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "titles    WHERE titles_skin = {$this->_skin}");
-			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "macros    WHERE macro_skin  = {$this->_skin}");
-			$this->DatabaseHandler->query("UPDATE      " . DB_PREFIX . "members   SET members_skin  = 1 WHERE members_skin = {$this->_skin}");
+			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "emoticons WHERE emo_skin	= {$this->_skin}");
+			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "titles	WHERE titles_skin = {$this->_skin}");
+			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "macros	WHERE macro_skin  = {$this->_skin}");
+			$this->DatabaseHandler->query("UPDATE	  " . DB_PREFIX . "members   SET members_skin  = 1 WHERE members_skin = {$this->_skin}");
 
-            $this->CacheHandler->updateCache('skins');
-            $this->CacheHandler->updateCache('emoticons');
-            $this->CacheHandler->updateCache('titles');
+			$this->CacheHandler->updateCache('skins');
+			$this->CacheHandler->updateCache('emoticons');
+			$this->CacheHandler->updateCache('titles');
 
 			if($this->config['skin'] == $this->_skin)
 			{
@@ -444,46 +445,46 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _createForm()
 	{
 		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=05');
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
 			$this->OnePanel->form->addWrapSelect('base',  $this->_fetchSkins(), false, false, 
-                                             array(1, $this->LanguageHandler->skin_create_form_base_title,
-                                                      $this->LanguageHandler->skin_create_form_base_desc));
+											 array(1, $this->LanguageHandler->skin_create_form_base_title,
+													  $this->LanguageHandler->skin_create_form_base_desc));
 
 			$this->OnePanel->form->addTextBox('name', false, false, 
-                                             array(1, $this->LanguageHandler->skin_create_form_name_title,
-                                                      $this->LanguageHandler->skin_create_form_name_desc));
+											 array(1, $this->LanguageHandler->skin_create_form_name_title,
+													  $this->LanguageHandler->skin_create_form_name_desc));
 
 			$this->OnePanel->form->addTextBox('author', false, false, 
-                                             array(1, $this->LanguageHandler->skin_create_form_author_title,
-                                                      $this->LanguageHandler->skin_create_form_author_desc));
+											 array(1, $this->LanguageHandler->skin_create_form_author_title,
+													  $this->LanguageHandler->skin_create_form_author_desc));
 
 			$this->OnePanel->form->addTextBox('link', 'http://', false, 
-                                             array(1, $this->LanguageHandler->skin_create_form_link_title,
-                                                      $this->LanguageHandler->skin_create_form_link_desc));
+											 array(1, $this->LanguageHandler->skin_create_form_link_title,
+													  $this->LanguageHandler->skin_create_form_link_desc));
 
-            $this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
+			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
 
 			$this->OnePanel->form->addCheckBox('hide', 1, false, false, false, false,
-                                               $this->LanguageHandler->skin_edit_form_hide_desc);
+											   $this->LanguageHandler->skin_edit_form_hide_desc);
 
 			$this->OnePanel->form->addCheckBox('default_skin', 1, false, false, false, false, 
-                                               $this->LanguageHandler->skin_edit_form_default_desc);
+											   $this->LanguageHandler->skin_edit_form_default_desc);
 
 			$this->OnePanel->form->addCheckBox('transfer', 1, false, false, false, false, 
-                                               $this->LanguageHandler->skin_edit_form_xfer_desc);
+											   $this->LanguageHandler->skin_edit_form_xfer_desc);
 
-            $this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
 		$this->OnePanel->form->endForm();
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
@@ -492,52 +493,52 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doCreate()
 	{
-        if($this->_hash != $this->UserHandler->getUserhash())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
-        }
+		if($this->_hash != $this->UserHandler->getUserhash())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+		}
 
 		extract($this->post);
 
 		$sql = $this->DatabaseHandler->query("
-        SELECT 
-            skins_id, 
-            skins_name, 
-            skins_macro 
-        FROM " . DB_PREFIX . "skins
-        WHERE skins_id = {$base}");
+		SELECT 
+			skins_id, 
+			skins_name, 
+			skins_macro 
+		FROM " . DB_PREFIX . "skins
+		WHERE skins_id = {$base}");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+		}
 
-        $skin = $sql->getRow();
+		$skin = $sql->getRow();
 
 		if(false == $name)
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, GATEWAY . '?a=skin&amp;code=04');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, GATEWAY . '?a=skin&amp;code=04');
+		}
 
-        $sql = $this->DatabaseHandler->query("
-        SELECT skins_id 
-        FROM " . DB_PREFIX . "skins 
-        WHERE skins_name = '{$name}'");
+		$sql = $this->DatabaseHandler->query("
+		SELECT skins_id 
+		FROM " . DB_PREFIX . "skins 
+		WHERE skins_name = '{$name}'");
 
-        if($sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_create_err_name_taken, 
-                                       GATEWAY . '?a=skin&amp;code=04');
-        }
+		if($sql->getNumRows())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_create_err_name_taken, 
+									   GATEWAY . '?a=skin&amp;code=04');
+		}
 
 		$author = false == $author ? $this->LanguageHandler->skin_edit_form_unknown : $author;
 
@@ -547,36 +548,36 @@ class ModuleObject extends MasterObject
 			skins_author,
 			skins_author_link,
 			skins_hidden,
-            skins_macro) 
+			skins_macro) 
 		VALUES(
 			'{$name}',
 			'{$author}',
 			'{$link}',
 			" . (int) @$hide . ",
-            '{$skin['skins_macro']}')");
+			'{$skin['skins_macro']}')");
 
 		$new_skin = $this->DatabaseHandler->insertId();
 
 		if(isset($default_skin))
 		{
-            $this->config['skin'] = $new_skin;
-            $this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
+			$this->config['skin'] = $new_skin;
+			$this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
 		}
 
 		if(false == $this->_FileHandler->copyDir($this->config['site_path'] . "skins/{$new_skin}", 
-                                                 $this->config['site_path'] . "skins/{$base}"))
+												 $this->config['site_path'] . "skins/{$base}"))
 		{
 			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "skins WHERE skins_id = {$new_skin}");
 
-            $this->config['skin'] = 1;
-            $this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
+			$this->config['skin'] = 1;
+			$this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
 
 			return $this->OnePanel->messenger($this->LanguageHandler->skin_create_err_failed, 
-                                              GATEWAY . '?a=skin&amp;code=04');
+											  GATEWAY . '?a=skin&amp;code=04');
 		}
 
 		$sql = $this->DatabaseHandler->query("SELECT temp_section, temp_name, temp_code FROM " . 
-                                             DB_PREFIX . "templates WHERE temp_skin = {$base}");
+											 DB_PREFIX . "templates WHERE temp_skin = {$base}");
 
 		while($row = $sql->getRow())
 		{
@@ -616,62 +617,62 @@ class ModuleObject extends MasterObject
 		{
 			$this->DatabaseHandler->query("
 			INSERT INTO " . DB_PREFIX . "titles(
-                titles_name,
-                titles_posts,
-                titles_pips,
-                titles_file,
-                titles_skin)
+				titles_name,
+				titles_posts,
+				titles_pips,
+				titles_file,
+				titles_skin)
 			VALUES(
 				'{$row['titles_name']}',
-                {$row['titles_posts']},
-                {$row['titles_pips']},
-                '{$row['titles_file']}',
-                {$new_skin})");
-		}        
+				{$row['titles_posts']},
+				{$row['titles_pips']},
+				'{$row['titles_file']}',
+				{$new_skin})");
+		}		
 
-        $sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "macros WHERE macro_skin = {$base}");
+		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "macros WHERE macro_skin = {$base}");
 
-        while($row = $sql->getRow())
-        {
-        	$this->DatabaseHandler->query("
-            INSERT INTO " . DB_PREFIX . "macros (
-                macro_skin,
-                macro_title,
-                macro_body,
-                macro_remove)
-            VALUES (
-                {$new_skin},
-                '{$row['macro_title']}',
-                '{$row['macro_body']}',
-                {$row['macro_remove']})");
-        }
+		while($row = $sql->getRow())
+		{
+			$this->DatabaseHandler->query("
+			INSERT INTO " . DB_PREFIX . "macros (
+				macro_skin,
+				macro_title,
+				macro_body,
+				macro_remove)
+			VALUES (
+				{$new_skin},
+				'{$row['macro_title']}',
+				'{$row['macro_body']}',
+				{$row['macro_remove']})");
+		}
 
-        if(isset($transfer))
+		if(isset($transfer))
 		{
 			$this->DatabaseHandler->query("UPDATE " . DB_PREFIX . "members SET members_skin = {$new_skin}");
 		}
 
-        $this->CacheHandler->updateCache('skins');
-        $this->CacheHandler->updateCache('emoticons');
-        $this->CacheHandler->updateCache('titles');
+		$this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('emoticons');
+		$this->CacheHandler->updateCache('titles');
 
-        header("LOCATION: " . GATEWAY . '?a=skin');
+		header("LOCATION: " . GATEWAY . '?a=skin');
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _showInstall()
 	{
 		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=07', false, 
-                                        'POST', " enctype='multipart/form-data'");
+										'POST', " enctype='multipart/form-data'");
 
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
@@ -681,28 +682,28 @@ class ModuleObject extends MasterObject
 			{
 				$ext = end(explode('.', $file));
 				if($ext == 'tar')
-                {
-                    $list[$file] = $file;
-                }
+				{
+					$list[$file] = $file;
+				}
 			}
 			closedir($handle);
 
 			if(sizeof($list))
 			{
 				$this->OnePanel->form->addWrapSelect('pack', $list, false, false, 
-                                                 array(1, $this->LanguageHandler->skin_inst_form_choose_title,
-                                                          $this->LanguageHandler->skin_inst_form_choose_desc));
+												 array(1, $this->LanguageHandler->skin_inst_form_choose_title,
+														  $this->LanguageHandler->skin_inst_form_choose_desc));
 	
 				$this->OnePanel->form->appendBuffer("<p style='text-align: center;'><b>" .
-                                                    $this->LanguageHandler->skin_inst_form_or  .
-                                                    "</b></p>");
+													$this->LanguageHandler->skin_inst_form_or  .
+													"</b></p>");
 			}
 
 			$this->OnePanel->form->addFile('upload', 
-                                           array(1, $this->LanguageHandler->skin_inst_form_upload_title, 
-                                                    $this->LanguageHandler->skin_inst_form_upload_desc));
+										   array(1, $this->LanguageHandler->skin_inst_form_upload_title, 
+													$this->LanguageHandler->skin_inst_form_upload_desc));
 
-            $this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
 		$this->OnePanel->form->endForm();
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());	
@@ -711,91 +712,91 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doUpload()
 	{
-        if($this->_hash != $this->UserHandler->getUserhash())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
-        }
+		if($this->_hash != $this->UserHandler->getUserhash())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+		}
 
-        $dir = $this->config['site_path'] . "skins/";
+		$dir = $this->config['site_path'] . "skins/";
 
 		if(file_exists($dir . $this->files['upload']['name']))
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_exists, GATEWAY . '?a=skin&amp;code=06');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_exists, GATEWAY . '?a=skin&amp;code=06');
+		}
 
-        require_once SYSTEM_PATH . 'lib/upload.han.php';
-        $UploadHandler = new UploadHandler($this->files, $dir, 'upload');
+		require_once SYSTEM_PATH . 'lib/upload.han.php';
+		$UploadHandler = new UploadHandler($this->files, $dir, 'upload');
 
-        $UploadHandler->setExtTypes(array('tar'));
-        $UploadHandler->setMaxSize(500);
+		$UploadHandler->setExtTypes(array('tar'));
+		$UploadHandler->setMaxSize(500);
 
-        $this->CacheHandler->updateCache('skins');
-        $this->CacheHandler->updateCache('emoticons');
-        $this->CacheHandler->updateCache('titles');
+		$this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('emoticons');
+		$this->CacheHandler->updateCache('titles');
 
-        if(false == $UploadHandler->doUpload())
-        {
-            $error_msg = $UploadHandler->getError();
-            return $this->OnePanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=skin&amp;code=06');
-        }
+		if(false == $UploadHandler->doUpload())
+		{
+			$error_msg = $UploadHandler->getError();
+			return $this->OnePanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=skin&amp;code=06');
+		}
 
-        $this->_doInstall($this->files['upload']['name']);
+		$this->_doInstall($this->files['upload']['name']);
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doInstall($pack = false)
 	{
-        if($this->_hash != $this->UserHandler->getUserhash())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
-        }
+		if($this->_hash != $this->UserHandler->getUserhash())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+		}
 
 		extract($this->post);
 
 		if(false == file_exists(SYSTEM_PATH . "skins/{$pack}"))
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_no_pack, 
-                                       GATEWAY . '?a=skin&amp;code=06');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_no_pack, 
+									   GATEWAY . '?a=skin&amp;code=06');
+		}
 
 		$temp = md5(microtime());
 
-        $from = $this->config['site_path'] . 'skins/';
+		$from = $this->config['site_path'] . 'skins/';
 
-        $this->_TarHandler->setCurrent($from);
+		$this->_TarHandler->setCurrent($from);
 
-        if(false == $this->_TarHandler->searchTar($pack, array('export_data.php', 'export_conf.php')))
-        {
-            chdir($this->config['site_path'] . 'admin/');
+		if(false == $this->_TarHandler->searchTar($pack, array('export_data.php', 'export_conf.php')))
+		{
+			chdir($this->config['site_path'] . 'admin/');
 
-            $this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_invalid, GATEWAY . '?a=skin&amp;code=06');
-        }
+			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_invalid, GATEWAY . '?a=skin&amp;code=06');
+		}
 
-        mkdir(SYSTEM_PATH . "skins/{$temp}/");
+		mkdir(SYSTEM_PATH . "skins/{$temp}/");
 
-        $to = $this->config['site_path'] . "skins/{$temp}/";
+		$to = $this->config['site_path'] . "skins/{$temp}/";
 
-        $this->_TarHandler->extractTar($pack, $from, $to);
+		$this->_TarHandler->extractTar($pack, $from, $to);
 
-        chdir($this->config['site_path'] . 'admin/');
+		chdir($this->config['site_path'] . 'admin/');
 
 		include_once SYSTEM_PATH . "skins/{$temp}/export_conf.php";
 
@@ -825,24 +826,24 @@ class ModuleObject extends MasterObject
 		@unlink(SYSTEM_PATH . "skins/{$dir}/export_data.php");
 		@unlink(SYSTEM_PATH . "skins/{$dir}/export_conf.php");
 
-        $this->CacheHandler->updateCache('skins');
-        $this->CacheHandler->updateCache('emoticons');
-        $this->CacheHandler->updateCache('macros', $dir);
-        $this->CacheHandler->updateCache('titles');
+		$this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('emoticons');
+		$this->CacheHandler->updateCache('macros', $dir);
+		$this->CacheHandler->updateCache('titles');
 
-        header("LOCATION: " . GATEWAY . "?a=skin");
+		header("LOCATION: " . GATEWAY . "?a=skin");
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _skinExists($skin, $new = false, $num = 1)
 	{
 		$query = false == $new ? $skin : $new;
@@ -855,11 +856,11 @@ class ModuleObject extends MasterObject
 
 			return $this->_skinExists($skin, $skin . " ({$num})", $num);
 		}
-        
-        if($num == 1)
-        {
-            return $skin;
-        }
+		
+		if($num == 1)
+		{
+			return $skin;
+		}
 
 		return $new;
 	}
@@ -867,27 +868,27 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _showExport()
 	{
 		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=09');
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
 			$this->OnePanel->form->addWrapSelect('skin', $this->_fetchSkins(), false, false, 
-                                             array(1, $this->LanguageHandler->skin_exp_form_choose_title, 
-                                                      $this->LanguageHandler->skin_exp_form_choose_desc));
+											 array(1, $this->LanguageHandler->skin_exp_form_choose_title, 
+													  $this->LanguageHandler->skin_exp_form_choose_desc));
 
 			$this->OnePanel->form->addTextBox('title', false, false, 
-                                              array(1, $this->LanguageHandler->skin_exp_form_name_title,
-                                                       $this->LanguageHandler->skin_exp_form_name_desc));
+											  array(1, $this->LanguageHandler->skin_exp_form_name_title,
+													   $this->LanguageHandler->skin_exp_form_name_desc));
 
-            $this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
 		$this->OnePanel->form->endForm();
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
@@ -899,7 +900,7 @@ class ModuleObject extends MasterObject
 
 		$this->OnePanel->table->startTable($this->LanguageHandler->skin_exp_tbl_header);
 
-			$i    = 0;
+			$i	= 0;
 			$list = array();
 			$handle = opendir(SYSTEM_PATH . 'skins/');
 			while(false !== ($file = readdir($handle)))
@@ -926,8 +927,8 @@ class ModuleObject extends MasterObject
 											   array($val, false, 'headerb'),
 											   array(date($this->config['date_long'], filemtime(SYSTEM_PATH . "skins/{$val}")), " align='center'", 'headerb'),
 											   array("<a href=\""   . GATEWAY . "?a=skin&amp;code=11&amp;skin={$val}\">{$this->LanguageHandler->style_tbl_download}</a>" .
-                                                     " | <a href=\"" . GATEWAY . "?a=skin&amp;code=10&amp;skin={$val}\" onclick='javascript: return confirm" . 
-                                                     "(\"{$this->LanguageHandler->skin_exp_rem_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
+													 " | <a href=\"" . GATEWAY . "?a=skin&amp;code=10&amp;skin={$val}\" onclick='javascript: return confirm" . 
+													 "(\"{$this->LanguageHandler->skin_exp_rem_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 				}
 			}
 
@@ -939,35 +940,35 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doExport()
 	{
-        if($this->_hash != $this->UserHandler->getUserhash())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
-        }
+		if($this->_hash != $this->UserHandler->getUserhash())
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+		}
 		extract($this->post);
 
-        if(false == $title)
-        {
-            $sql   = $this->DatabaseHandler->query("SELECT skins_name FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");            
-            $row   = $sql->getRow();
-            $title = $row['skins_name'];
-        }
+		if(false == $title)
+		{
+			$sql   = $this->DatabaseHandler->query("SELECT skins_name FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");			
+			$row   = $sql->getRow();
+			$title = $row['skins_name'];
+		}
 
-        $title = str_replace(' ', '_', $title);
+		$title = str_replace(' ', '_', $title);
 
-        if(false == preg_match('#^([a-zA-Z0-9_-]+)$#s', $title))
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->skin_exp_err_bad_name, 
-                                       GATEWAY . '?a=skin&amp;code=08');
-        }
+		if(false == preg_match('#^([a-zA-Z0-9_-]+)$#s', $title))
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->skin_exp_err_bad_name, 
+									   GATEWAY . '?a=skin&amp;code=08');
+		}
 
 		$sql = $this->DatabaseHandler->query("SELECT temp_section, temp_name, temp_code FROM " . DB_PREFIX . "templates WHERE temp_skin = {$skin}");
 
@@ -975,7 +976,7 @@ class ModuleObject extends MasterObject
 		$export_data .= "\$temps  = array();\n";
 		$export_data .= "\$emots  = array();\n";
 		$export_data .= "\$titles = array();\n";
-        $export_data .= "\$macros = array();\n";
+		$export_data .= "\$macros = array();\n";
 
 		while($row = $sql->getRow())
 		{
@@ -991,7 +992,7 @@ class ModuleObject extends MasterObject
 			$fields = substr($fields, 0, -2);
 			$values = substr($values, 0, -2);
 
-			$export_data .= "\$temps[] = \"INSERT INTO " . DB_PREFIX . "templates VALUES ({\$dir}, $values);\";\r\n";
+			$export_data .= "\$temps[] = \"INSERT INTO \"" . DB_PREFIX . "\"templates VALUES ({\$dir}, $values);\";\r\n";
 		}
 
 		$sql = $this->DatabaseHandler->query("SELECT emo_name, emo_code, emo_click FROM " . DB_PREFIX . "emoticons WHERE emo_skin = {$this->_skin}");
@@ -1010,10 +1011,10 @@ class ModuleObject extends MasterObject
 			$fields = substr($fields, 0, -2);
 			$values = substr($values, 0, -2);
 
-			$export_data .= "\$emots[] = \"INSERT INTO " . DB_PREFIX . "emoticons VALUES (null, {\$dir}, $values);\";\r\n";
+			$export_data .= "\$emots[] = \"INSERT INTO \"" . DB_PREFIX . "\"emoticons VALUES (null, {\$dir}, $values);\";\r\n";
 		}
 
-        $sql = $this->DatabaseHandler->query("SELECT titles_name, titles_posts, titles_pips, titles_file FROM " . DB_PREFIX . "titles WHERE titles_skin = {$skin}");
+		$sql = $this->DatabaseHandler->query("SELECT titles_name, titles_posts, titles_pips, titles_file FROM " . DB_PREFIX . "titles WHERE titles_skin = {$skin}");
 
 		while($row = $sql->getRow())
 		{
@@ -1029,16 +1030,16 @@ class ModuleObject extends MasterObject
 			$fields = substr($fields, 0, -2);
 			$values = substr($values, 0, -2);
 
-			$export_data .= "\$titles[] = \"INSERT INTO " . DB_PREFIX . "titles VALUES (null, $values, {\$dir});\";\r\n";
+			$export_data .= "\$titles[] = \"INSERT INTO \"" . DB_PREFIX . "\"titles VALUES (null, $values, {\$dir});\";\r\n";
 		}
 
 		$sql = $this->DatabaseHandler->query("
-        SELECT 
-            macro_title, 
-            macro_body, 
-            macro_remove
-        FROM " . DB_PREFIX . "macros 
-        WHERE macro_skin = {$this->_skin}");
+		SELECT 
+			macro_title, 
+			macro_body, 
+			macro_remove
+		FROM " . DB_PREFIX . "macros 
+		WHERE macro_skin = {$this->_skin}");
 
 		while($row = $sql->getRow())
 		{
@@ -1054,7 +1055,7 @@ class ModuleObject extends MasterObject
 			$fields = substr($fields, 0, -2);
 			$values = substr($values, 0, -2);
 
-			$export_data .= "\$emots[] = \"INSERT INTO " . DB_PREFIX . "macros VALUES (null, {\$dir}, $values);\";\r\n";
+			$export_data .= "\$emots[] = \"INSERT INTO \"" . DB_PREFIX . "\"macros VALUES (null, {\$dir}, $values);\";\r\n";
 		}
 
 		$export_data .= "?>";
@@ -1070,39 +1071,39 @@ class ModuleObject extends MasterObject
 		$config .= "\$skin['skins_link']   = '{$row['skins_author_link']}';\n";
 		$config .= "?>";
 
-        $path = SYSTEM_PATH . "skins/{$skin}/";
+		$path = SYSTEM_PATH . "skins/{$skin}/";
 
-        $this->_FileHandler->writeFile('export_data.php', $export_data, $path);
-        $this->_FileHandler->writeFile('export_conf.php', $config,      $path);
+		$this->_FileHandler->writeFile('export_data.php', $export_data, $path);
+		$this->_FileHandler->writeFile('export_conf.php', $config,	  $path);
 
-        $this->_TarHandler->setCurrent($this->config['site_path'] . "skins/{$skin}");
+		$this->_TarHandler->setCurrent($this->config['site_path'] . "skins/{$skin}");
 
-        $this->_TarHandler->newTar($this->config['site_path'] . 'skins/', "{$name}.tar");
+		$this->_TarHandler->newTar($this->config['site_path'] . 'skins/', "{$name}.tar");
 		$this->_TarHandler->addDirectory(".");
-        $this->_TarHandler->writeTar();
+		$this->_TarHandler->writeTar();
 
-        unlink($this->config['site_path'] . "skins/{$skin}/export_conf.php");
-        unlink($this->config['site_path'] . "skins/{$skin}/export_data.php");
-        
-        chdir($this->config['site_path'] . 'admin/');
+		unlink($this->config['site_path'] . "skins/{$skin}/export_conf.php");
+		unlink($this->config['site_path'] . "skins/{$skin}/export_data.php");
+		
+		chdir($this->config['site_path'] . 'admin/');
 
-        $this->CacheHandler->updateCache('skins');
-        $this->CacheHandler->updateCache('emoticons');
-        $this->CacheHandler->updateCache('titles');
+		$this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('emoticons');
+		$this->CacheHandler->updateCache('titles');
 
-        header("LOCATION: " . GATEWAY . "?a=skin&code=08");
+		header("LOCATION: " . GATEWAY . "?a=skin&code=08");
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doRemFile()
 	{
 		if(@file_exists(SYSTEM_PATH . '/skins/' . $this->_skin))
@@ -1112,9 +1113,9 @@ class ModuleObject extends MasterObject
 			exit();
 		}
 
-        $this->CacheHandler->updateCache('skins');
-        $this->CacheHandler->updateCache('emoticons');
-        $this->CacheHandler->updateCache('titles');
+		$this->CacheHandler->updateCache('skins');
+		$this->CacheHandler->updateCache('emoticons');
+		$this->CacheHandler->updateCache('titles');
 
 		$this->OnePanel->messenger($this->LanguageHandler->skin_rem_missing, GATEWAY . '?a=skin&amp;code=08');
 	}
@@ -1122,13 +1123,13 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doDownload()
 	{
 		if(@file_exists(SYSTEM_PATH . '/skins/' . $this->_skin))
@@ -1147,13 +1148,13 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _fetchSkins()
 	{
 		$list = array();

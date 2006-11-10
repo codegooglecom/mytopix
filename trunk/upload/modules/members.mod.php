@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Member Listing Module
 *
@@ -14,63 +16,63 @@
 class ModuleObject extends MasterObject
 {
    /**
-    * Amount to show per page
-    * @access Private
-    * @var Integer
-    */
+	* Amount to show per page
+	* @access Private
+	* @var Integer
+	*/
 	var $_searchResults;
 
    /**
-    * Field to order the list by
-    * @access Private
-    * @var String
-    */
+	* Field to order the list by
+	* @access Private
+	* @var String
+	*/
 	var $_searchField;
 
    /**
-    * Member list sorting order
-    * @access Private
-    * @var String
-    */
+	* Member list sorting order
+	* @access Private
+	* @var String
+	*/
 	var $_searchOrder;
 
    /**
-    * User group to list by
-    * @access Private
-    * @var Integer
-    */
+	* User group to list by
+	* @access Private
+	* @var Integer
+	*/
 	var $_searchGroup;
 
    /**
-    * Handles advanced page splitting
-    * @access Private
-    * @var Object
-    */
+	* Handles advanced page splitting
+	* @access Private
+	* @var Object
+	*/
 	var $_PageHandler;
 
    /**
-    * Generates member rankings
-    * @access Private
-    * @var Integer
-    */
-    var $_PipHandler;
+	* Generates member rankings
+	* @access Private
+	* @var Integer
+	*/
+	var $_PipHandler;
 
    // ! Constructor Method
 
    /**
-    * Instansiates class and defines instance variables.
-    *
-    * @param String $module Current module title
-    * @param Array  $config System configuration array
-    * @param Array  $cache  Loaded cache listing
-    * @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-    * @since v1.0
-    * @access Private
-    * @return Void
-    */
+	* Instansiates class and defines instance variables.
+	*
+	* @param String $module Current module title
+	* @param Array  $config System configuration array
+	* @param Array  $cache  Loaded cache listing
+	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
+	* @since v1.0
+	* @access Private
+	* @return Void
+	*/
 	function ModuleObject(& $module, & $config, $cache)
 	{
-        $this->MasterObject($module, $config, $cache);
+		$this->MasterObject($module, $config, $cache);
 
 		$this->_searchResults = $this->config['per_page'];
 
@@ -78,100 +80,100 @@ class ModuleObject extends MasterObject
 		{
 			$this->_searchResults = (int) $this->post['sResults'];
 		}
-        elseif(isset($this->get['sResults']))
-        {
+		elseif(isset($this->get['sResults']))
+		{
 			$this->_searchResults = (int) $this->get['sResults'];
 		}
 
-        if(false == $this->_searchResults) $this->_searchResults = 10;
+		if(false == $this->_searchResults) $this->_searchResults = 10;
 
 		require SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
-                                             $this->config['page_sep'],
-                                             $this->_searchResults,
-                                             $this->DatabaseHandler,
-                                             $this->config);
+											 $this->config['page_sep'],
+											 $this->_searchResults,
+											 $this->DatabaseHandler,
+											 $this->config);
 
 		$this->_searchField   = 'members_name';
 		$this->_searchOrder   = 'asc';
 		$this->_searchGroup   = '';
 
-        $this->_birth_day   = isset($this->get['day'])   ? (int) $this->get['day']   : false;
-        $this->_birth_month = isset($this->get['month']) ? (int) $this->get['month'] : false;
+		$this->_birth_day   = isset($this->get['day'])   ? (int) $this->get['day']   : false;
+		$this->_birth_month = isset($this->get['month']) ? (int) $this->get['month'] : false;
 
-        require SYSTEM_PATH . 'lib/pips.han.php';
-        $this->_PipHandler = new PipHandler($this->CacheHandler->getCacheByKey('titles'));
+		require SYSTEM_PATH . 'lib/pips.han.php';
+		$this->_PipHandler = new PipHandler($this->CacheHandler->getCacheByKey('titles'));
 	}
 
    // ! Action Method
 
    /**
-    * An auto-loaded method that displays the community
-    * member listing in custom order.
-    *
-    * @param none
-    * @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-    * @since v1.0
-    * @access Public
-    * @return HTML Output
-    */
+	* An auto-loaded method that displays the community
+	* member listing in custom order.
+	*
+	* @param none
+	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
+	* @since v1.0
+	* @access Public
+	* @return HTML Output
+	*/
 	function execute()
 	{
 		if(false == $this->UserHandler->getField('class_canViewMembers'))
-        {
-            return $this->messenger(array('MSG' => 'err_no_perm'));
-        }
+		{
+			return $this->messenger(array('MSG' => 'err_no_perm'));
+		}
 
-        if($this->_birth_day   && 
-           $this->_birth_month && 
-           false == checkdate($this->_birth_month, $this->_birth_day, 1))
-        {
-            return $this->messenger(array('MSG' => 'err_bad_date'));
-        }
+		if($this->_birth_day   &&
+		   $this->_birth_month &&
+		   false == checkdate($this->_birth_month, $this->_birth_day, 1))
+		{
+			return $this->messenger(array('MSG' => 'err_bad_date'));
+		}
 
-        $urlQuery = GATEWAY . "?a=members";
-        foreach($this->post as $key => $val)
-        {
-            $urlQuery .= "&amp;{$key}=" . urlencode($val);
-        }
+		$urlQuery = GATEWAY . "?a=members";
+		foreach($this->post as $key => $val)
+		{
+			$urlQuery .= "&amp;{$key}=" . urlencode($val);
+		}
 
-        foreach($this->get as $key => $val)
-        {
-            $urlQuery .= "&amp;{$key}=" . urlencode($val);
-        }
+		foreach($this->get as $key => $val)
+		{
+			$urlQuery .= "&amp;{$key}=" . urlencode($val);
+		}
 
 		extract($this->post);
 		extract($this->get);
 
-        $sql_get = '';
+		$sql_get = '';
 		if(isset($sGroup) && $sGroup != 'all')
 		{
 			$this->_searchGroup = (int) $sGroup;
 			$sql_get = " AND members_class = {$this->_searchGroup}";
 		}
 
-        $this->_searchField   = isset($sField)   ?       $sField   : $this->_searchField;
-        $this->_searchOrder   = isset($sOrder)   ?       $sOrder   : $this->_searchOrder;
-        $this->_searchResults = isset($sResults) ? (int) $sResults : $this->_searchResults;
+		$this->_searchField   = isset($sField)   ?	   $sField   : $this->_searchField;
+		$this->_searchOrder   = isset($sOrder)   ?	   $sOrder   : $this->_searchOrder;
+		$this->_searchResults = isset($sResults) ? (int) $sResults : $this->_searchResults;
 
-        if($this->_birth_day && $this->_birth_month)
-        {
-            $sql_get = " AND members_birth_day = {$this->_birth_day} AND members_birth_month = {$this->_birth_month}";
-        }
+		if($this->_birth_day && $this->_birth_month)
+		{
+			$sql_get = " AND members_birth_day = {$this->_birth_day} AND members_birth_month = {$this->_birth_month}";
+		}
 
-        $sql = $this->DatabaseHandler->query("
-        SELECT 
-            COUNT(members_id) AS Count 
-        FROM " . DB_PREFIX . "members
-        WHERE 
-            members_id <> 1
-            {$sql_get}", 
-        __FILE__, __LINE__);
+		$sql = $this->DatabaseHandler->query("
+		SELECT
+			COUNT(members_id) AS Count
+		FROM " . DB_PREFIX . "members
+		WHERE
+			members_id <> 1
+			{$sql_get}",
+		__FILE__, __LINE__);
 
-        $row = $sql->getRow();
+		$row = $sql->getRow();
 
 		$this->_PageHandler->setRows($row['Count']);
-	    $this->_PageHandler->doPages($urlQuery);
+		$this->_PageHandler->doPages($urlQuery);
 
 		$pages = $this->_PageHandler->getSpan();
 		$sql   = $this->_PageHandler->getData("
@@ -192,89 +194,89 @@ class ModuleObject extends MasterObject
 			members_id <> 1
 			{$sql_get}
 		ORDER BY
-			m.{$this->_searchField} {$this->_searchOrder}", 
-        __FILE__, __LINE__);
+			m.{$this->_searchField} {$this->_searchOrder}",
+		__FILE__, __LINE__);
 
-        if(false == $sql->getNumRows())
-        {
-            return $this->messenger(array('MSG' => 'err_no_users'));
-        }
+		if(false == $sql->getNumRows())
+		{
+			return $this->messenger(array('MSG' => 'err_no_users'));
+		}
 
 		$list = '';
 		while($row = $sql->getRow())
-        {
-            $this->_PipHandler->pips = '';
-            $this->_PipHandler->getPips($row['members_posts']);
+		{
+			$this->_PipHandler->pips = '';
+			$this->_PipHandler->getPips($row['members_posts']);
 
-            if($this->_PipHandler->pips)
-            {
-                $row['members_rank'] = $this->_PipHandler->pips;
-            }
-            else {
-                $row['members_rank'] = $this->LanguageHandler->blank;
-            }
+			if($this->_PipHandler->pips)
+			{
+				$row['members_rank'] = $this->_PipHandler->pips;
+			}
+			else {
+				$row['members_rank'] = $this->LanguageHandler->blank;
+			}
 
-            $row['members_registered'] = $this->TimeHandler->doDateFormat($this->config['date_long'],
-                                                                         $row['members_registered']);
+			$row['members_registered'] = $this->TimeHandler->doDateFormat($this->config['date_long'],
+																		 $row['members_registered']);
 
-            $row['members_homepage']  = $row['members_homepage']
-                                      ? "<a href=\"{$row['members_homepage']}\">" .
-                                        "<macro:btn_mini_homepage></a>"
-                                      : $this->LanguageHandler->blank;
+			$row['members_homepage']  = $row['members_homepage']
+									  ? "<a href=\"{$row['members_homepage']}\">" .
+										"<macro:btn_mini_homepage></a>"
+									  : $this->LanguageHandler->blank;
 
-            $row['members_email']     = $row['members_show_email']
-                                      ? "<a href=\"" .  GATEWAY . "?a=email&amp;id={$row['members_id']}\">" .
-                                        '<macro:btn_mini_email></a>'
-                                      : $this->LanguageHandler->blank;
+			$row['members_email']	 = $row['members_show_email']
+									  ? "<a href=\"" .  GATEWAY . "?a=email&amp;id={$row['members_id']}\">" .
+										'<macro:btn_mini_email></a>'
+									  : $this->LanguageHandler->blank;
 
-            $row['members_posts']     = $row['members_posts']
-                                      ? "<a href=\"" . GATEWAY . "?a=search&amp;CODE=02&amp;mid={$row['members_id']}\" title=\"\">" . number_format($row['members_posts'], 0, '', $this->config['number_format']) . "</a>"
-                                      : $this->LanguageHandler->blank;
+			$row['members_posts']	 = $row['members_posts']
+									  ? "<a href=\"" . GATEWAY . "?a=search&amp;CODE=02&amp;mid={$row['members_id']}\" title=\"\">" . number_format($row['members_posts'], 0, '', $this->config['number_format']) . "</a>"
+									  : $this->LanguageHandler->blank;
 
-            $list .=  eval($this->TemplateHandler->fetchTemplate('list_row'));
-        }
+			$list .=  eval($this->TemplateHandler->fetchTemplate('list_row'));
+		}
 
-        $sort_count = '';
-        $arr_count  = array(10, 20, 30, 40);
+		$sort_count = '';
+		$arr_count  = array(10, 20, 30, 40);
 
-        foreach($arr_count as $val)
-        {
-            $selected    = $val == $this->_searchResults ? " selected=\"selected\"" : '';
-            $sort_count .= "<option value=\"{$val}\"{$selected}>{$val}</option>";
-        }
+		foreach($arr_count as $val)
+		{
+			$selected	= $val == $this->_searchResults ? " selected=\"selected\"" : '';
+			$sort_count .= "<option value=\"{$val}\"{$selected}>{$val}</option>";
+		}
 
-        $sort_type = '';
-        $arr_type  = array('members_name'       => $this->LanguageHandler->search_name,
-                           'members_posts'      => $this->LanguageHandler->search_post,
-                           'members_registered' => $this->LanguageHandler->search_date);
+		$sort_type = '';
+		$arr_type  = array('members_name'	   => $this->LanguageHandler->search_name,
+						   'members_posts'	  => $this->LanguageHandler->search_post,
+						   'members_registered' => $this->LanguageHandler->search_date);
 
-        foreach($arr_type as $key => $val)
-        {
-            $selected   = $key == $this->_searchField ? " selected=\"selected\"" : '';
-            $sort_type .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
-        }
+		foreach($arr_type as $key => $val)
+		{
+			$selected   = $key == $this->_searchField ? " selected=\"selected\"" : '';
+			$sort_type .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
+		}
 
-        $sort_order = '';
-        $arr_order  = array('asc'  => $this->LanguageHandler->search_asc,
-                            'desc' => $this->LanguageHandler->search_desc);
+		$sort_order = '';
+		$arr_order  = array('asc'  => $this->LanguageHandler->search_asc,
+							'desc' => $this->LanguageHandler->search_desc);
 
-        foreach($arr_order as $key => $val)
-        {
-            $selected    = $key == $this->_searchOrder ? " selected=\"selected\"" : '';
-            $sort_order .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
-        }
+		foreach($arr_order as $key => $val)
+		{
+			$selected	= $key == $this->_searchOrder ? " selected=\"selected\"" : '';
+			$sort_order .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
+		}
 
-    	$sort_groups = '';
-        foreach($this->CacheHandler->getCacheByKey('groups') as $key => $val)
-        {
-            if(false == $val['class_hidden'] && $key != 1)
-            {
-                $sort_groups .= "<option value='{$key}'>{$val['class_title']}</option>";
-            }
-        }
+		$sort_groups = '';
+		foreach($this->CacheHandler->getCacheByKey('groups') as $key => $val)
+		{
+			if(false == $val['class_hidden'] && $key != 1)
+			{
+				$sort_groups .= "<option value='{$key}'>{$val['class_title']}</option>";
+			}
+		}
 
 		$content = eval($this->TemplateHandler->fetchTemplate('list_table'));
-		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 }
 

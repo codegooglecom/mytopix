@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -140,13 +142,13 @@ class ModuleObject extends MasterObject
 	function _showGroups()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			c.class_id, 
-			c.class_title, 
-			c.class_prefix, 
+		SELECT
+			c.class_id,
+			c.class_title,
+			c.class_prefix,
 			c.class_suffix,
 			COUNT(m.members_id) AS class_count
-		FROM " . DB_PREFIX . "class c 
+		FROM " . DB_PREFIX . "class c
 			LEFT JOIN " . DB_PREFIX . "members m ON m.members_class = c.class_id
 		GROUP BY c.class_id
 		ORDER BY class_id ASC");
@@ -174,7 +176,7 @@ class ModuleObject extends MasterObject
 			if($row['class_count'])
 			{
 				$count = number_format($row['class_count']);
-				$count = "<a href=\"" . GATEWAY . "?a=members&amp;code=03&amp;group={$row['class_id']}#results\"" . 
+				$count = "<a href=\"" . GATEWAY . "?a=members&amp;code=03&amp;group={$row['class_id']}#results\"" .
 						 "title=\"{$this->LanguageHandler->group_get_mems}.\">{$count}</a>";
 			}
 			else {
@@ -216,12 +218,12 @@ class ModuleObject extends MasterObject
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			forum_id, 
-			forum_access_matrix 
-		FROM " . DB_PREFIX . "forums 
-		ORDER BY 
-			forum_parent, 
+		SELECT
+			forum_id,
+			forum_access_matrix
+		FROM " . DB_PREFIX . "forums
+		ORDER BY
+			forum_parent,
 			forum_position");
 
 		while($row = $sql->getRow())
@@ -275,8 +277,8 @@ class ModuleObject extends MasterObject
 			$matrix = addslashes(serialize($matrix));
 
 			$this->DatabaseHandler->query("
-			UPDATE " . DB_PREFIX . "forums 
-			SET forum_access_matrix = '{$matrix}' 
+			UPDATE " . DB_PREFIX . "forums
+			SET forum_access_matrix = '{$matrix}'
 			WHERE forum_id = {$row['forum_id']}");
 		}
 
@@ -303,7 +305,7 @@ class ModuleObject extends MasterObject
 		$this->OnePanel->form->startForm(GATEWAY . '?a=groups&amp;code=02');
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('name', false, false, 
+			$this->OnePanel->form->addTextBox('name', false, false,
 											  array(1, $this->LanguageHandler->group_new_form_name_title,
 													   $this->LanguageHandler->group_new_form_name_desc));
 
@@ -315,7 +317,7 @@ class ModuleObject extends MasterObject
 				$list[$row['class_id']] = $row['class_title'];
 			}
 
-			$this->OnePanel->form->addWrapSelect('base', $list, 2, false, 
+			$this->OnePanel->form->addWrapSelect('base', $list, 2, false,
 											 array(1, $this->LanguageHandler->group_new_form_base_title,
 													  $this->LanguageHandler->group_new_form_base_desc));
 
@@ -426,35 +428,35 @@ class ModuleObject extends MasterObject
 		$this->OnePanel->form->startForm(GATEWAY . "?a=groups&amp;code=04&amp;id={$row['class_id']}");
 		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('title', $this->ParseHandler->parseText($row['class_title'], F_ENTS), false, 
+			$this->OnePanel->form->addTextBox('title', $this->ParseHandler->parseText($row['class_title'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_name_title,
 											 $this->LanguageHandler->group_edit_name_desc));
 
-			$this->OnePanel->form->addTextBox('class_prefix', $this->ParseHandler->parseText($row['class_prefix'], F_ENTS), false, 
+			$this->OnePanel->form->addTextBox('class_prefix', $this->ParseHandler->parseText($row['class_prefix'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_pre_title,
 											 $this->LanguageHandler->group_edit_pre_desc));
 
-			$this->OnePanel->form->addTextBox('class_suffix', $this->ParseHandler->parseText($row['class_suffix'], F_ENTS), false, 
+			$this->OnePanel->form->addTextBox('class_suffix', $this->ParseHandler->parseText($row['class_suffix'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_suf_title,
 											 $this->LanguageHandler->group_edit_suf_desc));
 
-			$this->OnePanel->form->addTextBox('class_sigLength', $row['class_sigLength'], false, 
+			$this->OnePanel->form->addTextBox('class_sigLength', $row['class_sigLength'], false,
 									array(1, $this->LanguageHandler->group_edit_sig_title,
 											 $this->LanguageHandler->group_edit_sig_desc));
 
-			$this->OnePanel->form->addTextBox('class_floodDelay', $row['class_floodDelay'], false, 
+			$this->OnePanel->form->addTextBox('class_floodDelay', $row['class_floodDelay'], false,
 									array(1, $this->LanguageHandler->group_edit_flood_title,
 											 $this->LanguageHandler->group_edit_flood_desc));
 
-			$this->OnePanel->form->addTextBox('class_maxNotes', $row['class_maxNotes'], false, 
+			$this->OnePanel->form->addTextBox('class_maxNotes', $row['class_maxNotes'], false,
 									array(1, $this->LanguageHandler->group_edit_max_title,
 											 $this->LanguageHandler->group_edit_max_desc));
 
-			$this->OnePanel->form->addTextBox('class_upload_max', $row['class_upload_max'], false, 
+			$this->OnePanel->form->addTextBox('class_upload_max', $row['class_upload_max'], false,
 									array(1, $this->LanguageHandler->group_edit_file_title,
 											 $this->LanguageHandler->group_edit_file_desc));
 
-			$this->OnePanel->form->addCheckBox('class_hidden', 1, false, 
+			$this->OnePanel->form->addCheckBox('class_hidden', 1, false,
 									array(1, $this->LanguageHandler->group_form_hide_title,
 											 $this->LanguageHandler->group_form_hide_desc), false, $row['class_hidden'], $this->LanguageHandler->group_form_label, 1);
 
@@ -471,111 +473,111 @@ class ModuleObject extends MasterObject
 			$this->OnePanel->table->startTable($this->LanguageHandler->group_tbl_perm_header);
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canPost', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canPost', 1, false, false, true,
 										   ($row['class_canPost'] ? true : false)), " width='25%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_search, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSearch', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSearch', 1, false, false, true,
 										   ($row['class_canSearch'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_stats, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSeeStats', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSeeStats', 1, false, false, true,
 										   ($row['class_canSeeStats'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_help, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewHelp', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canViewHelp', 1, false, false, true,
 										   ($row['class_canViewHelp'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_members, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewMembers', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canViewMembers', 1, false, false, true,
 										   ($row['class_canViewMembers'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canUseNotes', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canUseNotes', 1, false, false, true,
 										   ($row['class_canUseNotes'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSendNotes', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSendNotes', 1, false, false, true,
 										   ($row['class_canSendNotes'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_get_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canGetNotes', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canGetNotes', 1, false, false, true,
 										   ($row['class_canGetNotes'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_del_own_posts, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canDeleteOwnPosts', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canDeleteOwnPosts', 1, false, false, true,
 										   ($row['class_canDeleteOwnPosts'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_topics, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canStartTopics', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canStartTopics', 1, false, false, true,
 										   ($row['class_canStartTopics'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_own_posts, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canEditOwnPosts', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canEditOwnPosts', 1, false, false, true,
 										   ($row['class_canEditOwnPosts'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_read_topics, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canReadTopics', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canReadTopics', 1, false, false, true,
 										   ($row['class_canReadTopics'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_profile, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canEditProfile', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canEditProfile', 1, false, false, true,
 										   ($row['class_canEditProfile'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_profiles, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewProfiles', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canViewProfiles', 1, false, false, true,
 										   ($row['class_canViewProfiles'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_post_locked, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canPostLocked', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canPostLocked', 1, false, false, true,
 										   ($row['class_canPostLocked'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_active, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSeeActive', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSeeActive', 1, false, false, true,
 										   ($row['class_canSeeActive'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_mail, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSendEmail', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSendEmail', 1, false, false, true,
 										   ($row['class_canSendEmail'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_mail, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_change_email', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_change_email', 1, false, false, true,
 										   ($row['class_change_email'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_pass, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_change_pass', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_change_pass', 1, false, false, true,
 										   ($row['class_change_pass'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_hidden_skins, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_see_hidden_skins', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_see_hidden_skins', 1, false, false, true,
 										   ($row['class_see_hidden_skins'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_subscribe, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSubscribe', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canSubscribe', 1, false, false, true,
 										   ($row['class_canSubscribe'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_closed_board, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewClosedBoard', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_canViewClosedBoard', 1, false, false, true,
 										   ($row['class_canViewClosedBoard'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post_events, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_post_events', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_can_post_events', 1, false, false, true,
 										   ($row['class_can_post_events'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_upload_avatars, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_upload_avatars', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_upload_avatars', 1, false, false, true,
 										   ($row['class_upload_avatars'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_avatars, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_use_avatars', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_use_avatars', 1, false, false, true,
 										   ($row['class_use_avatars'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_vote_polls, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_vote_polls', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_can_vote_polls', 1, false, false, true,
 										   ($row['class_can_vote_polls'] ? true : false)), " width='20%'", 'headerc')));
 
 				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_polls, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_start_polls', 1, false, false, true, 
+										   array($this->OnePanel->form->addYesNo('class_can_start_polls', 1, false, false, true,
 										   ($row['class_can_start_polls'] ? true : false)), " width='20%'", 'headerc')));
 
 			$this->OnePanel->table->endTable(true);
@@ -684,10 +686,10 @@ class ModuleObject extends MasterObject
 	function _showForumMasks()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			class_title, 
-			class_id 
-		FROM " . DB_PREFIX . "class 
+		SELECT
+			class_title,
+			class_id
+		FROM " . DB_PREFIX . "class
 		WHERE class_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
@@ -698,10 +700,10 @@ class ModuleObject extends MasterObject
 		$group = $sql->getRow();
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT * 
-		FROM " . DB_PREFIX . "forums 
-		ORDER BY 
-			forum_parent, 
+		SELECT *
+		FROM " . DB_PREFIX . "forums
+		ORDER BY
+			forum_parent,
 			forum_position");
 
 		$list = array();
@@ -793,9 +795,9 @@ class ModuleObject extends MasterObject
 				}
 			}
 
-			$data[] = array('forum_name' => $dot . $space . ' ' . $val['forum_name'], 
+			$data[] = array('forum_name' => $dot . $space . ' ' . $val['forum_name'],
 							'forum_id'   => $val['forum_id'],
-							'is_parent'  => $is_parent, 
+							'is_parent'  => $is_parent,
 							'matrix'	 => $val['forum_access_matrix']);
 
 			$data   = $this->_makeForumList($list, $val['forum_id'], $space . '--', $data);
@@ -824,10 +826,10 @@ class ModuleObject extends MasterObject
 		extract($this->post);
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			class_title, 
-			class_id 
-		FROM " . DB_PREFIX . "class 
+		SELECT
+			class_title,
+			class_id
+		FROM " . DB_PREFIX . "class
 		WHERE class_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
@@ -838,10 +840,10 @@ class ModuleObject extends MasterObject
 		$group = $sql->getRow();
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT * 
-		FROM " . DB_PREFIX . "forums 
-		ORDER BY 
-			forum_parent, 
+		SELECT *
+		FROM " . DB_PREFIX . "forums
+		ORDER BY
+			forum_parent,
 			forum_position");
 
 		while($row = $sql->getRow())
@@ -865,8 +867,8 @@ class ModuleObject extends MasterObject
 			$matrix = addslashes(serialize($matrix));
 
 			$this->DatabaseHandler->query("
-			UPDATE " . DB_PREFIX . "forums 
-			SET forum_access_matrix = '{$matrix}' 
+			UPDATE " . DB_PREFIX . "forums
+			SET forum_access_matrix = '{$matrix}'
 			WHERE forum_id = {$row['forum_id']}");
 		}
 

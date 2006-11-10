@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -12,7 +14,6 @@
 */
 class ModuleObject extends MasterObject
 {
-
    /**
 	* Variable Description
 	* @access Private

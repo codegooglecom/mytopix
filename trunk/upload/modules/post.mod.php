@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -423,7 +425,7 @@ class ModuleObject extends MasterObject
 					return $this->messenger(array('MSG' => 'err_forum_no_exist'));
 				}
 
-				if(false == $this->ForumHandler->checkAccess('can_start', $forum['forum_id']) ||
+				if(false == $this->ForumHandler->checkAccess('can_reply', $forum['forum_id']) ||
 				   $forum['forum_closed'])
 				{
 					return $this->messenger(array('MSG' => 'err_no_perm_forum'));
@@ -1500,9 +1502,10 @@ class ModuleObject extends MasterObject
 			m.members_email,
 			f.forum_name,
 			f.forum_id
+
 		FROM " . DB_PREFIX ."tracker tr
-			LEFT JOIN " . DB_PREFIX ."members m ON m.members_id   = tr.track_user
-			LEFT JOIN " . DB_PREFIX ."forums  f ON f.forum_id	 = tr.track_forum
+			LEFT JOIN " . DB_PREFIX ."members m ON m.members_id = tr.track_user
+			LEFT JOIN " . DB_PREFIX ."forums  f ON f.forum_id   = tr.track_forum
 		WHERE
 			tr.track_forum =  {$forum}		AND
 			tr.track_user  <> " . USER_ID . " AND
@@ -1514,6 +1517,21 @@ class ModuleObject extends MasterObject
 		{
 			return false;
 		}
+
+		$sql2 = $this->DatabaseHandler->query("
+		SELECT
+			topics_id,
+			topics_last_poster_name
+		FROM " . DB_PREFIX . "topics
+		WHERE topics_id = {$topic}",
+		__FILE__, __LINE__);
+
+		if(false == $sql2->getNumRows())
+		{
+			return false;
+		}
+
+		$title = $sql2->getRow();
 
 		$this->TemplateHandler->addTemplate(array('mail_header', 'mail_footer' , 'mail_subscribe_forum_notice'));
 
@@ -1661,12 +1679,8 @@ class ModuleObject extends MasterObject
 
 		$upload	= $sql->getRow();
 		$file_path = SYSTEM_PATH . "uploads/attachments/{$upload['upload_file']}.{$upload['upload_ext']}";
-		if(false == file_exists($file_path))
-		{
-			return 'err_attach_not_found';
-		}
 
-		unlink($file_path);
+		@unlink($file_path);
 
 		$this->DatabaseHandler->query("
 		DELETE FROM " . DB_PREFIX . "uploads
