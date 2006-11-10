@@ -462,8 +462,8 @@ class AvatarHandler
 		}
 
 		return "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' {$dims}><param"	  . 
-			   "name=movie value={$url}><param name=play value=true><param name=loop value=true>" .
-			   "<param name=quality value=high><embed src={$url} {$dims} play=true loop=true"	 .
+			   "name=movie value={$avatar}><param name=play value=true><param name=loop value=true>" .
+			   "<param name=quality value=high><embed src={$avatar} {$dims} play=true loop=true"	 .
 			   " quality=high></embed></object>";
 	}
 

@@ -142,8 +142,7 @@ class UserHandler
 			$this->_System->DatabaseHandler->query("
 			DELETE FROM " . DB_PREFIX . "active 
 			WHERE 
-				active_user = {$this->_user_fields['members_id']} AND
-				active_ip   = '{$this->_user_fields['members_ip']}'",
+				active_user = {$this->_user_fields['members_id']}",
 			__FILE__, __LINE__);
 		}
 

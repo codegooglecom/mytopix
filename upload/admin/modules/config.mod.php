@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -710,29 +712,40 @@ class ModuleObject extends MasterObject
 
 		extract($this->post);
 
-		$this->config['coppa_on']		= (int) $coppa_on;
-		$this->config['coppa_group']	 = (int) $coppa_group;
-		$this->config['coppa_fax']	   =	   $this->ParseHandler->parseText(stripslashes($coppa_fax));
-		$this->config['coppa_mail']	  =	   $this->ParseHandler->parseText(stripslashes($coppa_mail));
-		$this->config['polls_on']		= (int) $polls_on;
-		$this->config['attach_on']	   = (int) $attach_on;
-		$this->config['avatar_on']	   = (int) $avatar_on;
-		$this->config['calendar_on']	 = (int) $calendar_on;
+		// Extra validation for the bot agent list:
+
+		$new_agents  = array();
+
+		foreach ( split ( "\n", $this->ParseHandler->formatReturns ( $bots_agents ) ) as $val )
+		{
+			list ( $agent, $name ) = split ( '=', $val );
+
+			$new_agents[] = trim ( $agent ) . '=' . trim ( $name );
+		}
+
+		$this->config['coppa_fax']       =       $this->ParseHandler->parseText(stripslashes($coppa_fax));
+		$this->config['coppa_mail']      =       $this->ParseHandler->parseText(stripslashes($coppa_mail));
+		$this->config['coppa_on']        = (int) $coppa_on;
+		$this->config['coppa_group']     = (int) $coppa_group;
+		$this->config['polls_on']        = (int) $polls_on;
+		$this->config['attach_on']       = (int) $attach_on;
+		$this->config['avatar_on']       = (int) $avatar_on;
+		$this->config['calendar_on']     = (int) $calendar_on;
 		$this->config['show_moderators'] = (int) $show_moderators;
-		$this->config['show_subs']	   = (int) $show_subs;		
+		$this->config['show_subs']       = (int) $show_subs;		
 		$this->config['forum_viewers']   = (int) $forum_viewers;
 		$this->config['topic_readers']   = (int) $topic_readers;
-		$this->config['regs_on']		 = (int) $regs_on;
-		$this->config['search_on']	   = (int) $search_on;
-		$this->config['notes_on']		= (int) $notes_on;
-		$this->config['active_on']	   = (int) $active_on;
-		$this->config['word_active']	 = (int) $word_active;
-		$this->config['stats_on']		= (int) $stats_on;
+		$this->config['regs_on']         = (int) $regs_on;
+		$this->config['search_on']       = (int) $search_on;
+		$this->config['notes_on']        = (int) $notes_on;
+		$this->config['active_on']       = (int) $active_on;
+		$this->config['word_active']     = (int) $word_active;
+		$this->config['stats_on']        = (int) $stats_on;
 		$this->config['validate_users']  = (int) $validate_users;
-		$this->config['bots_on']		 = (int) $bots_on;
+		$this->config['bots_on']         = (int) $bots_on;
 		$this->config['recursive_stats'] = (int) $recursive_stats;
-		$this->config['jump_on']		 = (int) $jump_on;
-		$this->config['bots_agents']	 = trim($bots_agents);
+		$this->config['jump_on']         = (int) $jump_on;
+		$this->config['bots_agents']     =       trim(implode ( "\n", $new_agents ));
 
 		$this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
 

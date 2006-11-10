@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Onepanel's Form Handling Class
 *

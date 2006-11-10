@@ -283,7 +283,7 @@ class ParseHandler
 		{
 			$code = preg_quote($emoticon['CODE'], '/');
 
-			preg_replace("#(?<=[^\w/])$code#ei", "\$this->_handleSmilies()", $string);
+			preg_replace("#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#ei", "\$this->_handleSmilies()", ' ' . $string . ' ');
 		}
 
 		return $this->_smilieCount > $this->_config['max_smilies'] ? false : true;
@@ -330,10 +330,10 @@ class ParseHandler
 			$code = preg_quote($emoticon['CODE'], '/');
 			$name = $emoticon['NAME'];
 
-			$string = preg_replace("#(?<=[^\w/])$code#i", $name, $string);
+			$string = preg_replace("#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#i", $name, ' ' . $string . ' ');
 		}
 
-		return $string;
+		return trim($string);
 	}
 
    // ! Accessor Method
@@ -944,7 +944,7 @@ class ParseHandler
 				$class = " class=\"crowtwo\"";
 			}
 
-			if(strlen($line) == 1)
+			if ( $this->formatReturns ( $line ) == "\n" )
 			{
 				$line = '&nbsp;';
 			}
@@ -1022,6 +1022,24 @@ class ParseHandler
 		}
 
 		return preg_replace("#([^\s<>'\"/\.\\-\?&\n\r\%]{" . $size . "})#i", " \\1"  . $break, $string);
+	}
+
+   // ! Action Method
+
+   /**
+	* Gets rid of all those extra line returns that some OSs produce.
+	*
+	* @param String  $string String to format.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
+	* @since v1.0
+	* @return String
+	*/
+	function formatReturns ( $string )
+	{
+		$string = str_replace ( "\r\n", "\n", $string );
+		$string = str_replace ( "\r",   "\n", $string );
+
+		return $string;
 	}
 }
 

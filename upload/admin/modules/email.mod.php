@@ -1,5 +1,7 @@
 <?php
 
+if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+
 /**
 * Class Name
 *
@@ -13,117 +15,117 @@
 class ModuleObject extends MasterObject
 {
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_id;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_id;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_code;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_code;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_hash;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_hash;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_comp1;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_comp1;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $OnePanel;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $OnePanel;
 
    /**
-    * Variable Description
-    * @access Private
-    * @var Integer
-    */
-    var $_PageHandler;
+	* Variable Description
+	* @access Private
+	* @var Integer
+	*/
+	var $_PageHandler;
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function ModuleObject(& $module, & $config)
 	{
-        $this->MasterObject($module, $config);
+		$this->MasterObject($module, $config);
 
-        $this->_id   = isset($this->get['id'])    ? (int) $this->get['id']    : 0;
-        $this->_code = isset($this->get['code'])  ?       $this->get['code']  : 00;
-        $this->_hash = isset($this->post['hash']) ?       $this->post['hash'] : null;
+		$this->_id   = isset($this->get['id'])	? (int) $this->get['id']	: 0;
+		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
+		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-        require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-        $this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
+		$this->OnePanel = new OnePanel($this);
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
-		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1, 
-                                             $this->config['page_sep'], 
-                                             $this->config['per_page'], 
-                                             $this->DatabaseHandler,
-                                             $this->config);
+		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
+											 $this->config['page_sep'],
+											 $this->config['per_page'],
+											 $this->DatabaseHandler,
+											 $this->config);
 
-        $this->_comp1 = array('contain' => $this->LanguageHandler->comp_contain,
-                              'equal'   => $this->LanguageHandler->comp_equal, 
-						      'begin'   => $this->LanguageHandler->comp_begin, 
-						      'end'     => $this->LanguageHandler->comp_end);
+		$this->_comp1 = array('contain' => $this->LanguageHandler->comp_contain,
+							  'equal'   => $this->LanguageHandler->comp_equal,
+							  'begin'   => $this->LanguageHandler->comp_begin,
+							  'end'	 => $this->LanguageHandler->comp_end);
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function execute()
 	{
 		switch($this->_code)
 		{
 			case '01':
-                $this->OnePanel->_make_nav(1, 4);
+				$this->OnePanel->_make_nav(1, 4);
 				$this->_showSearchForm();
 				break;
 
 			case '02':
-                $this->OnePanel->_make_nav(1, 4);
+				$this->OnePanel->_make_nav(1, 4);
 				$this->_doSearch();
 				break;
 
 			case '03':
-                $this->OnePanel->_make_nav(1, 4);
+				$this->OnePanel->_make_nav(1, 4);
 				$this->_viewEmail();
 				break;
 
 			case '04':
-                $this->OnePanel->_make_nav(1, 4);
+				$this->OnePanel->_make_nav(1, 4);
 				$this->_doRemove();
 				break;
 
 			default:
-                $this->OnePanel->_make_nav(1, 4);
+				$this->OnePanel->_make_nav(1, 4);
 				$this->_showSearchForm();
 				break;
 		}
@@ -134,13 +136,13 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _showSearchForm()
 	{
 		$this->OnePanel->addHeader($this->LanguageHandler->email_form_header);
@@ -154,16 +156,16 @@ class ModuleObject extends MasterObject
 			$this->OnePanel->table->startTable($this->LanguageHandler->email_tbl_header);
 
 				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_sender,
-										       $this->OnePanel->form->addSelect('sender_type', $this->_comp1, false, false, false, true),
-										       $this->OnePanel->form->addTextBox('sender', false, false, false, true)));
+											   $this->OnePanel->form->addSelect('sender_type', $this->_comp1, false, false, false, true),
+											   $this->OnePanel->form->addTextBox('sender', false, false, false, true)));
 
 				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_recipient,
-										       $this->OnePanel->form->addSelect('recipient_type', $this->_comp1, false, false, false, true),
-										       $this->OnePanel->form->addTextBox('recipient', false, false, false, true)));
+											   $this->OnePanel->form->addSelect('recipient_type', $this->_comp1, false, false, false, true),
+											   $this->OnePanel->form->addTextBox('recipient', false, false, false, true)));
 
 				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_subject,
-										       $this->OnePanel->form->addSelect('subject_type', $this->_comp1, false, false, false, true),
-										       $this->OnePanel->form->addTextBox('subject', false, false, false, true)));
+											   $this->OnePanel->form->addSelect('subject_type', $this->_comp1, false, false, false, true),
+											   $this->OnePanel->form->addTextBox('subject', false, false, false, true)));
 
 			$this->OnePanel->table->endTable(true);
 			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
@@ -172,46 +174,46 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doSearch()
 	{
-        $pageQuery = array();
+		$pageQuery = array();
 
-        if(true == $this->post)
-        {
-            foreach($this->post as $key => $val)
-            {
-                $this->post[$key] = trim($val);
+		if(true == $this->post)
+		{
+			foreach($this->post as $key => $val)
+			{
+				$this->post[$key] = trim($val);
 
-                $pageQuery[] = "{$key}=" . urlencode($val);
-            }
-        }
-        else {
-            foreach($this->get as $key => $val)
-            {
-                $this->get[$key] = trim($val);
+				$pageQuery[] = "{$key}=" . urlencode($val);
+			}
+		}
+		else {
+			foreach($this->get as $key => $val)
+			{
+				$this->get[$key] = trim($val);
 
-            if($key != 'code' && $key != 'a' && $key != 'id')
-            {
-                $pageQuery[] = "{$key}=" . urlencode($val);
-            }
-            }
-        }
+			if($key != 'code' && $key != 'a' && $key != 'id')
+			{
+				$pageQuery[] = "{$key}=" . urlencode($val);
+			}
+			}
+		}
 
-        $pageQuery = implode('&amp;', $pageQuery);
+		$pageQuery = implode('&amp;', $pageQuery);
 
 		extract($this->post);
 		extract($this->get);
 
 		$this->OnePanel->addHeader($this->LanguageHandler->email_form_header);
 
-        $query = array();
+		$query = array();
 
 		if($sender)
 		{
@@ -270,48 +272,48 @@ class ModuleObject extends MasterObject
 			}
 		}
 
-        if(false == $query)
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->email_err_no_fields, GATEWAY . '?a=email');
-        }
+		if(false == $query)
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_fields, GATEWAY . '?a=email');
+		}
 
-        $query = substr(implode(" \n", $query), 4);
+		$query = substr(implode(" \n", $query), 4);
 
-   	    $sql = $this->DatabaseHandler->query("SELECT COUNT(email_id) AS Count FROM " . DB_PREFIX . "emails");
-	    $row = $sql->getRow();
+   		$sql = $this->DatabaseHandler->query("SELECT COUNT(email_id) AS Count FROM " . DB_PREFIX . "emails");
+		$row = $sql->getRow();
 
 		$this->_PageHandler->setRows($row['Count']);
 		$this->_PageHandler->doPages(GATEWAY . "?a=email{$pageQuery}");
 
- 	    $sql = $this->_PageHandler->getData("
-        SELECT 
+ 		$sql = $this->_PageHandler->getData("
+		SELECT
 			e.email_id,
-            e.email_date,
-            e.email_subject,
-            s.members_id   AS email_sender_id,
+			e.email_date,
+			e.email_subject,
+			s.members_id   AS email_sender_id,
 			s.members_name AS email_sender,
-            r.members_id   AS email_recipient_id,
+			r.members_id   AS email_recipient_id,
 			r.members_name AS email_recipient
 		FROM " . DB_PREFIX . "emails e
 			LEFT JOIN " . DB_PREFIX . "members s ON s.members_id = e.email_from
 			LEFT JOIN " . DB_PREFIX . "members r ON r.members_id = e.email_to
 		WHERE
-        {$query}
+		{$query}
 		ORDER BY
 			e.email_date DESC");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
+		}
 
 		$this->OnePanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
 
 		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_id);
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_sender,    " align='center'");
+		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_sender,	" align='center'");
 		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_recipient, " align='center'");
 		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_subject,   " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_date,      " align='center'");
+		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_date,	  " align='center'");
 		$this->OnePanel->table->addColumn('&nbsp;');
 
 		$this->OnePanel->table->startTable(number_format($row['Count']) .  ' ' . $this->LanguageHandler->email_form_results);
@@ -319,12 +321,12 @@ class ModuleObject extends MasterObject
 			while($row = $sql->getRow())
 			{
 				$this->OnePanel->table->addRow(array(array("<strong>{$row['email_id']}</strong>", ' align="center"', 'headera'),
-                                               array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a>",    " align='center'", 'headerb'),
-                                               array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a>", " align='center'", 'headerb'),
-                                               array($row['email_subject'], '', 'headerb'),
-                                               array(date($this->config['date_short'], $row['email_date']), " align='center'", 'headerb'),
-                                               array("<a href=\"" . GATEWAY . "?a=email&amp;code=03&amp;id={$row['email_id']}\">{$this->LanguageHandler->link_view}</a> | " .
-                                                     "<a href=\"" . GATEWAY . "?a=email&amp;code=04&amp;id={$row['email_id']}&{$pageQuery}\"><strong>{$this->LanguageHandler->link_delete}</strong></a>", ' align="center"', 'headerc')));
+											   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a>",	" align='center'", 'headerb'),
+											   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a>", " align='center'", 'headerb'),
+											   array($row['email_subject'], '', 'headerb'),
+											   array(date($this->config['date_short'], $row['email_date']), " align='center'", 'headerb'),
+											   array("<a href=\"" . GATEWAY . "?a=email&amp;code=03&amp;id={$row['email_id']}\">{$this->LanguageHandler->link_view}</a> | " .
+													 "<a href=\"" . GATEWAY . "?a=email&amp;code=04&amp;id={$row['email_id']}&{$pageQuery}\"><strong>{$this->LanguageHandler->link_delete}</strong></a>", ' align="center"', 'headerc')));
 			}
 
 		$this->OnePanel->table->endTable();
@@ -336,83 +338,83 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _viewEmail()
 	{
 		extract($this->get);
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
+		SELECT
 			e.*,
-            s.members_id   AS email_sender_id,
+			s.members_id   AS email_sender_id,
 			s.members_name AS email_sender,
-            r.members_id   AS email_recipient_id,
+			r.members_id   AS email_recipient_id,
 			r.members_name AS email_recipient
 		FROM " . DB_PREFIX . "emails e
 			LEFT JOIN " . DB_PREFIX . "members s ON s.members_id = e.email_from
 			LEFT JOIN " . DB_PREFIX . "members r ON r.members_id = e.email_to
-		WHERE    e.email_id = {$this->_id}
+		WHERE	e.email_id = {$this->_id}
 		ORDER BY e.email_date DESC");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->email_form_no_results, GATEWAY . '?a=email');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->email_form_no_results, GATEWAY . '?a=email');
+		}
 
 		$row = $sql->getRow();
 
 		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->email_read_viewing, $row['email_id']));
 
-        $this->OnePanel->appendBuffer("
-        <p style=\"font: normal normal 14px Courier;\">
-            <b>From:</b>&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a><br />
-            <b>To:</b>&nbsp;&nbsp;&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a><br />
-            <b>Date:</b> " . date($this->config['date_long'], $row['email_date']) . "<br />
-            <br />
-            <b>Subject:</b> {$row['email_subject']}<br />
-            <br />
-            <b>Message Body:</b><br />
-            <br />
-            " . $this->ParseHandler->parseText($row['email_body']) . "</p>");
+		$this->OnePanel->appendBuffer("
+		<p style=\"font: normal normal 14px Courier;\">
+			<b>From:</b>&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a><br />
+			<b>To:</b>&nbsp;&nbsp;&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a><br />
+			<b>Date:</b> " . date($this->config['date_long'], $row['email_date']) . "<br />
+			<br />
+			<b>Subject:</b> {$row['email_subject']}<br />
+			<br />
+			<b>Message Body:</b><br />
+			<br />
+			" . $this->ParseHandler->parseText($row['email_body']) . "</p>");
 	}
 
    // ! Action Method
 
    /**
-    * Comment
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @return String
-    */
+	* Comment
+	*
+	* @param String $string Description
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @return String
+	*/
 	function _doRemove()
 	{
-        $trailer = array();
-        foreach($this->get as $key => $val)
-        {
-            if($key != 'code' && $key != 'a')
-            {
-                $trailer[] = "{$key}=" . urlencode($val);
-            }
-        }
+		$trailer = array();
+		foreach($this->get as $key => $val)
+		{
+			if($key != 'code' && $key != 'a')
+			{
+				$trailer[] = "{$key}=" . urlencode($val);
+			}
+		}
 
-        $trailer = implode('&', $trailer);
+		$trailer = implode('&', $trailer);
 
-        $sql = $this->DatabaseHandler->query("SELECT email_id FROM " . DB_PREFIX . "emails WHERE email_id = {$this->_id}");
+		$sql = $this->DatabaseHandler->query("SELECT email_id FROM " . DB_PREFIX . "emails WHERE email_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
-        {
-            $this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
-        }
+		{
+			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
+		}
 
-        $this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "emails WHERE email_id = {$this->_id}");
+		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "emails WHERE email_id = {$this->_id}");
 
 		header("LOCATION: " . GATEWAY . "?a=email&code=02&{$trailer}");
 	}
