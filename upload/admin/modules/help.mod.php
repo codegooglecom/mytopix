@@ -40,7 +40,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    // ! Action Method
 
@@ -60,8 +60,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 	}
 
    // ! Action Method
@@ -76,47 +76,47 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->help_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->help_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(1, 5, 11);
+				$this->MyPanel->_make_nav(1, 5, 11);
 				$this->_showList();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(1, 5, -5);
+				$this->MyPanel->_make_nav(1, 5, -5);
 				$this->_showEditForm();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(1, 5, -5);
+				$this->MyPanel->_make_nav(1, 5, -5);
 				$this->_doEdit();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(1, 5, -5);
+				$this->MyPanel->_make_nav(1, 5, -5);
 				$this->_doRemove();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(1, 5, 12);
+				$this->MyPanel->_make_nav(1, 5, 12);
 				$this->_showAddForm();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(1, 5, 12);
+				$this->MyPanel->_make_nav(1, 5, 12);
 				$this->_doAdd();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(1, 5, 11);
+				$this->MyPanel->_make_nav(1, 5, 11);
 				$this->_showList();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -140,26 +140,26 @@ class ModuleObject extends MasterObject
 			$positions[$i] = $i;
 		}
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->help_tbl_id,	   " width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->help_tbl_title, " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->help_tbl_position, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->help_tbl_id,	   " width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->help_tbl_title, " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->help_tbl_position, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;');
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->help_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->help_tbl_header);
 
 			while($row = $sql->getRow())
 			{
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['help_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['help_id']}</strong>", ' align="center"', 'headera'),
 										   array($row['help_title'], false, 'headerb'),
-										   array($this->OnePanel->form->addSelect('pos', $positions, $row['help_position'], " onchange='window.location = \"index.php?a=help&amp;code=02&amp;id={$row['help_id']}&amp;pos=\" + this.options[this.selectedIndex].value;'", false, true), " align='center'", 'headerb'),
-										   array("<a href=\"" . GATEWAY . "?a=help&amp;code=01&amp;id={$row['help_id']}\">{$this->LanguageHandler->link_edit}</a> | " .
+										   array($this->MyPanel->form->addSelect('pos', $positions, $row['help_position'], " onchange='window.location = \"index.php?a=help&amp;code=02&amp;id={$row['help_id']}&amp;pos=\" + this.options[this.selectedIndex].value;'", false, true), " align='center'", 'headerb'),
+										   array("<a href=\"" . GATEWAY . "?a=help&amp;code=01&amp;id={$row['help_id']}\">{$this->LanguageHandler->link_edit}</a> " .
 												 "<a href=\"" . GATEWAY . "?a=help&amp;code=03&amp;id={$row['help_id']}\" onclick='javascript:return confirm(\"{$this->LanguageHandler->help_err_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -178,7 +178,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->help_err_no_results, GATEWAY . '?a=help');
+			$this->MyPanel->messenger($this->LanguageHandler->help_err_no_results, GATEWAY . '?a=help');
 		}
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "help WHERE help_id = {$this->_id}");
@@ -202,21 +202,21 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->help_err_no_results, GATEWAY . '?a=help');
+			$this->MyPanel->messenger($this->LanguageHandler->help_err_no_results, GATEWAY . '?a=help');
 		}
 
 		$row = $sql->getRow();
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=help&amp;code=02&amp;id={$this->_id}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=help&amp;code=02&amp;id={$this->_id}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('help_title',	$row['help_title'],   false, array(1, $this->LanguageHandler->help_form_title_title,
+			$this->MyPanel->form->addTextBox('help_title',	$row['help_title'],   false, array(1, $this->LanguageHandler->help_form_title_title,
 																									 $this->LanguageHandler->help_form_title_desc));
-			$this->OnePanel->form->addTextArea('help_content', $row['help_content'], false, array(1, $this->LanguageHandler->help_form_body_title,
+			$this->MyPanel->form->addTextArea('help_content', $row['help_content'], false, array(1, $this->LanguageHandler->help_form_body_title,
 																									 $this->LanguageHandler->help_form_body_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -244,7 +244,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $help_title || false == $help_content)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->help_err_empty_fields, GATEWAY . "?a=help&amp;code=01&amp;id={$this->_id}");
+			$this->MyPanel->messenger($this->LanguageHandler->help_err_empty_fields, GATEWAY . "?a=help&amp;code=01&amp;id={$this->_id}");
 		}
 
 		$this->DatabaseHandler->query("
@@ -253,7 +253,7 @@ class ModuleObject extends MasterObject
 			help_content = '{$help_content}'
 		WHERE help_id = {$this->_id}");
 
-		$this->OnePanel->messenger($this->LanguageHandler->help_err_update_done, GATEWAY . "?a=help&amp;code=01&amp;id={$this->_id}");
+		$this->MyPanel->messenger($this->LanguageHandler->help_err_update_done, GATEWAY . "?a=help&amp;code=01&amp;id={$this->_id}");
 	}
 
    // ! Action Method
@@ -268,18 +268,18 @@ class ModuleObject extends MasterObject
 	*/
 	function _showAddForm()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=help&amp;code=05');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=help&amp;code=05');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('help_title',	false, false, array(1, $this->LanguageHandler->help_form_title_title,
+			$this->MyPanel->form->addTextBox('help_title',	false, false, array(1, $this->LanguageHandler->help_form_title_title,
 																					  $this->LanguageHandler->help_form_title_desc));
-			$this->OnePanel->form->addTextArea('help_content', false, false, array(1, $this->LanguageHandler->help_form_body_title,
+			$this->MyPanel->form->addTextArea('help_content', false, false, array(1, $this->LanguageHandler->help_form_body_title,
 																					  $this->LanguageHandler->help_form_body_desc));
 
-		$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+		$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -296,14 +296,14 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(false == $help_title || false == $help_content)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->help_err_empty_fields, GATEWAY . "?a=help&amp;code=04");
+			$this->MyPanel->messenger($this->LanguageHandler->help_err_empty_fields, GATEWAY . "?a=help&amp;code=04");
 		}
 
 		$this->DatabaseHandler->query("
@@ -314,7 +314,7 @@ class ModuleObject extends MasterObject
 			'{$help_title}',
 			'{$help_content}')");
 
-		$this->OnePanel->messenger($this->LanguageHandler->help_form_err_new_done, GATEWAY . '?a=help&amp;code=01&amp;id=' . $this->DatabaseHandler->insertId());
+		$this->MyPanel->messenger($this->LanguageHandler->help_form_err_new_done, GATEWAY . '?a=help&amp;code=01&amp;id=' . $this->DatabaseHandler->insertId());
 	}
 
 }

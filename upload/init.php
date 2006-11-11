@@ -67,6 +67,7 @@ class MyTopix
 		define('SYSTEM_PATH', $this->_path);
 		define('SYSTEM_ACP',  false);
 
+		require_once SYSTEM_PATH . 'config/db_config.php';
 		require_once SYSTEM_PATH . 'config/settings.php';
 		require_once SYSTEM_PATH . 'config/constants.php';
 		require_once SYSTEM_PATH . 'lib/error.han.php';
@@ -85,7 +86,7 @@ class MyTopix
 		require_once SYSTEM_PATH . 'lib/master.han.php';
 		require_once SYSTEM_PATH . 'lib/time.han.php';
 		require_once SYSTEM_PATH . 'lib/db/database.db.php';
-		require_once SYSTEM_PATH . "lib/db/{$config['db_type']}.db.php";
+		require_once SYSTEM_PATH . 'lib/db/' . DB_TYPE . '.db.php';
 		require_once SYSTEM_PATH . 'lib/cookie.han.php';
 		require_once SYSTEM_PATH . 'lib/http.han.php';
 		require_once SYSTEM_PATH . 'lib/language.han.php';

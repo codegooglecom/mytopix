@@ -40,7 +40,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
 
    // ! Action Method
@@ -61,8 +61,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 	}
 
    // ! Action Method
@@ -77,37 +77,37 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->style_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->style_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(4, 15, -1);
+				$this->MyPanel->_make_nav(4, 15, -1);
 				$this->_showStyles();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(4, 15, -1);
+				$this->MyPanel->_make_nav(4, 15, -1);
 				$this->_doDownload();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(4, 15, -1);
+				$this->MyPanel->_make_nav(4, 15, -1);
 				$this->_editStyle();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(4, 15, -1);
+				$this->MyPanel->_make_nav(4, 15, -1);
 				$this->_doEditStyle();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(4, 15, -1);
+				$this->MyPanel->_make_nav(4, 15, -1);
 				$this->_showStyles();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -122,13 +122,13 @@ class ModuleObject extends MasterObject
 	*/
 	function _showStyles()
 	{
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id, " width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->style_tbl_skin, " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->style_tbl_author);
-		$this->OnePanel->table->addColumn($this->LanguageHandler->style_tbl_active, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="20%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id, " width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->style_tbl_skin, " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->style_tbl_author);
+		$this->MyPanel->table->addColumn($this->LanguageHandler->style_tbl_active, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="20%"');
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->style_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->style_tbl_header);
 
 			$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins");
 
@@ -145,17 +145,17 @@ class ModuleObject extends MasterObject
 						? "<a href=\"{$row['skins_author_link']}\" title=\"{$this->LanguageHandler->style_author_title}\">{$row['skins_author']}</a>"
 						: $row['skins_author'];
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$i}</strong>", " align='center'", 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$i}</strong>", " align='center'", 'headera'),
 											   array($row['skins_name'], " align='left'", 'headerb'),
 											   array($author, " align='center'", 'headerb'),
 											   array($active, " align='center'", 'headerb'),
-											   array("<a href=\"" . GATEWAY . "?a=styles&amp;code=01&amp;id={$row['skins_id']}\">{$this->LanguageHandler->style_tbl_download}</a> | " .
+											   array("<a href=\"" . GATEWAY . "?a=styles&amp;code=01&amp;id={$row['skins_id']}\">{$this->LanguageHandler->style_tbl_download}</a> " .
 													 "<a href=\"" . GATEWAY . "?a=styles&amp;code=02&amp;id={$row['skins_id']}\"><b>" .
 													 "{$this->LanguageHandler->link_edit}</b></a>", " align='center'", 'headerc')));
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -176,7 +176,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
 		}
 
 		$row  = $sql->getRow();
@@ -184,7 +184,7 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
 		}
 
 		header("Content-type: text/plain");
@@ -213,7 +213,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
 		}
 
 		$row  = $sql->getRow();
@@ -221,7 +221,7 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
 		}
 
 		$buffer = '';
@@ -230,17 +230,17 @@ class ModuleObject extends MasterObject
 			$buffer .= $line;
 		}
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=styles&amp;code=03&amp;id={$this->_id}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=styles&amp;code=03&amp;id={$this->_id}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextArea('css',   $buffer, "wrap='off' style='height: 350px;'",
+			$this->MyPanel->form->addTextArea('css',   $buffer, "wrap='off' style='height: 350px;'",
 											   array(1, sprintf($this->LanguageHandler->style_form_css_title, $row['skins_name']),
 														$this->LanguageHandler->style_form_css_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 	}
 
@@ -258,7 +258,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -267,7 +267,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_skin, GATEWAY . '?a=styles');
 		}
 
 		$row  = $sql->getRow();
@@ -275,14 +275,14 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
+			$this->MyPanel->messenger($this->LanguageHandler->style_err_no_style, GATEWAY . '?a=styles');
 		}
 
 		$fp = @fopen($path, 'w');
 		@fwrite($fp, stripslashes($this->ParseHandler->uncleanString($css)));
 		fclose($fp);
 
-		$this->OnePanel->messenger($this->LanguageHandler->style_form_done, GATEWAY . "?a=styles&code=02&id={$this->_id}");
+		$this->MyPanel->messenger($this->LanguageHandler->style_form_done, GATEWAY . "?a=styles&code=02&id={$this->_id}");
 	}
 }
 ?>

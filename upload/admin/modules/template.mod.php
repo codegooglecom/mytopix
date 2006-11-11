@@ -55,7 +55,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -102,8 +102,8 @@ class ModuleObject extends MasterObject
 			$this->_section = $this->get['section'];
 		}
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler = new FileHandler($this->config);
@@ -121,37 +121,37 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->skin_temp_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->skin_temp_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(4, 14, -1);
+				$this->MyPanel->_make_nav(4, 14, -1);
 				$this->_showSections();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(4, 14, -1);
+				$this->MyPanel->_make_nav(4, 14, -1);
 				$this->_showTemplateList();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(4, 14, -1);
+				$this->MyPanel->_make_nav(4, 14, -1);
 				$this->_showTemplate();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(4, 14, -1);
+				$this->MyPanel->_make_nav(4, 14, -1);
 				$this->_doEditTemplate();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(4, 14, -1);
+				$this->MyPanel->_make_nav(4, 14, -1);
 				$this->_showSections();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -168,21 +168,21 @@ class ModuleObject extends MasterObject
 	{
 		$skins = $this->_fetchSkins();
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=template');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=template');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin',  $skins, $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin',  $skins, $this->_skin, false,
 											 array(1, $this->LanguageHandler->skin_temp_choose_title,
 													  $this->LanguageHandler->skin_temp_choose_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id,	 " align='center' width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_module, " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_count,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id,	 " align='center' width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_module, " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_count,  " align='center'");
 
-		$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->skin_temp_tbl_header, $skins[$this->_skin]));
+		$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->skin_temp_tbl_header, $skins[$this->_skin]));
 
 			$sql = $this->DatabaseHandler->query("
 			SELECT
@@ -202,7 +202,7 @@ class ModuleObject extends MasterObject
 
 				$section = 'skin_sect_' . $row['temp_section'];
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$i}</strong>", " align='center'", 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$i}</strong>", " align='center'", 'headera'),
 											   array("<a href=\"" . GATEWAY . "?a=template&amp;skin={$this->_skin}&amp;section=" .
 													 "{$row['temp_section']}&amp;code=01\">" . $this->LanguageHandler->$section . "</a>", false, 'headerb'),
 											   array(number_format($row['temp_count']), " align='center'", 'headerb')));
@@ -210,12 +210,12 @@ class ModuleObject extends MasterObject
 
 			$total = number_format($total);
 
-			$this->OnePanel->table->addRow(array(array('', false, 'headera'),
+			$this->MyPanel->table->addRow(array(array('', false, 'headera'),
 												 array("<b>{$this->LanguageHandler->skin_temp_tbl_total}</b>", false, 'headerb'),
 												 array("<b>{$total}</b>", " align='center'", 'headerb')));
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -235,25 +235,25 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
 		}
 
 		$skin = $sql->getRow();
 
 		$section = 'skin_sect_' . $this->_section;
 
-		@$this->OnePanel->appendBuffer("<div id=\"bottom_nav\"><a href=\"" . GATEWAY . "?a=template&amp;skin={$this->_skin}\">" .
+		@$this->MyPanel->appendBuffer("<div id=\"bottom_nav\"><a href=\"" . GATEWAY . "?a=template&amp;skin={$this->_skin}\">" .
 									  $this->LanguageHandler->skin_temp_nav_section . " ( <b>{$skin['skins_name']}</b> )" .
 									  "</a> / {$this->LanguageHandler->skin_temp_nav_template} ( <b>{$this->LanguageHandler->$section}</b> )</div>");
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=template&amp;code=02">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=template&amp;code=02">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id, " align='center' width='1%'");
-			$this->OnePanel->table->addColumn('&nbsp;',  " align='center' width='1%'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_list_tbl_temp);
-			$this->OnePanel->table->addColumn($this->LanguageHandler->skin_temp_list_tbl_size,  " align='right'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id, " align='center' width='1%'");
+			$this->MyPanel->table->addColumn('&nbsp;',  " align='center' width='1%'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_list_tbl_temp);
+			$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_list_tbl_size,  " align='right'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->skin_temp_list_tbl_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->skin_temp_list_tbl_header);
 
 				$sql = $this->DatabaseHandler->query("
 				SELECT
@@ -267,7 +267,7 @@ class ModuleObject extends MasterObject
 
 				if(false == $sql->getNumRows())
 				{
-					$this->OnePanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
+					$this->MyPanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
 				}
 
 				$rows  = '';
@@ -281,7 +281,7 @@ class ModuleObject extends MasterObject
 
 					$i++;
 
-					$this->OnePanel->table->addRow(array(array("<strong>{$i}.</strong>", " align='center'", 'headera'),
+					$this->MyPanel->table->addRow(array(array("<strong>{$i}.</strong>", " align='center'", 'headera'),
 														 array("<input type=\"checkbox\" id=\"{$row['temp_name']}\" class=\"check\" name=\"temp[$i]\" value=\"{$row['temp_name']}\" />", " align='center'", 'headerc'),
 														 array("<label for=\"{$row['temp_name']}\">{$row['temp_name']}</label>", false, 'headerb'),
 														 array($row['temp_size'], " align='right'", 'headerb')));
@@ -289,15 +289,15 @@ class ModuleObject extends MasterObject
 
 				$total  = $this->_FileHandler->getFileSize($total);
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$this->LanguageHandler->skin_temp_list_total}</strong>", " colspan=\"3\"", 'headerb'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$this->LanguageHandler->skin_temp_list_total}</strong>", " colspan=\"3\"", 'headerb'),
 													 array("<strong>{$total}</strong>", " align='right'", 'headerb')));
 
-					$this->OnePanel->form->addHidden('skin',	$this->_skin);
-					$this->OnePanel->form->addHidden('section', $this->_section);
+					$this->MyPanel->form->addHidden('skin',	$this->_skin);
+					$this->MyPanel->form->addHidden('section', $this->_section);
 
-				$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
-				$this->OnePanel->table->endTable(true);
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+				$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
+				$this->MyPanel->table->endTable(true);
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -319,7 +319,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_temp_err_no_skin, GATEWAY . '?a=template');
 		}
 
 		$skin = $sql->getRow();
@@ -331,20 +331,20 @@ class ModuleObject extends MasterObject
 
 		if(false == isset($temp))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_temp_err_none,
+			$this->MyPanel->messenger($this->LanguageHandler->skin_temp_err_none,
 									   GATEWAY . "?a=template&skin={$this->_skin}&section={$this->_section}&code=01");
 		}
 
 		$section = 'skin_sect_' . $this->_section;
 
-		$this->OnePanel->appendBuffer("<div id=\"bottom_nav\"><a href=\"" . GATEWAY . "?a=template&amp;skin={$this->_skin}\">" .
+		$this->MyPanel->appendBuffer("<div id=\"bottom_nav\"><a href=\"" . GATEWAY . "?a=template&amp;skin={$this->_skin}\">" .
 									  $this->LanguageHandler->skin_temp_nav_section . " ( <b>{$skin['skins_name']}</b> )</a> / <a href=\"" .
 									  GATEWAY . "?a=template&amp;skin={$this->_skin}&amp;section={$this->_section}" .
 									  "&amp;code=01\">{$this->LanguageHandler->skin_temp_nav_template} ( <b>" .
 									  "{$this->LanguageHandler->$section}</b> )</a> / {$this->LanguageHandler->skin_temp_nav_edit}</div>");
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=template&amp;code=03');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=template&amp;code=03');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$query = array();
 			foreach($temp as $bit)
@@ -361,25 +361,25 @@ class ModuleObject extends MasterObject
 
 			if(false == $sql->getNumRows())
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->skin_temp_err_no_match,
+				$this->MyPanel->messenger($this->LanguageHandler->skin_temp_err_no_match,
 										   GATEWAY . "?a=template&skin={$this->_skin}");
 			}
 
 			while($row = $sql->getRow())
 			{
-				$this->OnePanel->form->addTextArea("template[{$row['temp_name']}]",
+				$this->MyPanel->form->addTextArea("template[{$row['temp_name']}]",
 												   htmlentities($row['temp_code']),
 												   " wrap='off' style='height: 350px;'",
 												   array(1, $row['temp_name'], $this->LanguageHandler->skin_temp_edit_form_desc));
 			}
 
-			$this->OnePanel->form->addHidden('temps',   serialize($temp));
-			$this->OnePanel->form->addHidden('skin',	$this->_skin);
-			$this->OnePanel->form->addHidden('section', $this->_section);
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('temps',   serialize($temp));
+			$this->MyPanel->form->addHidden('skin',	$this->_skin);
+			$this->MyPanel->form->addHidden('section', $this->_section);
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -396,7 +396,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 		extract($this->post);
 
@@ -410,7 +410,7 @@ class ModuleObject extends MasterObject
 
 		$temps = $this->ParseHandler->uncleanString($temps);
 
-		$this->OnePanel->messenger($this->LanguageHandler->skin_temp_edit_err_done,
+		$this->MyPanel->messenger($this->LanguageHandler->skin_temp_edit_err_done,
 								   GATEWAY . "?a=template&code=02&skin={$this->_skin}&section={$this->_section}&temps={$temps}");
 	}
 

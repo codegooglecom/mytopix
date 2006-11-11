@@ -1608,6 +1608,7 @@ class ModuleObject extends MasterObject
 		require_once SYSTEM_PATH . 'lib/upload.han.php';
 		$UploadHandler = new UploadHandler($this->files, $new_path, 'upload');
 
+		$UploadHandler->setExtTypes(explode('|', $this->config['attach_ext']));
 		$UploadHandler->setMaxSize($space_left);
 		$UploadHandler->setNewName($new_name);
 

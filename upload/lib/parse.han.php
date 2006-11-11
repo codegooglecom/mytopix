@@ -783,7 +783,7 @@ class ParseHandler
 		$r[] = '$this->_stripLinksOfCode(\'url\', \'$1\')';
 		$r[] = '$this->_stripLinksOfCode(\'url\', \'$1\', \'$2\')';
 
-		return preg_replace($s, $r, $string);
+		return str_replace ( '\"', '"', preg_replace($s, $r, $string) );
 	}
 
    // ! Action Method
@@ -838,12 +838,10 @@ class ParseHandler
 	function parseBlocks($string)
 	{
 		$s[] = "#\[code\](.+?)\[/code]#ise";
-		$s[] = "#(\[quote=(.+?)?\].*\[/quote\])#ise";
-		$s[] = "#(\[quote\].*\[/quote\])#ise";
+		$s[] = "#(\[quote(=.+?)?\].*\[/quote\])#ise";
 
 		$r[] = "\$this->parseCode('\\1')";
 		$r[] = "\$this->parseQuotes('\\1', '\\2')";
-		$r[] = "\$this->parseQuotes('\\1')";
 
 		return preg_replace($s, $r, $string);
 	}
@@ -878,8 +876,8 @@ class ParseHandler
 			$s[] = '~\[/quote]~i';
 
 			$r[] = "</p><blockquote><p><span class=\"name\">$1:</span> ";
-			$r[] = " </p><blockquote><p>";
-			$r[] = " </p></blockquote><p>";
+			$r[] = " </p><blockquote><p> ";
+			$r[] = " </p></blockquote><p> ";
 
 			return preg_replace($s, $r, $string);
 		}

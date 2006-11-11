@@ -40,7 +40,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    // ! Action Method
 
@@ -60,8 +60,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 	}
 
    // ! Action Method
@@ -76,57 +76,57 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->group_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->group_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(3, 11, 19, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, 19, $this->_id);
 				$this->_showGroups();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(3, 11, 20, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, 20, $this->_id);
 				$this->_addGroup();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(3, 11, 20, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, 20, $this->_id);
 				$this->_doAddGroup();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(3, 11, -5, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, -5, $this->_id);
 				$this->_editGroup();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(3, 11, -5, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, -5, $this->_id);
 				$this->_doEditGroup();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(3, 11, -5, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, -5, $this->_id);
 				$this->_doDeleteGroup();
 				break;
 
 			case '06':
-				$this->OnePanel->_make_nav(3, 11, -5, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, -5, $this->_id);
 				$this->_showForumMasks();
 				break;
 
 			case '07':
-				$this->OnePanel->_make_nav(3, 11, -5, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, -5, $this->_id);
 				$this->_updateForumMasks();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(3, 11, 19, $this->_id);
+				$this->MyPanel->_make_nav(3, 11, 19, $this->_id);
 				$this->_showGroups();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -153,22 +153,22 @@ class ModuleObject extends MasterObject
 		GROUP BY c.class_id
 		ORDER BY class_id ASC");
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->group_tbl_id, ' width="1%" align="center"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->group_tbl_title, "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->group_tbl_users, "align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', 'width="15%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->group_tbl_id, ' width="1%" align="center"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->group_tbl_title, "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->group_tbl_users, "align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', 'width="15%"');
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->group_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->group_tbl_header);
 
 		while($row = $sql->getRow())
 		{
 
 			if(in_array($row['class_id'], array(1, 2, 3, 4, 5)))
 			{
-				$delete = '| --';
+				$delete = ' <img src="lib/theme/btn_delete_off.gif" alt=""/>';
 			}
 			else {
-				$delete = " | <a href=\"" . GATEWAY . "?a=groups&amp;code=05&amp;id={$row['class_id']}\"" .
+				$delete = " <a href=\"" . GATEWAY . "?a=groups&amp;code=05&amp;id={$row['class_id']}\"" .
 						  "onclick='return confirm(\"{$this->LanguageHandler->group_err_confirm}\");'>"  .
 						  "<b>{$this->LanguageHandler->link_delete}</b></a>";
 			}
@@ -188,15 +188,15 @@ class ModuleObject extends MasterObject
 				$count = $this->LanguageHandler->blank;
 			}
 
-			$this->OnePanel->table->addRow(array(array("<strong>{$row['class_id']}</strong>", ' align="center"', 'headera'),
+			$this->MyPanel->table->addRow(array(array("<strong>{$row['class_id']}</strong>", ' align="center"', 'headera'),
 												 array($row['class_prefix'] . $row['class_title'] . $row['class_suffix'], 'headerb'),
 												 array($count, " align='center'", 'headerb'),
-												 array("<a href=\"" . GATEWAY . "?a=groups&amp;code=06&amp;id={$row['class_id']}\">{$this->LanguageHandler->group_mask_mask_link}</a> | <a href=\"" . GATEWAY . "?a=groups&amp;code=03&amp;id={$row['class_id']}\">" .
+												 array("<a href=\"" . GATEWAY . "?a=groups&amp;code=06&amp;id={$row['class_id']}\">{$this->LanguageHandler->group_mask_mask_link}</a> <a href=\"" . GATEWAY . "?a=groups&amp;code=03&amp;id={$row['class_id']}\">" .
 													   "{$this->LanguageHandler->link_edit}</a> {$delete}", ' align="center"', 'headerc')));
 		}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
 	}
 
@@ -214,7 +214,7 @@ class ModuleObject extends MasterObject
 	{
 		if(in_array($this->_id, array(1, 2, 3, 4, 5)))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_del_err_sys_remove, GATEWAY . '?a=groups');
+			$this->MyPanel->messenger($this->LanguageHandler->group_del_err_sys_remove, GATEWAY . '?a=groups');
 		}
 
 		$sql = $this->DatabaseHandler->query("
@@ -287,7 +287,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('groups');
 
-		$this->OnePanel->messenger($this->LanguageHandler->group_del_err_done, GATEWAY . '?a=groups');
+		$this->MyPanel->messenger($this->LanguageHandler->group_del_err_done, GATEWAY . '?a=groups');
 	}
 
    // ! Action Method
@@ -302,10 +302,10 @@ class ModuleObject extends MasterObject
 	*/
 	function _addGroup()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=groups&amp;code=02');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=groups&amp;code=02');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('name', false, false,
+			$this->MyPanel->form->addTextBox('name', false, false,
 											  array(1, $this->LanguageHandler->group_new_form_name_title,
 													   $this->LanguageHandler->group_new_form_name_desc));
 
@@ -317,14 +317,14 @@ class ModuleObject extends MasterObject
 				$list[$row['class_id']] = $row['class_title'];
 			}
 
-			$this->OnePanel->form->addWrapSelect('base', $list, 2, false,
+			$this->MyPanel->form->addWrapSelect('base', $list, 2, false,
 											 array(1, $this->LanguageHandler->group_new_form_base_title,
 													  $this->LanguageHandler->group_new_form_base_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -341,21 +341,21 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(false == $name)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_new_err_no_name, GATEWAY . '?a=groups&amp;code=01');
+			$this->MyPanel->messenger($this->LanguageHandler->group_new_err_no_name, GATEWAY . '?a=groups&amp;code=01');
 		}
 
 		$sql = $this->DatabaseHandler->query("SELECT class_id FROM " . DB_PREFIX . "class WHERE class_title = '{$name}'");
 
 		if($sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_new_err_name_taken, GATEWAY . '?a=groups&amp;code=01');
+			$this->MyPanel->messenger($this->LanguageHandler->group_new_err_name_taken, GATEWAY . '?a=groups&amp;code=01');
 		}
 
 		$this->DatabaseHandler->query("INSERT INTO " . DB_PREFIX . "class(class_title) VALUES('{$name}')");
@@ -401,7 +401,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('groups');
 
-		$this->OnePanel->messenger($this->LanguageHandler->group_new_err_done, GATEWAY . "?a=groups&code=03&id={$id}");
+		$this->MyPanel->messenger($this->LanguageHandler->group_new_err_done, GATEWAY . "?a=groups&code=03&id={$id}");
 	}
 
    // ! Action Method
@@ -420,168 +420,168 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_edit_err_no_results, GATEWAY . '?a=groups');
+			$this->MyPanel->messenger($this->LanguageHandler->group_edit_err_no_results, GATEWAY . '?a=groups');
 		}
 
 		$row = $sql->getRow();
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=groups&amp;code=04&amp;id={$row['class_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=groups&amp;code=04&amp;id={$row['class_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('title', $this->ParseHandler->parseText($row['class_title'], F_ENTS), false,
+			$this->MyPanel->form->addTextBox('title', $this->ParseHandler->parseText($row['class_title'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_name_title,
 											 $this->LanguageHandler->group_edit_name_desc));
 
-			$this->OnePanel->form->addTextBox('class_prefix', $this->ParseHandler->parseText($row['class_prefix'], F_ENTS), false,
+			$this->MyPanel->form->addTextBox('class_prefix', $this->ParseHandler->parseText($row['class_prefix'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_pre_title,
 											 $this->LanguageHandler->group_edit_pre_desc));
 
-			$this->OnePanel->form->addTextBox('class_suffix', $this->ParseHandler->parseText($row['class_suffix'], F_ENTS), false,
+			$this->MyPanel->form->addTextBox('class_suffix', $this->ParseHandler->parseText($row['class_suffix'], F_ENTS), false,
 									array(1, $this->LanguageHandler->group_edit_suf_title,
 											 $this->LanguageHandler->group_edit_suf_desc));
 
-			$this->OnePanel->form->addTextBox('class_sigLength', $row['class_sigLength'], false,
+			$this->MyPanel->form->addTextBox('class_sigLength', $row['class_sigLength'], false,
 									array(1, $this->LanguageHandler->group_edit_sig_title,
 											 $this->LanguageHandler->group_edit_sig_desc));
 
-			$this->OnePanel->form->addTextBox('class_floodDelay', $row['class_floodDelay'], false,
+			$this->MyPanel->form->addTextBox('class_floodDelay', $row['class_floodDelay'], false,
 									array(1, $this->LanguageHandler->group_edit_flood_title,
 											 $this->LanguageHandler->group_edit_flood_desc));
 
-			$this->OnePanel->form->addTextBox('class_maxNotes', $row['class_maxNotes'], false,
+			$this->MyPanel->form->addTextBox('class_maxNotes', $row['class_maxNotes'], false,
 									array(1, $this->LanguageHandler->group_edit_max_title,
 											 $this->LanguageHandler->group_edit_max_desc));
 
-			$this->OnePanel->form->addTextBox('class_upload_max', $row['class_upload_max'], false,
+			$this->MyPanel->form->addTextBox('class_upload_max', $row['class_upload_max'], false,
 									array(1, $this->LanguageHandler->group_edit_file_title,
 											 $this->LanguageHandler->group_edit_file_desc));
 
-			$this->OnePanel->form->addCheckBox('class_hidden', 1, false,
+			$this->MyPanel->form->addCheckBox('class_hidden', 1, false,
 									array(1, $this->LanguageHandler->group_form_hide_title,
 											 $this->LanguageHandler->group_form_hide_desc), false, $row['class_hidden'], $this->LanguageHandler->group_form_label, 1);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-			$this->OnePanel->form->appendBuffer("</div>");
-			$this->OnePanel->form->appendBuffer("<h2>{$this->LanguageHandler->group_tbl_perm_desc}</h2>");
+			$this->MyPanel->form->appendBuffer("</div>");
+			$this->MyPanel->form->appendBuffer("<h2>{$this->LanguageHandler->group_tbl_perm_desc}</h2>");
 
-			$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+			$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->group_tbl_perms, "align='left'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->group_tbl_val,   " width='1%'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->group_tbl_perms, "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->group_tbl_val,   " width='1%'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->group_tbl_perm_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->group_tbl_perm_header);
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canPost', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canPost', 1, false, false, true,
 										   ($row['class_canPost'] ? true : false)), " width='25%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_search, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSearch', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_search, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSearch', 1, false, false, true,
 										   ($row['class_canSearch'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_stats, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSeeStats', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_stats, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSeeStats', 1, false, false, true,
 										   ($row['class_canSeeStats'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_help, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewHelp', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_help, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canViewHelp', 1, false, false, true,
 										   ($row['class_canViewHelp'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_members, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewMembers', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_members, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canViewMembers', 1, false, false, true,
 										   ($row['class_canViewMembers'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canUseNotes', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_notes, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canUseNotes', 1, false, false, true,
 										   ($row['class_canUseNotes'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSendNotes', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_notes, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSendNotes', 1, false, false, true,
 										   ($row['class_canSendNotes'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_get_notes, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canGetNotes', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_get_notes, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canGetNotes', 1, false, false, true,
 										   ($row['class_canGetNotes'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_del_own_posts, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canDeleteOwnPosts', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_del_own_posts, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canDeleteOwnPosts', 1, false, false, true,
 										   ($row['class_canDeleteOwnPosts'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_topics, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canStartTopics', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_topics, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canStartTopics', 1, false, false, true,
 										   ($row['class_canStartTopics'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_own_posts, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canEditOwnPosts', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_own_posts, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canEditOwnPosts', 1, false, false, true,
 										   ($row['class_canEditOwnPosts'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_read_topics, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canReadTopics', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_read_topics, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canReadTopics', 1, false, false, true,
 										   ($row['class_canReadTopics'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_profile, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canEditProfile', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_edit_profile, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canEditProfile', 1, false, false, true,
 										   ($row['class_canEditProfile'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_profiles, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewProfiles', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_profiles, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canViewProfiles', 1, false, false, true,
 										   ($row['class_canViewProfiles'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_post_locked, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canPostLocked', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_post_locked, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canPostLocked', 1, false, false, true,
 										   ($row['class_canPostLocked'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_active, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSeeActive', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_active, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSeeActive', 1, false, false, true,
 										   ($row['class_canSeeActive'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_mail, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSendEmail', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_send_mail, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSendEmail', 1, false, false, true,
 										   ($row['class_canSendEmail'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_mail, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_change_email', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_mail, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_change_email', 1, false, false, true,
 										   ($row['class_change_email'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_pass, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_change_pass', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_change_pass, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_change_pass', 1, false, false, true,
 										   ($row['class_change_pass'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_hidden_skins, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_see_hidden_skins', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_hidden_skins, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_see_hidden_skins', 1, false, false, true,
 										   ($row['class_see_hidden_skins'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_subscribe, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canSubscribe', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_subscribe, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canSubscribe', 1, false, false, true,
 										   ($row['class_canSubscribe'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_closed_board, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_canViewClosedBoard', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_see_closed_board, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_canViewClosedBoard', 1, false, false, true,
 										   ($row['class_canViewClosedBoard'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post_events, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_post_events', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_can_post_events, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_can_post_events', 1, false, false, true,
 										   ($row['class_can_post_events'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_upload_avatars, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_upload_avatars', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_upload_avatars, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_upload_avatars', 1, false, false, true,
 										   ($row['class_upload_avatars'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_avatars, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_use_avatars', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_use_avatars, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_use_avatars', 1, false, false, true,
 										   ($row['class_use_avatars'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_vote_polls, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_vote_polls', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_vote_polls, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_can_vote_polls', 1, false, false, true,
 										   ($row['class_can_vote_polls'] ? true : false)), " width='20%'", 'headerc')));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_polls, false, 'headerb'),
-										   array($this->OnePanel->form->addYesNo('class_can_start_polls', 1, false, false, true,
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->group_tbl_start_polls, false, 'headerb'),
+										   array($this->MyPanel->form->addYesNo('class_can_start_polls', 1, false, false, true,
 										   ($row['class_can_start_polls'] ? true : false)), " width='20%'", 'headerc')));
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -598,7 +598,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -607,7 +607,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_edit_err_no_results, GATEWAY . "?a=groups");
+			$this->MyPanel->messenger($this->LanguageHandler->group_edit_err_no_results, GATEWAY . "?a=groups");
 		}
 
 		$row = $sql->getRow();
@@ -618,13 +618,13 @@ class ModuleObject extends MasterObject
 
 			if($sql->getNumRows())
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->group_new_err_name_taken, GATEWAY . "?a=groups&amp;code=03&amp;id={$this->_id}");
+				$this->MyPanel->messenger($this->LanguageHandler->group_new_err_name_taken, GATEWAY . "?a=groups&amp;code=03&amp;id={$this->_id}");
 			}
 		}
 
 		if(false == $title)
 		{
-			$this->OnePanel->messenger('Your new group must have a name.', GATEWAY . "?a=groups&amp;code=03&amp;id={$this->_id}");
+			$this->MyPanel->messenger('Your new group must have a name.', GATEWAY . "?a=groups&amp;code=03&amp;id={$this->_id}");
 		}
 
 		$class_hidden = isset($class_hidden) ? (int) $class_hidden : false;
@@ -670,7 +670,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('groups');
 
-		$this->OnePanel->messenger($this->LanguageHandler->group_edit_err_done, GATEWAY . "?a=groups&code=03&id={$this->_id}");
+		$this->MyPanel->messenger($this->LanguageHandler->group_edit_err_done, GATEWAY . "?a=groups&code=03&id={$this->_id}");
 	}
 
    // ! Action Method
@@ -694,7 +694,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_err_no_match, GATEWAY . "?a=groups");
+			$this->MyPanel->messenger($this->LanguageHandler->group_err_no_match, GATEWAY . "?a=groups");
 		}
 
 		$group = $sql->getRow();
@@ -716,18 +716,18 @@ class ModuleObject extends MasterObject
 
 		$forums = $this->_makeForumList($list);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=groups&amp;code=07&amp;id={$this->_id}\">");
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=groups&amp;code=07&amp;id={$this->_id}\">");
 
-			$this->OnePanel->form->appendBuffer("<h2>{$this->LanguageHandler->forum_new_matrix_desc}</h2>");
+			$this->MyPanel->form->appendBuffer("<h2>{$this->LanguageHandler->forum_new_matrix_desc}</h2>");
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_group,  "align='left'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_view,   "align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_read,   "align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_post,   "align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_topics, "align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->forum_new_tbl_upload, "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_group,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_view,   "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_read,   "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_post,   "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_topics, "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->forum_new_tbl_upload, "align='center'");
 
-			$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->group_matrix_header, $group['class_title']));
+			$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->group_matrix_header, $group['class_title']));
 
 			for($i = 0; $i < sizeof($forums); $i++)
 			{
@@ -741,30 +741,30 @@ class ModuleObject extends MasterObject
 
 				if($forums[$i]['is_parent'])
 				{
-					$this->OnePanel->table->addRow(array(array($forums[$i]['forum_name'], ' style="background-color: #F0F0F0; font-weight: bold;"', 'headerb'),
-												   array($this->OnePanel->form->addCheckBox('can_view_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_view)   ? true : false, false, 'center', 'checkwrap_1'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
-												   array($this->OnePanel->form->addCheckBox('can_read_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_read)   ? true : false, false, 'center', 'checkwrap_2'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
-												   array($this->OnePanel->form->addCheckBox('can_reply_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_reply)  ? true : false, false, 'center', 'checkwrap_3'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
-												   array($this->OnePanel->form->addCheckBox('can_start_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_start)  ? true : false, false, 'center', 'checkwrap_4'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
-												   array($this->OnePanel->form->addCheckBox('can_upload_' . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_upload) ? true : false, false, 'center', 'checkwrap'),   ' style="background-color: #F0F0F0; font-weight: bold;"')));
+					$this->MyPanel->table->addRow(array(array($forums[$i]['forum_name'], ' style="background-color: #F0F0F0; font-weight: bold;"', 'headerb'),
+												   array($this->MyPanel->form->addCheckBox('can_view_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_view)   ? true : false, false, 'center', 'checkwrap_1'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
+												   array($this->MyPanel->form->addCheckBox('can_read_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_read)   ? true : false, false, 'center', 'checkwrap_2'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
+												   array($this->MyPanel->form->addCheckBox('can_reply_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_reply)  ? true : false, false, 'center', 'checkwrap_3'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
+												   array($this->MyPanel->form->addCheckBox('can_start_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_start)  ? true : false, false, 'center', 'checkwrap_4'), ' style="background-color: #F0F0F0; font-weight: bold;"'),
+												   array($this->MyPanel->form->addCheckBox('can_upload_' . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_upload) ? true : false, false, 'center', 'checkwrap'),   ' style="background-color: #F0F0F0; font-weight: bold;"')));
 				}
 				else {
-					$this->OnePanel->table->addRow(array(array($forums[$i]['forum_name'], false, 'headerb'),
-												   array($this->OnePanel->form->addCheckBox('can_view_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_view)   ? true : false, false, 'center', 'checkwrap_1')),
-												   array($this->OnePanel->form->addCheckBox('can_read_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_read)   ? true : false, false, 'center', 'checkwrap_2')),
-												   array($this->OnePanel->form->addCheckBox('can_reply_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_reply)  ? true : false, false, 'center', 'checkwrap_3')),
-												   array($this->OnePanel->form->addCheckBox('can_start_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_start)  ? true : false, false, 'center', 'checkwrap_4')),
-												   array($this->OnePanel->form->addCheckBox('can_upload_' . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_upload) ? true : false, false, 'center', 'checkwrap'))));
+					$this->MyPanel->table->addRow(array(array($forums[$i]['forum_name'], false, 'headerb'),
+												   array($this->MyPanel->form->addCheckBox('can_view_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_view)   ? true : false, false, 'center', 'checkwrap_1')),
+												   array($this->MyPanel->form->addCheckBox('can_read_'   . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_read)   ? true : false, false, 'center', 'checkwrap_2')),
+												   array($this->MyPanel->form->addCheckBox('can_reply_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_reply)  ? true : false, false, 'center', 'checkwrap_3')),
+												   array($this->MyPanel->form->addCheckBox('can_start_'  . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_start)  ? true : false, false, 'center', 'checkwrap_4')),
+												   array($this->MyPanel->form->addCheckBox('can_upload_' . $forums[$i]['forum_id'], 1, false, false, true, in_array($group['class_id'], $can_upload) ? true : false, false, 'center', 'checkwrap'))));
 
 				}
 
 			}
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
-			$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -820,7 +820,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -834,7 +834,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->group_err_no_match, GATEWAY . "?a=groups");
+			$this->MyPanel->messenger($this->LanguageHandler->group_err_no_match, GATEWAY . "?a=groups");
 		}
 
 		$group = $sql->getRow();
@@ -874,7 +874,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('forums');
 
-		$this->OnePanel->messenger($this->LanguageHandler->group_matrix_done, GATEWAY . "?a=groups&code=06&id={$group['class_id']}");
+		$this->MyPanel->messenger($this->LanguageHandler->group_matrix_done, GATEWAY . "?a=groups&code=06&id={$group['class_id']}");
 	}
 
    // ! Action Method

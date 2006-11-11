@@ -3,7 +3,7 @@
 /**
 * Forum Handling Class
 *
-* This complete class is responsible for all 
+* This complete class is responsible for all
 * functions pertaining to forum access.
 *
 * @license http://www.jaia-interactive.com/licenses/mytopix/
@@ -120,7 +120,7 @@ class ForumHandler
 	* --------------
 	* $ForumHandler->setForumList( array(COMPLETE FORUM LISTING) );
 	*
-	* A simple 'Set' method that allows the developer to change the 
+	* A simple 'Set' method that allows the developer to change the
 	* current forum listing.
 	*
 	* @param Array $array A list of forums
@@ -207,7 +207,7 @@ class ForumHandler
 	*
 	* This is a recursive algorithm that uses the specified forum's access
 	* matrix to determine whether or not the current user has permission to
-	* execute a specific action. Permissions are cascading, which means the 
+	* execute a specific action. Permissions are cascading, which means the
 	* settings of the parent will override the child.
 	*
 	* @param String  $action  Permission type
@@ -261,9 +261,9 @@ class ForumHandler
 
 		foreach($this->_forum_moderators as $val)
 		{
-			if($val['mod_forum']   == $forum	 && 
+			if($val['mod_forum']   == $forum	 &&
 			   $val['mod_group']   == USER_GROUP ||
-			   $val['mod_user_id'] == USER_ID)			   
+			   $val['mod_user_id'] == USER_ID)
 			{
 				return true;
 			}
@@ -298,10 +298,10 @@ class ForumHandler
 
 		foreach($this->_forum_moderators as $val)
 		{
-			if($val['mod_' . $permission]		&& 
+			if($val['mod_' . $permission]		&&
 			   $val['mod_forum']   == $forum	 &&
 			   $val['mod_group']   == USER_GROUP ||
-			   $val['mod_user_id'] == USER_ID) 
+			   $val['mod_user_id'] == USER_ID)
 			{
 				return true;
 			}
@@ -452,9 +452,9 @@ class ForumHandler
 	* --------------
 	* $ForumHandler->makeAllowableList( [ int(SELECT OFFSET) ], [ int(PARENT_ID) }, [ str(LEVEL SPACE) ] );
 	*
-	* This recursive algorithm will generate a list of browsable 
+	* This recursive algorithm will generate a list of browsable
 	* forums. It only displays forums that are viewable according to
-	* the current users access settings.	
+	* the current users access settings.
 	*
 	* @param Int	$select Autoselects an entry based on this number
 	* @param Int	$parent The next forum to cycle through the tree
@@ -566,7 +566,7 @@ class ForumHandler
 	* --------------
 	* $ForumHandler->hasChildren( int(FORUM ID) );
 	*
-	* A simple method that checks to see if the provided 
+	* A simple method that checks to see if the provided
 	* forum has any child forums.
 	*
 	* @param Int $forum Id of forum to check
@@ -589,7 +589,7 @@ class ForumHandler
 	}
 
    // ! Action Method
-	
+
    /**
 	* USAGE
 	* --------------
@@ -609,7 +609,7 @@ class ForumHandler
 	{
 		foreach($this->_forum_list as $val)
 		{
-			if($val['forum_parent'] == $parent && $parent && 
+			if($val['forum_parent'] == $parent && $parent &&
 			   $this->checkAccess('can_view', $val['forum_id']))
 			{
 				$data['forum_posts']  += $val['forum_posts'];
@@ -772,7 +772,7 @@ class ForumHandler
 	* $ForumHandler->updateForumStats( [ int(FORUM ID) ] );
 	*
 	* Updates all forum stats. Can work for a specified forum if
-	* user includes a single ID as a parameter. If left out, this 
+	* user includes a single ID as a parameter. If left out, this
 	* method will cycle through and update ALL system forums.
 	*
 	* @param Int  $forum  The id of the forum to check
@@ -794,7 +794,7 @@ class ForumHandler
 		foreach($synch as $key => $val)
 		{
 			$sql = $this->_DatabaseHandler->query("
-			SELECT 
+			SELECT
 				p.posts_id,
 				p.posts_date,
 				p.posts_author_name,
@@ -803,7 +803,7 @@ class ForumHandler
 			FROM " . DB_PREFIX . "posts p
 				LEFT JOIN " . DB_PREFIX . "topics t ON t.topics_id = p.posts_topic
 			WHERE t.topics_forum = {$key}
-			ORDER BY posts_date DESC LIMIT 0, 1", 
+			ORDER BY posts_date DESC LIMIT 0, 1",
 			__FILE__, __LINE__);
 
 			if(false == $sql->getNumRows())
@@ -821,7 +821,7 @@ class ForumHandler
 			}
 
 			$sql = $this->_DatabaseHandler->query("
-			SELECT topics_id 
+			SELECT topics_id
 			FROM " . DB_PREFIX . "topics
 			WHERE topics_forum = {$key}", __FILE__, __LINE__);
 
@@ -862,7 +862,7 @@ class ForumHandler
 	* --------------
 	* $ForumHandler->getAllowableForums( NONE );
 	*
-	* Grabs a list of forum id's the current user 
+	* Grabs a list of forum id's the current user
 	* has access to. It may also be used to scan a list of
 	* included forums and return only access-permitted forums.
 	*
@@ -880,18 +880,17 @@ class ForumHandler
 		{
 			foreach($list as $forum)
 			{
-				if($this->checkAccess('can_read', $forum) && 
+				if($this->checkAccess('can_read', $forum) &&
 				   $this->checkAccess('can_view', $forum))
 				{
 					$array[] = $forum;
-				}				
+				}
 			}
 		}
 		else {
-
 			foreach($this->_forum_list as $key => $forum)
 			{
-				if($this->checkAccess('can_read', $forum['forum_id']) && 
+				if($this->checkAccess('can_read', $forum['forum_id']) &&
 				   $this->checkAccess('can_view', $forum['forum_id']))
 				{
 					$array[] = $forum['forum_id'];
@@ -901,7 +900,6 @@ class ForumHandler
 
 		return $array;
 	}
-
 }
 
 ?>

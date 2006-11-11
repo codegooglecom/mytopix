@@ -382,6 +382,8 @@ class FormHandler
 		if($this->_ForumHandler->checkAccess('can_upload', $this->_forum) && 
 		   $this->_config['attach_on'])
 		{
+			$this->_config['attach_ext'] = str_replace('|', ', ', $this->_config['attach_ext']);
+
 			if($file_id)
 			{
 				return eval($this->_TemplateHandler->fetchTemplate('attach_rem_field'));
@@ -389,11 +391,11 @@ class FormHandler
 			else {
 				if(false == USER_ADMIN)
 				{
-					$size_lang = sprintf($this->_LanguageHandler->attach_desc, 
+					$size_lang = sprintf($this->_LanguageHandler->attach_desc, $this->_config['attach_ext'], 
 								 FileHandler::getFileSize($this->_UserHandler->calcUploadSpace()));
 				}
 				else {
-					$size_lang = $this->_LanguageHandler->attach_desc_admin;
+					$size_lang = sprintf($this->_LanguageHandler->attach_desc_admin, $this->_config['attach_ext']);
 				}
 
 				return eval($this->_TemplateHandler->fetchTemplate('form_field_attach'));

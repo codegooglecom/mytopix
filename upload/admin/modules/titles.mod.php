@@ -47,7 +47,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
 
    // ! Action Method
@@ -78,8 +78,8 @@ class ModuleObject extends MasterObject
 			$this->_skin = $this->get['skin'];
 		}
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 	}
 
    // ! Action Method
@@ -94,47 +94,47 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->title_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->title_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(3, 12, 21, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, 21, $this->_skin);
 				$this->_showTitles();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(3, 12, 22, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, 22, $this->_skin);
 				$this->_addTitle();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(3, 12, 22, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, 22, $this->_skin);
 				$this->_doAddTitle();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
 				$this->_editTitle();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
 				$this->_doEditTitle();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
 				$this->_doDeleteTitle();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(3, 12, 21, $this->_skin);
+				$this->MyPanel->_make_nav(3, 12, 21, $this->_skin);
 				$this->_showTitles();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -151,25 +151,25 @@ class ModuleObject extends MasterObject
 	{
 		$skins = $this->_fetchSkins();
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=titles');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=titles');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin', $skins, $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin', $skins, $this->_skin, false,
 											 array(1, $this->LanguageHandler->title_skin_title,
 													  $this->LanguageHandler->title_skin_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "titles WHERE titles_skin = {$this->_skin} ORDER BY titles_posts");
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->title_tbl_id, ' width="1%" align="center"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->title_tbl_name, ' align="left"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->title_tbl_image, ' align="left"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->title_tbl_require, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', " width='10%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->title_tbl_id, ' width="1%" align="center"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->title_tbl_name, ' align="left"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->title_tbl_image, ' align="left"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->title_tbl_require, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', " width='10%'");
 
-		$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->title_tbl_header,
+		$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->title_tbl_header,
 												   $skins[$this->_skin]));
 
 			while($row = $sql->getRow())
@@ -180,21 +180,21 @@ class ModuleObject extends MasterObject
 					$pips .= "<img src='" . SYSTEM_PATH . "skins/{$this->_skin}/{$row['titles_file']}' alt='' />";
 				}
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['titles_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['titles_id']}</strong>", ' align="center"', 'headera'),
 											   array($row['titles_name'],	 false, 'headerb'),
 											   array($pips, false, 'headerb'),
 											   array(number_format($row['titles_posts']), " align='center'", 'headerb'),
 											   array("<a href=\"" . GATEWAY . "?a=titles&amp;code=03&amp;id="	.
 													 "{$row['titles_id']}\">{$this->LanguageHandler->link_edit}" .
-													 "</a> | <a href=\"" . GATEWAY . "?a=titles&amp;skin={$this->_skin}&amp;code=05&amp" .
+													 "</a> <a href=\"" . GATEWAY . "?a=titles&amp;skin={$this->_skin}&amp;code=05&amp" .
 													 ";id={$row['titles_id']}\" onclick='return confirm(\""	   .
 													 "{$this->LanguageHandler->title_err_confirm}\");'><b>"	  .
 													 "{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -209,14 +209,14 @@ class ModuleObject extends MasterObject
 	*/
 	function _addTitle()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=titles&amp;code=02');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=titles&amp;code=02');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('title', false, false,
+			$this->MyPanel->form->addTextBox('title', false, false,
 									array(1, $this->LanguageHandler->title_form_name_title,
 											 $this->LanguageHandler->title_form_name_desc));
 
-			$this->OnePanel->form->addTextBox('posts', false, false,
+			$this->MyPanel->form->addTextBox('posts', false, false,
 									array(1, $this->LanguageHandler->title_form_posts_title,
 											 $this->LanguageHandler->title_form_posts_desc));
 
@@ -235,19 +235,19 @@ class ModuleObject extends MasterObject
 				closedir($handle);
 			}
 
-			$this->OnePanel->form->addTextBox('pips', false, false,
+			$this->MyPanel->form->addTextBox('pips', false, false,
 									array(1, $this->LanguageHandler->title_form_pips_title,
 											 $this->LanguageHandler->title_form_pips_desc));
 
-			$this->OnePanel->form->addWrapSelect('file', $list, false, false,
+			$this->MyPanel->form->addWrapSelect('file', $list, false, false,
 								   array(1, $this->LanguageHandler->title_form_image_title,
 											$this->LanguageHandler->title_form_image_desc));
 
-			$this->OnePanel->form->addHidden('skin', $this->_skin);
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('skin', $this->_skin);
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -264,14 +264,14 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(false == $title)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->title_err_no_title,
+			$this->MyPanel->messenger($this->LanguageHandler->title_err_no_title,
 									   GATEWAY . "?a=titles&amp;skin={$this->_skin}&amp;code=01");
 		}
 
@@ -294,7 +294,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('titles');
 
-		$this->OnePanel->messenger($this->LanguageHandler->title_err_done,
+		$this->MyPanel->messenger($this->LanguageHandler->title_err_done,
 								   GATEWAY . "?a=titles&amp;skin={$this->_skin}");
 	}
 
@@ -314,27 +314,27 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->title_err_no_results, GATEWAY . '?a=titles');
+			$this->MyPanel->messenger($this->LanguageHandler->title_err_no_results, GATEWAY . '?a=titles');
 		}
 
 		$row = $sql->getRow();
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=titles&amp;code=04&amp;id={$row['titles_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=titles&amp;code=04&amp;id={$row['titles_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $row['titles_skin'], false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $row['titles_skin'], false,
 											 array(1, $this->LanguageHandler->title_form_skin_title,
 													  $this->LanguageHandler->title_form_skin_desc));
 
-			$this->OnePanel->form->addTextBox('title', $this->ParseHandler->parseText($row['titles_name'], F_ENTS), false,
+			$this->MyPanel->form->addTextBox('title', $this->ParseHandler->parseText($row['titles_name'], F_ENTS), false,
 											  array(1, $this->LanguageHandler->title_form_name_title,
 													   $this->LanguageHandler->title_form_name_desc));
 
-			$this->OnePanel->form->addTextBox('posts', $row['titles_posts'], false,
+			$this->MyPanel->form->addTextBox('posts', $row['titles_posts'], false,
 											  array(1, $this->LanguageHandler->title_form_posts_title,
 													   $this->LanguageHandler->title_form_posts_desc));
 
-			$this->OnePanel->form->addTextBox('pips',  $row['titles_pips'], false,
+			$this->MyPanel->form->addTextBox('pips',  $row['titles_pips'], false,
 											  array(1, $this->LanguageHandler->title_form_pips_title,
 													   $this->LanguageHandler->title_form_pips_desc));
 
@@ -353,14 +353,14 @@ class ModuleObject extends MasterObject
 				closedir($handle);
 			}
 
-			$this->OnePanel->form->addWrapSelect('file',  $list, $row['titles_file'], false,
+			$this->MyPanel->form->addWrapSelect('file',  $list, $row['titles_file'], false,
 											 array(1, $this->LanguageHandler->title_form_image_title,
 													  $this->LanguageHandler->title_form_image_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -377,7 +377,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -386,12 +386,12 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->title_err_no_results, GATEWAY . '?a=titles');
+			$this->MyPanel->messenger($this->LanguageHandler->title_err_no_results, GATEWAY . '?a=titles');
 		}
 
 		if(false == $title)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->title_err_no_title,
+			$this->MyPanel->messenger($this->LanguageHandler->title_err_no_title,
 			GATEWAY . "?a=titles&amp;skin={$this->_skin}&amp;code=01");
 		}
 
@@ -409,7 +409,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('titles');
 
-		$this->OnePanel->messenger($this->LanguageHandler->title_edit_form_done, GATEWAY . "?a=titles&amp;id={$this->_id}&amp;code=03");
+		$this->MyPanel->messenger($this->LanguageHandler->title_edit_form_done, GATEWAY . "?a=titles&amp;id={$this->_id}&amp;code=03");
 	}
 
    // ! Action Method
@@ -428,7 +428,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('titles');
 
-		$this->OnePanel->messenger($this->LanguageHandler->title_edit_removed, GATEWAY . "?a=titles&amp;skin={$this->_skin}");
+		$this->MyPanel->messenger($this->LanguageHandler->title_edit_removed, GATEWAY . "?a=titles&amp;skin={$this->_skin}");
 	}
 
    // ! Action Method

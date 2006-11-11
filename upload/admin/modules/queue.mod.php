@@ -33,7 +33,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -59,8 +59,8 @@ class ModuleObject extends MasterObject
 		$this->_id   = isset($this->get['id'])	? (int) $this->get['id']	: 0;
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
@@ -85,32 +85,32 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(3, 22, 47);
+				$this->MyPanel->_make_nav(3, 22, 47);
 				$this->_showValidatingList();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(3, 22, 47);
+				$this->MyPanel->_make_nav(3, 22, 47);
 				$this->_doUserValidation();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(3, 22, 48);
+				$this->MyPanel->_make_nav(3, 22, 48);
 				$this->_showCoppaList();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(3, 22, 48);
+				$this->MyPanel->_make_nav(3, 22, 48);
 				$this->_doCoppaValidation();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(3, 22, 47);
+				$this->MyPanel->_make_nav(3, 22, 47);
 				$this->_showValidatingList();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -125,8 +125,8 @@ class ModuleObject extends MasterObject
 	*/
 	function _showValidatingList()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->q_val_header);
-		$this->OnePanel->appendBuffer($this->LanguageHandler->q_header_tip);
+		$this->MyPanel->addHeader($this->LanguageHandler->q_val_header);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->q_header_tip);
 
 		$query = "
 		SELECT
@@ -142,15 +142,15 @@ class ModuleObject extends MasterObject
 
 		$num = $sql->getNumRows();
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_visit, "align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="15%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_visit, "align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="15%"');
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 
-		$this->OnePanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
+		$this->MyPanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
 
 		if($num)
 		{
@@ -164,7 +164,7 @@ class ModuleObject extends MasterObject
 					$lastvisit = date($this->config['date_short'], $row['members_lastvisit']);
 				}
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
 													 array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['members_id']}\">{$row['members_name']}</a>", 'headerb'),
 													 array(date($this->config['date_short'], $row['members_registered']), " align=\"center\"", 'headerb'),
 													 array($lastvisit, 'align="center"'),
@@ -172,13 +172,13 @@ class ModuleObject extends MasterObject
 			}
 		}
 		else {
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->q_no_val_users, ' align="center" colspan="5"')));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->q_no_val_users, ' align="center" colspan="5"')));
 		}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 	}
 
    // ! Action Method
@@ -213,8 +213,8 @@ class ModuleObject extends MasterObject
 	*/
 	function _showCoppaList()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->q_cop_header);
-		$this->OnePanel->appendBuffer($this->LanguageHandler->q_header_tip);
+		$this->MyPanel->addHeader($this->LanguageHandler->q_cop_header);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->q_header_tip);
 
 		$query = "
 		SELECT
@@ -230,15 +230,15 @@ class ModuleObject extends MasterObject
 
 		$num = $sql->getNumRows();
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_visit, "align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="15%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_visit, "align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="15%"');
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 
-		$this->OnePanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
+		$this->MyPanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
 
 		if($num)
 		{
@@ -252,7 +252,7 @@ class ModuleObject extends MasterObject
 					$lastvisit = date($this->config['date_short'], $row['members_lastvisit']);
 				}
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
 													 array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['members_id']}\">{$row['members_name']}</a>", 'headerb'),
 													 array(date($this->config['date_short'], $row['members_registered']), " align=\"center\"", 'headerb'),
 													 array($lastvisit, 'align="center"'),
@@ -260,14 +260,14 @@ class ModuleObject extends MasterObject
 			}
 		}
 		else {
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->q_no_cop_users, ' align="center" colspan="5"')));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->q_no_cop_users, ' align="center" colspan="5"')));
 
 		}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 	}
 
    // ! Action Method

@@ -213,15 +213,12 @@ class MasterObject
 			$this->read_forums = unserialize(stripslashes($this->CookieHandler->getVar('forums_read')));
 		}
 
-		$db_handler_name = $this->config['db_type'] . 'Handler';
+		$db_handler_name = DB_TYPE . 'Handler';
 
 		// Attempt to establish a connection to a database server:
 
-		$this->DatabaseHandler = new $db_handler_name($this->config['db_host'], $this->config['db_port']);
-		$this->DatabaseHandler->doConnect($this->config['db_user'], 
-										  $this->config['db_pass'],
-										  $this->config['db_name'],
-										  $this->config['db_persist']);
+		$this->DatabaseHandler = new $db_handler_name(DB_HOST, DB_PORT);
+		$this->DatabaseHandler->doConnect(DB_USER, DB_PASS, DB_NAME, DB_PERSIST);
 
 		// Load the requested system cache groups:
 

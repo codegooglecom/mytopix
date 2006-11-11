@@ -47,7 +47,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    // ! Action Method
 
@@ -67,8 +67,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		$this->_comp1 = array('contain' => $this->LanguageHandler->comp_contain,
 							  'equal'   => $this->LanguageHandler->comp_equal, 
@@ -88,9 +88,9 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->mod_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->mod_header);
 
-		$this->OnePanel->_make_nav(2, 8);
+		$this->MyPanel->_make_nav(2, 8);
 
 		switch($this->_code)
 		{
@@ -131,7 +131,7 @@ class ModuleObject extends MasterObject
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -146,7 +146,7 @@ class ModuleObject extends MasterObject
 	*/
 	function _showModerators()
 	{
-		$this->OnePanel->appendBuffer($this->LanguageHandler->mod_step_one_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->mod_step_one_tip);
 
 		$sql = $this->DatabaseHandler->query("
 		SELECT * 
@@ -165,13 +165,13 @@ class ModuleObject extends MasterObject
 
 		$forums = $this->_makeForumList($list);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=moderators&amp;code=01\">");
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=moderators&amp;code=01\">");
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mod_table_add,   "align='center' width='2%'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mod_table_forum, "align='left'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mod_table_mods,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mod_table_add,   "align='center' width='2%'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mod_table_forum, "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mod_table_mods,  "align='left'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->mod_forum_list_title);
+			$this->MyPanel->table->startTable($this->LanguageHandler->mod_forum_list_title);
 
 			for($i = 0; $i < sizeof($forums); $i++)
 			{
@@ -205,21 +205,21 @@ class ModuleObject extends MasterObject
 
 						$mods .= "<tr>";
 						$mods .= "<td class=\"none\"><strong>{$inc}.</strong> {$prefix} <a href=\"{$link}\">{$row['mod_user_name']}</a></td>";
-						$mods .= "<td class=\"none\" align=\"right\"><a href=\"" . GATEWAY . "?a=moderators&amp;code=05&amp;id={$row['mod_id']}\">{$this->LanguageHandler->link_edit}</a> | <a href=\"" . GATEWAY . "?a=moderators&amp;code=07&amp;id={$row['mod_id']}\" onclick=\"javascript: return confirm('{$this->LanguageHandler->mod_del_js}');\"><strong>{$this->LanguageHandler->link_delete}</strong></a></td>";
+						$mods .= "<td class=\"none\" align=\"right\"><a href=\"" . GATEWAY . "?a=moderators&amp;code=05&amp;id={$row['mod_id']}\">{$this->LanguageHandler->link_edit}</a> <a href=\"" . GATEWAY . "?a=moderators&amp;code=07&amp;id={$row['mod_id']}\" onclick=\"javascript: return confirm('{$this->LanguageHandler->mod_del_js}');\"><strong>{$this->LanguageHandler->link_delete}</strong></a></td>";
 						$mods .= "</tr>";
 					}
 
 					$mods .= "</table>";
 				}
 				
-				$this->OnePanel->table->addRow(array(array($this->OnePanel->form->addCheckBox("forums[{$forums[$i]['forum_id']}]", $forums[$i]['forum_id'], false, false, true, false, false, false, 'checkwrap_4'), " valign=\"top\""),
+				$this->MyPanel->table->addRow(array(array($this->MyPanel->form->addCheckBox("forums[{$forums[$i]['forum_id']}]", $forums[$i]['forum_id'], false, false, true, false, false, false, 'checkwrap_4'), " valign=\"top\""),
 													 array($forums[$i]['forum_name'], " valign=\"middle\""),
 													 array($mods)));
 
 			}
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -276,32 +276,32 @@ class ModuleObject extends MasterObject
 	{
 		extract($this->post);
 
-		$this->OnePanel->appendBuffer($this->LanguageHandler->mod_step_two_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->mod_step_two_tip);
 
 		if(false == $forums)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mod_err_no_forum, GATEWAY . '?a=moderators');
+			$this->MyPanel->messenger($this->LanguageHandler->mod_err_no_forum, GATEWAY . '?a=moderators');
 		}
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=moderators&amp;code=02');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=moderators&amp;code=02');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$select = $this->OnePanel->form->addSelect('match', $this->_comp1, false, false, false, true);
-			$match  = $this->OnePanel->form->addTextBox('name', false,		 false, false, true);
+			$select = $this->MyPanel->form->addSelect('match', $this->_comp1, false, false, false, true);
+			$match  = $this->MyPanel->form->addTextBox('name', false,		 false, false, true);
 
-			$this->OnePanel->form->addWrap($select . $match, 
+			$this->MyPanel->form->addWrap($select . $match, 
 										   $this->LanguageHandler->mod_step_two_name_title,
 										   $this->LanguageHandler->mod_step_two_name_desc,
 										   true);
 
-			$this->OnePanel->form->addHidden('forums', serialize($forums));
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('forums', serialize($forums));
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm($this->LanguageHandler->mod_step_two_submit);
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm($this->LanguageHandler->mod_step_two_submit);
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=moderators&amp;code=03');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=moderators&amp;code=03');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$sql = $this->DatabaseHandler->query("
 			SELECT 
@@ -316,18 +316,18 @@ class ModuleObject extends MasterObject
 				$list[$row['class_id']] = $row['class_title'];
 			}
 
-			$groups = $this->OnePanel->form->addSelect('group', $list, false, false, false, true);
+			$groups = $this->MyPanel->form->addSelect('group', $list, false, false, false, true);
 
-			$this->OnePanel->form->addWrap($groups, 
+			$this->MyPanel->form->addWrap($groups, 
 										   $this->LanguageHandler->mod_step_two_group_title,
 										   $this->LanguageHandler->mod_step_two_group_desc,
 										   true);
 
-			$this->OnePanel->form->addHidden('forums', serialize($forums));
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('forums', serialize($forums));
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm($this->LanguageHandler->mod_step_two_submit_group);
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm($this->LanguageHandler->mod_step_two_submit_group);
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -344,14 +344,14 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(false == $name)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mod_err_no_name, GATEWAY . '?a=moderators&code=00');
+			$this->MyPanel->messenger($this->LanguageHandler->mod_err_no_name, GATEWAY . '?a=moderators&code=00');
 		}
 
 		switch($match)
@@ -389,7 +389,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mod_err_no_match, GATEWAY . '?a=moderators&code=01');
+			$this->MyPanel->messenger($this->LanguageHandler->mod_err_no_match, GATEWAY . '?a=moderators&code=01');
 		}
 
 		$list = array();
@@ -398,39 +398,39 @@ class ModuleObject extends MasterObject
 			$list[$row['members_id']] = $row['members_name'];
 		}
 
-		$this->OnePanel->appendBuffer($this->LanguageHandler->mod_step_two_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->mod_step_two_tip);
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=moderators&amp;code=02');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=moderators&amp;code=02');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$select = $this->OnePanel->form->addSelect('match', $this->_comp1, $match, false, false, true);
-			$match  = $this->OnePanel->form->addTextBox('name', $name,		 false, false, true);
+			$select = $this->MyPanel->form->addSelect('match', $this->_comp1, $match, false, false, true);
+			$match  = $this->MyPanel->form->addTextBox('name', $name,		 false, false, true);
 
-			$this->OnePanel->form->addWrap($select . $match, 
+			$this->MyPanel->form->addWrap($select . $match, 
 										   $this->LanguageHandler->mod_step_two_name_title,
 										   $this->LanguageHandler->mod_step_two_name_desc,
 										   true);
 
-			$this->OnePanel->form->addHidden('forums', stripslashes($this->ParseHandler->uncleanString($forums)));
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('forums', stripslashes($this->ParseHandler->uncleanString($forums)));
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm($this->LanguageHandler->mod_step_two_submit);
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm($this->LanguageHandler->mod_step_two_submit);
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->appendBuffer($this->LanguageHandler->mod_step_three_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->mod_step_three_tip);
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=moderators&amp;code=03');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=moderators&amp;code=03');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addSelect('user',   $list, false, false,
+			$this->MyPanel->form->addSelect('user',   $list, false, false,
 											  array(1, sprintf($this->LanguageHandler->mod_step_three_list_title, $sql->getNumRows()),
 													   $this->LanguageHandler->mod_step_three_list_desc));
 
-			$this->OnePanel->form->addHidden('forums', stripslashes($this->ParseHandler->uncleanString($forums)));
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('forums', stripslashes($this->ParseHandler->uncleanString($forums)));
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm($this->LanguageHandler->mod_step_three_submit);
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm($this->LanguageHandler->mod_step_three_submit);
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -447,7 +447,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -470,7 +470,7 @@ class ModuleObject extends MasterObject
 
 			if($sql->getNumRows())
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->mod_err_group_dups, GATEWAY . '?a=moderators');
+				$this->MyPanel->messenger($this->LanguageHandler->mod_err_group_dups, GATEWAY . '?a=moderators');
 			}
 		}
 		else if($user)
@@ -484,7 +484,7 @@ class ModuleObject extends MasterObject
 
 			if($sql->getNumRows())
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->mod_err_user_dups, GATEWAY . '?a=moderators');
+				$this->MyPanel->messenger($this->LanguageHandler->mod_err_user_dups, GATEWAY . '?a=moderators');
 			}
 		}
 
@@ -512,47 +512,47 @@ class ModuleObject extends MasterObject
 
 		$data = $sql->getRow();
 
-		$this->OnePanel->appendBuffer($this->LanguageHandler->mod_step_four_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->mod_step_four_tip);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=moderators&amp;code=04">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=moderators&amp;code=04">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mod_add_table_perm, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;',  "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mod_add_table_perm, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;',  "align='center'");
 
-			$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->mod_add_table_header, $data['name'])); 
+			$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->mod_add_table_header, $data['name'])); 
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_topics),
-											   array($this->OnePanel->form->addYesNo('edit_topics', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_topics),
+											   array($this->MyPanel->form->addYesNo('edit_topics', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_others),
-											   array($this->OnePanel->form->addYesNo('edit_others', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_others),
+											   array($this->MyPanel->form->addYesNo('edit_others', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_posts),
-											   array($this->OnePanel->form->addYesNo('delete_posts', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_posts),
+											   array($this->MyPanel->form->addYesNo('delete_posts', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_topics),
-											   array($this->OnePanel->form->addYesNo('delete_topics', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_topics),
+											   array($this->MyPanel->form->addYesNo('delete_topics', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_move),
-											   array($this->OnePanel->form->addYesNo('move_topics', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_move),
+											   array($this->MyPanel->form->addYesNo('move_topics', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_lock),
-											   array($this->OnePanel->form->addYesNo('lock_topics', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_lock),
+											   array($this->MyPanel->form->addYesNo('lock_topics', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_pin),
-											   array($this->OnePanel->form->addYesNo('pin_topics', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_pin),
+											   array($this->MyPanel->form->addYesNo('pin_topics', 1, false, false, true))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_announce),
-											   array($this->OnePanel->form->addYesNo('mod_announce', 1, false, false, true))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_announce),
+											   array($this->MyPanel->form->addYesNo('mod_announce', 1, false, false, true))));
 
-			$this->OnePanel->form->addHidden('type',   $type);
-			$this->OnePanel->form->addHidden('id',	 $data['id']);
-			$this->OnePanel->form->addHidden('hash',   $this->UserHandler->getUserHash());
-			$this->OnePanel->form->addHidden('forums', $forums);
-			$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+			$this->MyPanel->form->addHidden('type',   $type);
+			$this->MyPanel->form->addHidden('id',	 $data['id']);
+			$this->MyPanel->form->addHidden('hash',   $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('forums', $forums);
+			$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -569,7 +569,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -636,7 +636,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('moderators');
 
-		$this->OnePanel->messenger($this->LanguageHandler->mod_err_done, GATEWAY . '?a=moderators');
+		$this->MyPanel->messenger($this->LanguageHandler->mod_err_done, GATEWAY . '?a=moderators');
 	}
 
    // ! Action Method
@@ -658,43 +658,43 @@ class ModuleObject extends MasterObject
 
 		$mod = $sql->getRow();
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=moderators&amp;code=06&amp;id={$this->_id}\">");
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=moderators&amp;code=06&amp;id={$this->_id}\">");
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mod_add_table_perm, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;',  "align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mod_add_table_perm, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;',  "align='center'");
 
-			$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->mod_add_table_header, $mod['mod_user_name'])); 
+			$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->mod_add_table_header, $mod['mod_user_name'])); 
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_topics),
-											   array($this->OnePanel->form->addYesNo('edit_topics', 1, false, false, true, $mod['mod_edit_topics']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_topics),
+											   array($this->MyPanel->form->addYesNo('edit_topics', 1, false, false, true, $mod['mod_edit_topics']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_others),
-											   array($this->OnePanel->form->addYesNo('edit_others', 1, false, false, true, $mod['mod_edit_other_posts']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_edit_others),
+											   array($this->MyPanel->form->addYesNo('edit_others', 1, false, false, true, $mod['mod_edit_other_posts']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_posts),
-											   array($this->OnePanel->form->addYesNo('delete_posts', 1, false, false, true, $mod['mod_delete_other_posts']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_posts),
+											   array($this->MyPanel->form->addYesNo('delete_posts', 1, false, false, true, $mod['mod_delete_other_posts']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_topics),
-											   array($this->OnePanel->form->addYesNo('delete_topics', 1, false, false, true, $mod['mod_delete_other_topics']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_delete_topics),
+											   array($this->MyPanel->form->addYesNo('delete_topics', 1, false, false, true, $mod['mod_delete_other_topics']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_move),
-											   array($this->OnePanel->form->addYesNo('move_topics', 1, false, false, true, $mod['mod_move_topics']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_move),
+											   array($this->MyPanel->form->addYesNo('move_topics', 1, false, false, true, $mod['mod_move_topics']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_lock),
-											   array($this->OnePanel->form->addYesNo('lock_topics', 1, false, false, true, $mod['mod_lock_topics']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_lock),
+											   array($this->MyPanel->form->addYesNo('lock_topics', 1, false, false, true, $mod['mod_lock_topics']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_pin),
-											   array($this->OnePanel->form->addYesNo('pin_topics', 1, false, false, true, $mod['mod_pin_topics']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_pin),
+											   array($this->MyPanel->form->addYesNo('pin_topics', 1, false, false, true, $mod['mod_pin_topics']))));
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mod_perm_announce),
-											   array($this->OnePanel->form->addYesNo('mod_announce', 1, false, false, true, $mod['mod_announce']))));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mod_perm_announce),
+											   array($this->MyPanel->form->addYesNo('mod_announce', 1, false, false, true, $mod['mod_announce']))));
 
-			$this->OnePanel->table->endTable();
-			$this->OnePanel->form->appendBuffer($this->OnePanel->table->flushBuffer() . "<div id=\"formwrap\">");
+			$this->MyPanel->table->endTable();
+			$this->MyPanel->form->appendBuffer($this->MyPanel->table->flushBuffer() . "<div id=\"formwrap\">");
 
 			$forum_select .= $this->ForumHandler->makeDropDown($mod['mod_forum']);
 
-			$this->OnePanel->form->addWrapSelect('forum', false, false, " size='5' style='width: 98%;'", array(1, 
+			$this->MyPanel->form->addWrapSelect('forum', false, false, " size='5' style='width: 98%;'", array(1, 
 												 $this->LanguageHandler->mod_edit_forum_title,
 												 $this->LanguageHandler->mod_edit_forum_desc), false, 
 												 $forum_select);
@@ -709,14 +709,14 @@ class ModuleObject extends MasterObject
 				$id   = $mod['mod_user_id'];
 			}
 
-			$this->OnePanel->form->addHidden('type',   $type);
-			$this->OnePanel->form->addHidden('id',	 $id);
+			$this->MyPanel->form->addHidden('type',   $type);
+			$this->MyPanel->form->addHidden('id',	 $id);
 
-			$this->OnePanel->form->addHidden('user',   $mod['mod_user_id']);
-			$this->OnePanel->form->addHidden('hash',   $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('user',   $mod['mod_user_id']);
+			$this->MyPanel->form->addHidden('hash',   $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm($this->LanguageHandler->mod_edit_submit);
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm($this->LanguageHandler->mod_edit_submit);
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -733,7 +733,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -758,7 +758,7 @@ class ModuleObject extends MasterObject
 
 				if($sql->getNumRows())
 				{
-					$this->OnePanel->messenger($this->LanguageHandler->mod_err_group_dups, GATEWAY . '?a=moderators');
+					$this->MyPanel->messenger($this->LanguageHandler->mod_err_group_dups, GATEWAY . '?a=moderators');
 				}
 			}
 			else if($user)
@@ -772,7 +772,7 @@ class ModuleObject extends MasterObject
 
 				if($sql->getNumRows())
 				{
-					$this->OnePanel->messenger($this->LanguageHandler->mod_err_user_dups, GATEWAY . '?a=moderators');
+					$this->MyPanel->messenger($this->LanguageHandler->mod_err_user_dups, GATEWAY . '?a=moderators');
 				}
 			}
 		}
@@ -792,7 +792,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('moderators');
 
-		$this->OnePanel->messenger($this->LanguageHandler->mod_err_edit_done, GATEWAY . "?a=moderators&code=05&id={$this->_id}");
+		$this->MyPanel->messenger($this->LanguageHandler->mod_err_edit_done, GATEWAY . "?a=moderators&code=05&id={$this->_id}");
 	}
 
    // ! Action Method

@@ -1,6 +1,6 @@
 <?php
 
-if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
+if(!defined('MYPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
 
 /**
 * Onepanel's Form Handling Class
@@ -12,7 +12,7 @@ if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
 * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
 * @package Onepanel
 */
-class OneForm
+class MyForm
 {
   /**
    * Holds current form buffer.
@@ -31,7 +31,7 @@ class OneForm
    * @since v1.0 BETA
    * @return void;
    */
-	function OneForm()
+	function MyForm()
 	{
 		$this->buffer = '';
 	}
