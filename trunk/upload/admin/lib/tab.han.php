@@ -1,6 +1,6 @@
 <?php
 
-if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
+if(!defined('MYPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
 
 /**
 * Class Name
@@ -12,7 +12,7 @@ if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
 * @company Jaia Interactive <admin@jaia-interactive.com>
 * @package MyTopix Personal Message Board
 */
-class OneTab
+class MyTab
 {
    /**
     * Variable Description
@@ -31,7 +31,7 @@ class OneTab
     * @since v1.0
     * @return String
     */
-    function OneTab()
+    function MyTab()
     {
         $this->buffer = '';
     }

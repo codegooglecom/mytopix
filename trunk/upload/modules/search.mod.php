@@ -246,9 +246,14 @@ class ModuleObject extends MasterObject
 
 			default:
 
+				$forums = array();
+
 				if(isset($this->get['forums']))
 				{
 					$forums = explode('|', $this->get['forums']);
+				}
+				else if ( isset ( $this->post['forum'] ) ) {
+					$forums[] = $this->post['forum'];
 				}
 
 				if(false == isset($forums) || 
@@ -306,14 +311,6 @@ class ModuleObject extends MasterObject
 				break;
 		}
 
-		if($this->UserHandler->getField('class_canSeeHidden'))
-		{
-			$private = "";
-		}
-		else {
-			$private = " AND t.topics_hidden <> 1";
-		}
-
 		$query = "
 		SELECT
 			DISTINCT(t.topics_id),
@@ -329,7 +326,6 @@ class ModuleObject extends MasterObject
 		WHERE 
 			{$string}
 			{$in_forums}
-			{$private}
 		GROUP BY t.topics_id
 		ORDER BY {$order_by}";
 
@@ -433,14 +429,6 @@ class ModuleObject extends MasterObject
 				 ? $boolean = ' IN BOOLEAN MODE'
 				 : '';
 
-		if($this->UserHandler->getField('class_canSeeHidden'))
-		{
-			$private = "";
-		}
-		else {
-			$private = " AND t.topics_hidden <> 1";
-		}
-
 		if(false == isset($forums) || 
 		   false == $forums = $this->ForumHandler->getAllowableForums($forums))
 		{
@@ -462,8 +450,7 @@ class ModuleObject extends MasterObject
 			LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
 			LEFT JOIN " . DB_PREFIX . "forums  f ON f.forum_id   = t.topics_forum
 		WHERE
-			MATCH (p.posts_body) AGAINST ('{$this->_phrase}'{$boolean})
-			{$private} AND
+			MATCH (p.posts_body) AGAINST ('{$this->_phrase}'{$boolean}) AND
 			t.topics_forum IN ('{$in_forums}')
 		HAVING
 			topics_score > 0.2
@@ -567,14 +554,6 @@ class ModuleObject extends MasterObject
 	*/
 	function _doUserSearch()
 	{
-		if($this->UserHandler->getField('class_canSeeHidden'))
-		{
-			$private = "";
-		}
-		else {
-			$private = " AND t.topics_hidden <> 1";
-		}
-
 		$search_forums = $this->ForumHandler->getAllowableForums();
 		$in_forums	 = implode("','", $search_forums);
 
@@ -589,7 +568,6 @@ class ModuleObject extends MasterObject
 			p.posts_author = {$this->_id} AND 
 			p.posts_author <> 1		   AND
 			t.topics_forum IN ('{$in_forums}')
-			{$private}
 		GROUP BY p.posts_author", __FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())

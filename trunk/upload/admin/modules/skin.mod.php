@@ -54,7 +54,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -98,8 +98,8 @@ class ModuleObject extends MasterObject
 			$this->_skin = $this->get['skin'];
 		}
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler = new FileHandler($this->config);
@@ -120,47 +120,47 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->skin_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->skin_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 23, $this->_skin);
 				$this->_showSkins();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_editForm();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doEdit();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doRemove();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 24, $this->_skin);
 				$this->_createForm();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(4, 13, 24, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 24, $this->_skin);
 				$this->_doCreate();
 				break;
 
 			case '06':
-				$this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 25, $this->_skin);
 				$this->_showInstall();
 				break;
 
 			case '07':
-				$this->OnePanel->_make_nav(4, 13, 25, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 25, $this->_skin);
 
 				if($this->files['upload']['name'])
 				{
@@ -172,32 +172,32 @@ class ModuleObject extends MasterObject
 				break;
 
 			case '08':
-				$this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 26, $this->_skin);
 				$this->_showExport();
 				break;
 
 			case '09':
-				$this->OnePanel->_make_nav(4, 13, 26, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 26, $this->_skin);
 				$this->_doExport();
 				break;
 
 			case '10':
-				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doRemFile();
 				break;
 
 			case '11':
-				$this->OnePanel->_make_nav(4, 13, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, -2, $this->_skin);
 				$this->_doDownload();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(4, 13, 23, $this->_skin);
+				$this->MyPanel->_make_nav(4, 13, 23, $this->_skin);
 				$this->_showSkins();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -212,15 +212,15 @@ class ModuleObject extends MasterObject
 	*/
 	function _showSkins()
 	{
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_id,	  " width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_name,	" align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_author,  " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_hidden,  " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_active,  " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_list_tbl_users,   " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', " width='20%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_id,	  " width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_name,	" align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_author,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_hidden,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_active,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_list_tbl_users,   " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', " width='20%'");
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->skin_list_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->skin_list_tbl_header);
 
 			$sql = $this->DatabaseHandler->query("
 			SELECT 
@@ -232,6 +232,13 @@ class ModuleObject extends MasterObject
 
 			while($row = $sql->getRow())
 			{
+				if ( $row['skins_id'] != 1 )
+				{
+					$link_delete = "<a href=\"" . GATEWAY . "?a=skin&amp;code=03&amp;skin={$row['skins_id']}\" onclick='javascript:return confirm(\"{$this->LanguageHandler->skin_list_tbl_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>";
+				}
+				else {
+					$link_delete = '<img src="lib/theme/btn_delete_off.gif" alt=""/>';
+				}
 
 				$author = $row['skins_author'] != 'unknown'
 						? "<a href=\"{$row['skins_author_link']}\">{$row['skins_author']}</a>" 
@@ -248,12 +255,9 @@ class ModuleObject extends MasterObject
 				$option = false == is_dir(SYSTEM_PATH . "skins/{$row['skins_id']}/")
 						? "<b>{$this->LanguageHandler->skin_list_dir_error}</b>"
 						: "<a href=\"" . GATEWAY . "?a=skin&amp;code=01&amp;skin={$row['skins_id']}\">" .
-						  "{$this->LanguageHandler->link_edit}</a> | <a href=\"" . GATEWAY . "?a=skin"  .
-						  "&amp;code=03&amp;skin={$row['skins_id']}\" onclick='javascript:return "	  .
-						  "confirm(\"{$this->LanguageHandler->skin_list_tbl_confirm}\");'><b>"			.
-						  "{$this->LanguageHandler->link_delete}</b></a>";
+						  "{$this->LanguageHandler->link_edit}</a> {$link_delete}";
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['skins_id']}</strong>", " align='center'", 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['skins_id']}</strong>", " align='center'", 'headera'),
 										   array($row['skins_name'], false, 'headerb'),
 										   array($author, " align='center'", 'headerb'),
 										   array($hidden, " align='center'", 'headerb'),
@@ -262,8 +266,8 @@ class ModuleObject extends MasterObject
 										   array($option, " align='center'", 'headerc')));
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -282,47 +286,47 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
 		}
 
 		$row = $sql->getRow();
 		
-		$this->OnePanel->form->startForm(GATEWAY . "?a=skin&amp;code=02&amp;skin={$this->_skin}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=skin&amp;code=02&amp;skin={$this->_skin}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$row['skins_name']		  = $this->ParseHandler->parseText($row['skins_name'],		  F_ENTS);
 			$row['skins_author']		= $this->ParseHandler->parseText($row['skins_author'],		F_ENTS);
 			$row['skins_author_link']   = $this->ParseHandler->parseText($row['skins_author_link'],   F_ENTS);
 
-			$this->OnePanel->form->addTextBox('name', $row['skins_name'], false, 
+			$this->MyPanel->form->addTextBox('name', $row['skins_name'], false, 
 											  array(1, $this->LanguageHandler->skin_edit_form_name_title,
 													   $this->LanguageHandler->skin_edit_form_name_desc));
 
-			$this->OnePanel->form->addTextBox('author', $row['skins_author'], false, 
+			$this->MyPanel->form->addTextBox('author', $row['skins_author'], false, 
 											  array(1, $this->LanguageHandler->skin_edit_form_author_title,
 													   $this->LanguageHandler->skin_edit_form_author_desc));
 
-			$this->OnePanel->form->addTextBox('link', $row['skins_author_link'], false, 
+			$this->MyPanel->form->addTextBox('link', $row['skins_author_link'], false, 
 											  array(1, $this->LanguageHandler->skin_edit_form_link_title,
 													   $this->LanguageHandler->skin_edit_form_link_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('hide', 1, false, false,
+			$this->MyPanel->form->addCheckBox('hide', 1, false, false,
 											false, ($row['skins_hidden'] ? true : false),$this->LanguageHandler->skin_edit_form_hide_desc);
 
 			$disable = $this->config['skin'] == $row['skins_id'] ? true : false;
 
-			$this->OnePanel->form->addCheckBox('default', 1, false, false,
+			$this->MyPanel->form->addCheckBox('default', 1, false, false,
 											false, ($disable ? true : false),$this->LanguageHandler->skin_edit_form_default_desc);
 
-			$this->OnePanel->form->addCheckBox('transfer', 1, false, false,
+			$this->MyPanel->form->addCheckBox('transfer', 1, false, false,
 											false, ($this->config['closed'] ? true : false),$this->LanguageHandler->skin_edit_form_xfer_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -339,7 +343,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -348,13 +352,13 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_results,
 									   GATEWAY . '?a=skin&amp;code=01&amp;skin={$this->_skin}');
 		}
 
 		if(false == $name)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, 
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_name, 
 									   GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
 		}
 
@@ -388,7 +392,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('skins');
 
-		$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_done, 
+		$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_done, 
 								   GATEWAY . "?a=skin&amp;code=01&amp;skin={$this->_skin}");
 	}
 
@@ -406,7 +410,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_skin == 1)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_rem_err_no_default, GATEWAY . '?a=skin');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_rem_err_no_default, GATEWAY . '?a=skin');
 		}
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
@@ -414,7 +418,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
 		}
 
 		if($this->_FileHandler->remDir(SYSTEM_PATH . "skins/{$this->_skin}/"))
@@ -439,7 +443,7 @@ class ModuleObject extends MasterObject
 			header("LOCATION: " . GATEWAY . "?a=skin");
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->skin_rem_err_no_remove, GATEWAY . '?a=skin');
+		$this->MyPanel->messenger($this->LanguageHandler->skin_rem_err_no_remove, GATEWAY . '?a=skin');
 	}
 
    // ! Action Method
@@ -454,40 +458,40 @@ class ModuleObject extends MasterObject
 	*/
 	function _createForm()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=05');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=skin&amp;code=05');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('base',  $this->_fetchSkins(), false, false, 
+			$this->MyPanel->form->addWrapSelect('base',  $this->_fetchSkins(), false, false, 
 											 array(1, $this->LanguageHandler->skin_create_form_base_title,
 													  $this->LanguageHandler->skin_create_form_base_desc));
 
-			$this->OnePanel->form->addTextBox('name', false, false, 
+			$this->MyPanel->form->addTextBox('name', false, false, 
 											 array(1, $this->LanguageHandler->skin_create_form_name_title,
 													  $this->LanguageHandler->skin_create_form_name_desc));
 
-			$this->OnePanel->form->addTextBox('author', false, false, 
+			$this->MyPanel->form->addTextBox('author', false, false, 
 											 array(1, $this->LanguageHandler->skin_create_form_author_title,
 													  $this->LanguageHandler->skin_create_form_author_desc));
 
-			$this->OnePanel->form->addTextBox('link', 'http://', false, 
+			$this->MyPanel->form->addTextBox('link', 'http://', false, 
 											 array(1, $this->LanguageHandler->skin_create_form_link_title,
 													  $this->LanguageHandler->skin_create_form_link_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->skin_edit_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('hide', 1, false, false, false, false,
+			$this->MyPanel->form->addCheckBox('hide', 1, false, false, false, false,
 											   $this->LanguageHandler->skin_edit_form_hide_desc);
 
-			$this->OnePanel->form->addCheckBox('default_skin', 1, false, false, false, false, 
+			$this->MyPanel->form->addCheckBox('default_skin', 1, false, false, false, false, 
 											   $this->LanguageHandler->skin_edit_form_default_desc);
 
-			$this->OnePanel->form->addCheckBox('transfer', 1, false, false, false, false, 
+			$this->MyPanel->form->addCheckBox('transfer', 1, false, false, false, false, 
 											   $this->LanguageHandler->skin_edit_form_xfer_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -504,7 +508,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -519,14 +523,14 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_results, GATEWAY . '?a=skin');
 		}
 
 		$skin = $sql->getRow();
 
 		if(false == $name)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_edit_err_no_name, GATEWAY . '?a=skin&amp;code=04');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_edit_err_no_name, GATEWAY . '?a=skin&amp;code=04');
 		}
 
 		$sql = $this->DatabaseHandler->query("
@@ -536,7 +540,7 @@ class ModuleObject extends MasterObject
 
 		if($sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_create_err_name_taken, 
+			$this->MyPanel->messenger($this->LanguageHandler->skin_create_err_name_taken, 
 									   GATEWAY . '?a=skin&amp;code=04');
 		}
 
@@ -572,7 +576,7 @@ class ModuleObject extends MasterObject
 			$this->config['skin'] = 1;
 			$this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
 
-			return $this->OnePanel->messenger($this->LanguageHandler->skin_create_err_failed, 
+			return $this->MyPanel->messenger($this->LanguageHandler->skin_create_err_failed, 
 											  GATEWAY . '?a=skin&amp;code=04');
 		}
 
@@ -671,10 +675,10 @@ class ModuleObject extends MasterObject
 	*/
 	function _showInstall()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=07', false, 
+		$this->MyPanel->form->startForm(GATEWAY . '?a=skin&amp;code=07', false, 
 										'POST', " enctype='multipart/form-data'");
 
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$list = array();
 			$handle = opendir(SYSTEM_PATH . 'skins/');
@@ -690,23 +694,23 @@ class ModuleObject extends MasterObject
 
 			if(sizeof($list))
 			{
-				$this->OnePanel->form->addWrapSelect('pack', $list, false, false, 
+				$this->MyPanel->form->addWrapSelect('pack', $list, false, false, 
 												 array(1, $this->LanguageHandler->skin_inst_form_choose_title,
 														  $this->LanguageHandler->skin_inst_form_choose_desc));
 	
-				$this->OnePanel->form->appendBuffer("<p style='text-align: center;'><b>" .
+				$this->MyPanel->form->appendBuffer("<p style='text-align: center;'><b>" .
 													$this->LanguageHandler->skin_inst_form_or  .
 													"</b></p>");
 			}
 
-			$this->OnePanel->form->addFile('upload', 
+			$this->MyPanel->form->addFile('upload', 
 										   array(1, $this->LanguageHandler->skin_inst_form_upload_title, 
 													$this->LanguageHandler->skin_inst_form_upload_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());	
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());	
 	}
 
    // ! Action Method
@@ -723,14 +727,14 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		$dir = $this->config['site_path'] . "skins/";
 
 		if(file_exists($dir . $this->files['upload']['name']))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_exists, GATEWAY . '?a=skin&amp;code=06');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_inst_err_exists, GATEWAY . '?a=skin&amp;code=06');
 		}
 
 		require_once SYSTEM_PATH . 'lib/upload.han.php';
@@ -746,7 +750,7 @@ class ModuleObject extends MasterObject
 		if(false == $UploadHandler->doUpload())
 		{
 			$error_msg = $UploadHandler->getError();
-			return $this->OnePanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=skin&amp;code=06');
+			return $this->MyPanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=skin&amp;code=06');
 		}
 
 		$this->_doInstall($this->files['upload']['name']);
@@ -766,14 +770,14 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(false == file_exists(SYSTEM_PATH . "skins/{$pack}"))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_no_pack, 
+			$this->MyPanel->messenger($this->LanguageHandler->skin_inst_err_no_pack, 
 									   GATEWAY . '?a=skin&amp;code=06');
 		}
 
@@ -787,7 +791,7 @@ class ModuleObject extends MasterObject
 		{
 			chdir($this->config['site_path'] . 'admin/');
 
-			$this->OnePanel->messenger($this->LanguageHandler->skin_inst_err_invalid, GATEWAY . '?a=skin&amp;code=06');
+			$this->MyPanel->messenger($this->LanguageHandler->skin_inst_err_invalid, GATEWAY . '?a=skin&amp;code=06');
 		}
 
 		mkdir(SYSTEM_PATH . "skins/{$temp}/");
@@ -877,28 +881,28 @@ class ModuleObject extends MasterObject
 	*/
 	function _showExport()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=skin&amp;code=09');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=skin&amp;code=09');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin', $this->_fetchSkins(), false, false, 
+			$this->MyPanel->form->addWrapSelect('skin', $this->_fetchSkins(), false, false, 
 											 array(1, $this->LanguageHandler->skin_exp_form_choose_title, 
 													  $this->LanguageHandler->skin_exp_form_choose_desc));
 
-			$this->OnePanel->form->addTextBox('title', false, false, 
+			$this->MyPanel->form->addTextBox('title', false, false, 
 											  array(1, $this->LanguageHandler->skin_exp_form_name_title,
 													   $this->LanguageHandler->skin_exp_form_name_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_id,   " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_name, " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_date, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_id,   " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_name, " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_exp_tbl_date, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;');
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->skin_exp_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->skin_exp_tbl_header);
 
 			$i	= 0;
 			$list = array();
@@ -916,24 +920,23 @@ class ModuleObject extends MasterObject
 
 			if(false == sizeof($list))
 			{
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->skin_exp_tbl_no_packs, " align='center' colspan='4'")));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->skin_exp_tbl_no_packs, " align='center' colspan='4'")));
 			}
 			else
 			{
 				foreach($list as $key => $val)
 				{
-
-					$this->OnePanel->table->addRow(array(array("<strong>{$key}</strong>", " align='center'", 'headera'),
+					$this->MyPanel->table->addRow(array(array("<strong>{$key}</strong>", " align='center'", 'headera'),
 											   array($val, false, 'headerb'),
 											   array(date($this->config['date_long'], filemtime(SYSTEM_PATH . "skins/{$val}")), " align='center'", 'headerb'),
 											   array("<a href=\""   . GATEWAY . "?a=skin&amp;code=11&amp;skin={$val}\">{$this->LanguageHandler->style_tbl_download}</a>" .
-													 " | <a href=\"" . GATEWAY . "?a=skin&amp;code=10&amp;skin={$val}\" onclick='javascript: return confirm" . 
+													 " <a href=\"" . GATEWAY . "?a=skin&amp;code=10&amp;skin={$val}\" onclick='javascript: return confirm" . 
 													 "(\"{$this->LanguageHandler->skin_exp_rem_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 				}
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
 	}
 
@@ -951,7 +954,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 		extract($this->post);
 
@@ -966,7 +969,7 @@ class ModuleObject extends MasterObject
 
 		if(false == preg_match('#^([a-zA-Z0-9_-]+)$#s', $title))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->skin_exp_err_bad_name, 
+			$this->MyPanel->messenger($this->LanguageHandler->skin_exp_err_bad_name, 
 									   GATEWAY . '?a=skin&amp;code=08');
 		}
 
@@ -1117,7 +1120,7 @@ class ModuleObject extends MasterObject
 		$this->CacheHandler->updateCache('emoticons');
 		$this->CacheHandler->updateCache('titles');
 
-		$this->OnePanel->messenger($this->LanguageHandler->skin_rem_missing, GATEWAY . '?a=skin&amp;code=08');
+		$this->MyPanel->messenger($this->LanguageHandler->skin_rem_missing, GATEWAY . '?a=skin&amp;code=08');
 	}
 
    // ! Action Method
@@ -1142,7 +1145,7 @@ class ModuleObject extends MasterObject
 			exit();	
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->skin_rem_missing, GATEWAY . '?a=skin&amp;code=08');
+		$this->MyPanel->messenger($this->LanguageHandler->skin_rem_missing, GATEWAY . '?a=skin&amp;code=08');
 	}
 
    // ! Action Method

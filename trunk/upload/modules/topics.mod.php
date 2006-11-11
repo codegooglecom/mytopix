@@ -310,7 +310,6 @@ class ModuleObject extends MasterObject
 				LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
 			WHERE
 				t.topics_forum = {$this->_forum}
-				{$private}
 			ORDER BY
 				t.topics_announce DESC,
 				t.topics_pinned DESC, 

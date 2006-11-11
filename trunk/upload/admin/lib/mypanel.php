@@ -10,7 +10,7 @@
 * @company Jaia Interactive <admin@jaia-interactive.com>
 * @package MyTopix Personal Message Board
 */
-class OnePanel
+class MyPanel
 {
    /**
     * Variable Description
@@ -58,7 +58,7 @@ class OnePanel
     * @since v1.0
     * @return String
     */
-	function OnePanel($_System, $path = false)
+	function MyPanel($_System, $path = false)
 	{
         $this->_System =& $_System;
         
@@ -78,9 +78,9 @@ class OnePanel
         $this->_nav_middle = '';
         $this->_nav_bottom = '';
 
-		$this->form    =  new OneForm();
-		$this->table   =  new OneTable();
-		$this->tabs    =  new OneTab();
+		$this->form    =  new MyForm();
+		$this->table   =  new MyTable();
+		$this->tabs    =  new MyTab();
 	}
 
    // ! Action Method

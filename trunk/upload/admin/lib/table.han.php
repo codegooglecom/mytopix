@@ -1,6 +1,6 @@
 <?php
 
-if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
+if(!defined('MYPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
 
 /**
 * Onepanel's Table Handling Class
@@ -19,22 +19,22 @@ if(!defined('ONEPANEL')) die('<b>ERROR:</b> Hack attempt detected!');
  * The example below will create a table titled 'User List'
  * and will include a list of 3 user rows.
  *
- * $OP = new Onepanel();
+ * $MP = new MyPanel();
  *
- * $OP->table->addColumn('id');
- * $OP->table->addColumn('name');
+ * $MP->table->addColumn('id');
+ * $MP->table->addColumn('name');
  * 
- * $OP->table->startTable('<b>User List:</b>');
+ * $MP->table->startTable('<b>User List:</b>');
  * 
- * 	  $OP->table->addRow(array(1, 'Dan'));
- *    $OP->table->addRow(array(4, 'Bob'));
- * 	  $OP->table->addRow(array(7, 'Edd'));
+ * 	  $MP->table->addRow(array(1, 'Dan'));
+ *    $MP->table->addRow(array(4, 'Bob'));
+ * 	  $MP->table->addRow(array(7, 'Edd'));
  * 
- * $OP->table->endTable();
+ * $MP->table->endTable();
  * 
  */
 
-class OneTable
+class MyTable
 {
 
   /**
@@ -63,7 +63,7 @@ class OneTable
    * @since v1.0 BETA
    * @return void;
    */
-	function OneTable()
+	function MyTable()
 	{
 		$this->buffer  = '';
 		$this->columns = array();

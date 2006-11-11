@@ -217,13 +217,27 @@ class ModuleObject extends MasterObject
 		while($row = $sql->getRow())
 		{
 			unlink(SYSTEM_PATH . "uploads/attachments/{$row['upload_file']}.{$row['upload_ext']}"); 
-			
+
 			$delete[] = "upload_id = {$row['upload_id']}";
 		}
 
 		if(sizeof($delete))
 		{
 			$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "uploads WHERE " . implode(' OR ', $delete), __FILE__, __LINE__);
+		}
+
+		$sql = $this->DatabaseHandler->query ( "
+		SELECT topics_id
+		FROM " . DB_PREFIX . "topics
+		WHERE
+			topics_moved  = 1 AND
+			topics_mtopic = {$this->_id}",
+		__FILE__, __LINE__ );
+
+		while ( $row = $sql->getRow() )
+		{
+			$this->DatabaseHandler->query ( "DELETE FROM " . DB_PREFIX . "topics WHERE topics_id   = {$row['topics_id']}", __FILE__, __LINE__ );
+			$this->DatabaseHandler->query ( "DELETE FROM " . DB_PREFIX . "posts  WHERE posts_topic = {$row['topics_id']}", __FILE__, __LINE__ );
 		}
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "topics WHERE topics_id   = {$this->_id}", __FILE__, __LINE__);

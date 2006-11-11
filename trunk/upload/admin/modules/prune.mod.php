@@ -54,7 +54,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -87,8 +87,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ? $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ? $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler  = new FileHandler($this->config);
@@ -123,27 +123,27 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(1, 2);
+				$this->MyPanel->_make_nav(1, 2);
 				$this->_showSearchForm();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(1, 2);
+				$this->MyPanel->_make_nav(1, 2);
 				$this->_doSearch();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(1, 2);
+				$this->MyPanel->_make_nav(1, 2);
 				$this->_doPrune();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(1, 2);
+				$this->MyPanel->_make_nav(1, 2);
 				$this->_showSearchForm();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -158,74 +158,74 @@ class ModuleObject extends MasterObject
 	*/
 	function _showSearchForm()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->prune_form_header);
-		$this->OnePanel->appendBuffer($this->LanguageHandler->prune_tip);
-		$this->OnePanel->form->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=prune&amp;code=01#results">');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->addHeader($this->LanguageHandler->prune_form_header);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->prune_tip);
+		$this->MyPanel->form->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=prune&amp;code=01#results">');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_field, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_term,  "align='center' style='width: 40px;'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_field, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_term,  "align='center' style='width: 40px;'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->prune_form_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->prune_form_header);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_name,
-										   $this->OnePanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('name',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_name,
+										   $this->MyPanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('name',	 false, false, false, true), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_title,
-										   $this->OnePanel->form->addSelect('title_type', $this->_comp1, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('title',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_title,
+										   $this->MyPanel->form->addSelect('title_type', $this->_comp1, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('title',	 false, false, false, true), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_posts,
-										   $this->OnePanel->form->addSelect('post_type', $this->_comp2, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('post',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_posts,
+										   $this->MyPanel->form->addSelect('post_type', $this->_comp2, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('post',	 false, false, false, true), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_views,
-										   $this->OnePanel->form->addSelect('view_type', $this->_comp2, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('view',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_views,
+										   $this->MyPanel->form->addSelect('view_type', $this->_comp2, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('view',	 false, false, false, true), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_age,
-										   $this->OnePanel->form->addSelect('age_type', $this->_comp3, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('age',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_age,
+										   $this->MyPanel->form->addSelect('age_type', $this->_comp3, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('age',	 false, false, false, true), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_last,
-										   $this->OnePanel->form->addSelect('last_type', $this->_comp3, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('last',	 false, false, false, true), ' align="right"')));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_last,
+										   $this->MyPanel->form->addSelect('last_type', $this->_comp3, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('last',	 false, false, false, true), ' align="right"')));
 
 			$forum_select  = "<option value=\"0\" selected=\"selected\">{$this->LanguageHandler->prune_any_forum}</option>";
 			$forum_select .= $this->ForumHandler->makeDropDown($mod['mod_forum']);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_forum,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_forum,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addSelect('forums[]', false, false, " size='5' style='width: 300px;' multiple='multiple'", false, true, $forum_select), ' align="right"')));
+										   array($this->MyPanel->form->addSelect('forums[]', false, false, " size='5' style='width: 300px;' multiple='multiple'", false, true, $forum_select), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_hidden,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_hidden,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('hidden', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('hidden', false, false, false, true, false), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_locked,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_locked,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('locked', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('locked', false, false, false, true, false), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_stuck,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_stuck,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('stuck', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('stuck', false, false, false, true, false), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_announce,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_announce,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('announce', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('announce', false, false, false, true, false), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_poll,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_poll,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('poll', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('poll', false, false, false, true, false), ' align="right"')));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->prune_form_file,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->prune_form_file,
 										   '&nbsp;',
-										   array($this->OnePanel->form->addYesNo('file', false, false, false, true, false), ' align="right"')));
+										   array($this->MyPanel->form->addYesNo('file', false, false, false, true, false), ' align="right"')));
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -412,7 +412,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $query)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->prune_err_no_fields, GATEWAY . '?a=prune');
+			$this->MyPanel->messenger($this->LanguageHandler->prune_err_no_fields, GATEWAY . '?a=prune');
 		}
 
 		$query = substr(implode(" \n", $query), 4);
@@ -440,12 +440,12 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->prune_err_no_results, GATEWAY . '?a=prune');
+			$this->MyPanel->messenger($this->LanguageHandler->prune_err_no_results, GATEWAY . '?a=prune');
 		}
 
-		$this->OnePanel->appendBuffer("<a name='results'></a>");
+		$this->MyPanel->appendBuffer("<a name='results'></a>");
 
-		$this->OnePanel->appendBuffer("
+		$this->MyPanel->appendBuffer("
 		<script language='javascript'>
 			function doConfirm()
 			{
@@ -455,19 +455,19 @@ class ModuleObject extends MasterObject
 			}
 		</script>");
 
-		$this->OnePanel->addHeader($this->LanguageHandler->prune_result_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->prune_result_header);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=prune&amp;code=02">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=prune&amp;code=02">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_id);
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_title);
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_author, 'align="center"');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_posts,  'align="center"');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_forum,  'align="center"');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_date,   'align="center"');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->prune_tbl_prune,  'align="center" style="width: 5px;"');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_id);
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_title);
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_author, 'align="center"');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_posts,  'align="center"');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_forum,  'align="center"');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_date,   'align="center"');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->prune_tbl_prune,  'align="center" style="width: 5px;"');
 
-			$this->OnePanel->table->startTable(number_format($sql->getNumRows()) . ' ' . $this->LanguageHandler->prune_tbl_header);
+			$this->MyPanel->table->startTable(number_format($sql->getNumRows()) . ' ' . $this->LanguageHandler->prune_tbl_header);
 
 			while($row = $sql->getRow())
 			{
@@ -486,20 +486,20 @@ class ModuleObject extends MasterObject
 					$row['topics_title'] = substr($row['topics_title'], 0, 25) . ' ...';
 				}
 
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['topics_id']}</strong>", false, 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['topics_id']}</strong>", false, 'headera'),
 										   array("<a href=\"{$this->config['site_link']}index.php?a=read&amp;t={$row['topics_id']}\"  title=\"\" target='_blank'>{$row['topics_title']}</a>", false, 'headerb'),
 										   array($author, ' align="center"', 'headerb'),
 										   array(number_format($row['topics_posts']), ' align="center"', 'headerb'),
 										   array("<a href=\"" . GATEWAY . "?a=forums&amp;code=04&amp;forum={$row['forum_id']}\">{$row['forum_name']}</a>", ' align="center"'),
 										   array(date($this->config['date_short'], $row['topics_date']), ' align="center"', 'headerb'),
-										   array($this->OnePanel->form->addCheckBox("prune[{$row['topics_id']}]", $row['topics_id'], " checked=\"checked\"", false, true, false, false, false, 'c'), " valign=\"top\" align=\"center\"")));
+										   array($this->MyPanel->form->addCheckBox("prune[{$row['topics_id']}]", $row['topics_id'], " checked=\"checked\"", false, true, false, false, false, 'c'), " valign=\"top\" align=\"center\"")));
 			}
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
-			$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -516,7 +516,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -580,7 +580,7 @@ class ModuleObject extends MasterObject
 		$this->ForumHandler->updateForumStats();
 		$this->CacheHandler->updateCache('forums');
 
-		$this->OnePanel->messenger(number_format($count) . ' ' . $this->LanguageHandler->prune_err_done, GATEWAY . '?a=prune');
+		$this->MyPanel->messenger(number_format($count) . ' ' . $this->LanguageHandler->prune_err_done, GATEWAY . '?a=prune');
 	}
 }
 

@@ -48,7 +48,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -86,8 +86,8 @@ class ModuleObject extends MasterObject
 			$this->_skin = (int) $this->get['skin'];
 		}
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler = new FileHandler($this->config);
@@ -105,58 +105,58 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->emo_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->emo_header);
 
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(5, 17, 29, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 29, $this->_skin);
 				$this->_showEmoticons();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(5, 17, -2, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, -2, $this->_skin);
 				$this->_doRemoveEmoticon();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(5, 17, -2, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, -2, $this->_skin);
 				$this->_showEmoticonEditForm();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(5, 17, -2, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, -2, $this->_skin);
 				$this->_doEmoticonEdit();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(5, 17, 30, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 30, $this->_skin);
 				$this->_showUploadForm();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(5, 17, 30, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 30, $this->_skin);
 				$this->_doUpload();
 				break;
 
 			case '06':
-				$this->OnePanel->_make_nav(5, 17, 31, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 31, $this->_skin);
 				$this->_showImportForm();
 				break;
 
 			case '07':
-				$this->OnePanel->_make_nav(5, 17, 31, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 31, $this->_skin);
 				$this->_doImport();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(5, 17, 29, $this->_skin);
+				$this->MyPanel->_make_nav(5, 17, 29, $this->_skin);
 				$this->_showEmoticons();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -171,32 +171,32 @@ class ModuleObject extends MasterObject
 	*/
 	function _showEmoticons()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=emoticons');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=emoticons');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
 		   									 array(1, $this->LanguageHandler->emo_form_choose_title,
 		  											  $this->LanguageHandler->emo_form_choose_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->emo_list_tbl_id, ' width="1%"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->emo_list_tbl_image, ' width="1%"');
-		$this->OnePanel->table->addColumn($this->LanguageHandler->emo_list_tbl_code,  " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->emo_list_tbl_click, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="15%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->emo_list_tbl_id, ' width="1%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->emo_list_tbl_image, ' width="1%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->emo_list_tbl_code,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->emo_list_tbl_click, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="15%"');
 
 		$sql = $this->DatabaseHandler->query("SELECT skins_name FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_list_no_skin, GATEWAY . '?a=emoticons');
+			$this->MyPanel->messenger($this->LanguageHandler->emo_list_no_skin, GATEWAY . '?a=emoticons');
 		}
 
 		$row = $sql->getRow();
 
-		$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->emo_list_tbl_header, $row['skins_name']));
+		$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->emo_list_tbl_header, $row['skins_name']));
 
 			$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "emoticons WHERE emo_skin = {$this->_skin} ORDER BY emo_id ASC");
 
@@ -220,20 +220,20 @@ class ModuleObject extends MasterObject
 						? "<b>{$this->LanguageHandler->yes}</b>"
 						: $this->LanguageHandler->blank;
 
-				$this->OnePanel->table->addRow(array(array("<a name=\"{$row['emo_id']}\"></a><strong>{$row['emo_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<a name=\"{$row['emo_id']}\"></a><strong>{$row['emo_id']}</strong>", ' align="center"', 'headera'),
 											   array($image, ' align="center"', 'headera'),
 											   array($row['emo_code'], " align='center'", 'headerb'),
 											   array($clicky, " align='center'", 'headerb'),
 											   array("<a href=\"" . GATEWAY . "?a=emoticons&amp;code=02&amp;id" .
 													 "={$row['emo_id']}\">{$this->LanguageHandler->link_edit}</a>" .
-													 " | <a href=\"" . GATEWAY . "?a=emoticons&amp;code=01&amp;id" .
+													 " <a href=\"" . GATEWAY . "?a=emoticons&amp;code=01&amp;id" .
 													 "={$row['emo_id']}&amp;skin={$this->_skin}\" onclick='javascript:" .
 													 "return confirm(\"{$this->LanguageHandler->emo_list_err_confirm}\");'>" .
 													 "<b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -253,7 +253,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
@@ -262,7 +262,7 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
@@ -275,7 +275,7 @@ class ModuleObject extends MasterObject
 			header("LOCATION: " . GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_remove,
+		$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_remove,
 								   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 
 	}
@@ -297,7 +297,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
@@ -306,12 +306,12 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=emoticons&amp;code=03&amp;id={$this->_id}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=emoticons&amp;code=03&amp;id={$this->_id}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 
 			$list = array();
@@ -327,31 +327,31 @@ class ModuleObject extends MasterObject
 				closedir($handle);
 			}
 
-			$out = $this->OnePanel->form->addSelect('name', $list, $row['emo_name'], "onchange=\"document.emoticon" .
+			$out = $this->MyPanel->form->addSelect('name', $list, $row['emo_name'], "onchange=\"document.emoticon" .
 													".src='" . SYSTEM_PATH . "skins/{$row['emo_skin']}/emoticons/'" .
 													"+ this.options[selectedIndex].value\"", false, true)
 													. "<img name=\"emoticon\" src=\"{$path}\" />";
 
-			$this->OnePanel->form->addWrap($out, $this->LanguageHandler->emo_edit_image_title,
+			$this->MyPanel->form->addWrap($out, $this->LanguageHandler->emo_edit_image_title,
 												 $this->LanguageHandler->emo_edit_image_desc, true);
 
-			$this->OnePanel->form->addTextBox('code',  $row['emo_code'], false,
+			$this->MyPanel->form->addTextBox('code',  $row['emo_code'], false,
 											  array(1, $this->LanguageHandler->emo_edit_code_title,
 													   $this->LanguageHandler->emo_edit_code_desc));
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $row['emo_skin'], false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $row['emo_skin'], false,
 											 array(1, $this->LanguageHandler->emo_edit_skin_title,
 													  $this->LanguageHandler->emo_edit_skin_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->emo_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->emo_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('click', 1, false, false,
+			$this->MyPanel->form->addCheckBox('click', 1, false, false,
 											false, ($row['emo_click'] ? true : false),$this->LanguageHandler->emo_edit_click_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -368,7 +368,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -378,7 +378,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
@@ -387,7 +387,7 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_rem_err_no_results,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 		}
 
@@ -404,7 +404,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('emoticons');
 
-		$this->OnePanel->messenger($this->LanguageHandler->emo_edit_err_done,
+		$this->MyPanel->messenger($this->LanguageHandler->emo_edit_err_done,
 								   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}#{$this->_id}");
 	}
 
@@ -420,8 +420,8 @@ class ModuleObject extends MasterObject
 	*/
 	function _showUploadForm()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=emoticons&amp;code=05', false, 'POST', " enctype='multipart/form-data'");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=emoticons&amp;code=05', false, 'POST', " enctype='multipart/form-data'");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$ext   = explode('|', $this->config['good_image_types']);
 			$types = '';
@@ -433,27 +433,27 @@ class ModuleObject extends MasterObject
 
 			$types = substr($types, 0, strlen($types) - 2);
 
-			$this->OnePanel->form->addFile('emoticon', array(1,
+			$this->MyPanel->form->addFile('emoticon', array(1,
 										   $this->LanguageHandler->emo_new_file_title,
 										   sprintf($this->LanguageHandler->emo_new_file_desc, $types)));
 
-			$this->OnePanel->form->addTextBox('code',  false, false,
+			$this->MyPanel->form->addTextBox('code',  false, false,
 											  array(1, $this->LanguageHandler->emo_new_code_title,
 													   $this->LanguageHandler->emo_new_code_desc));
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
 											 array(1, $this->LanguageHandler->emo_new_skin_title,
 													  $this->LanguageHandler->emo_new_skin_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->emo_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->emo_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('click', 1, false, false,
+			$this->MyPanel->form->addCheckBox('click', 1, false, false,
 											false, false,$this->LanguageHandler->emo_edit_click_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -470,7 +470,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -478,7 +478,7 @@ class ModuleObject extends MasterObject
 
 		if(false == isset($this->files['emoticon']))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_new_err_empty,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_new_err_empty,
 									   GATEWAY . '?a=emoticons&amp;code=05');
 		}
 
@@ -486,7 +486,7 @@ class ModuleObject extends MasterObject
 
 		if($sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_new_err_exists,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_new_err_exists,
 									   GATEWAY . '?a=emoticons&amp;code=05');
 		}
 
@@ -501,7 +501,7 @@ class ModuleObject extends MasterObject
 		if(false == $UploadHandler->doUpload())
 		{
 			$error_msg = $UploadHandler->getError();
-			return $this->OnePanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=emoticons&amp;code=05');
+			return $this->MyPanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . '?a=emoticons&amp;code=05');
 		}
 
 		if(false == $code)
@@ -526,7 +526,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('emoticons');
 
-		$this->OnePanel->messenger($this->LanguageHandler->emo_new_err_done,
+		$this->MyPanel->messenger($this->LanguageHandler->emo_new_err_done,
 								   GATEWAY . "?a=emoticons&skin={$this->_skin}");
 	}
 
@@ -542,25 +542,25 @@ class ModuleObject extends MasterObject
 	*/
 	function _showImportForm()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . '?a=emoticons&amp;code=06');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=emoticons&amp;code=06');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
 											 array(1, $this->LanguageHandler->emo_all_choose_title,
 													  $this->LanguageHandler->emo_all_choose_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=emoticons&amp;code=07">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=emoticons&amp;code=07">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->emo_all_tbl_image,   " width='1%'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->emo_all_tbl_name,	" align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->emo_all_tbl_code,	" align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->emo_all_tbl_clicky,  " align='center'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->emo_all_tbl_import,  " align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->emo_all_tbl_image,   " width='1%'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->emo_all_tbl_name,	" align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->emo_all_tbl_code,	" align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->emo_all_tbl_clicky,  " align='center'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->emo_all_tbl_import,  " align='center'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->emo_all_sect_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->emo_all_sect_header);
 
 				$list = array();
 				if ($handle = opendir(SYSTEM_PATH . "skins/{$this->_skin}/emoticons/"))
@@ -592,26 +592,26 @@ class ModuleObject extends MasterObject
 					{
 						list($code, $ext) = explode('.', $emo);
 
-						$this->OnePanel->table->addRow(array(array("<img src=\"" . SYSTEM_PATH . "skins/{$this->_skin}/emoticons/{$emo}\" alt=\"{$emo}\" />", " align='center'"),
+						$this->MyPanel->table->addRow(array(array("<img src=\"" . SYSTEM_PATH . "skins/{$this->_skin}/emoticons/{$emo}\" alt=\"{$emo}\" />", " align='center'"),
 												   array("<strong>{$emo}</strong>", " align='center'"),
-												   array($this->OnePanel->form->addTextBox("code[{$emo}]", ":{$code}:", false, false, true)),
+												   array($this->MyPanel->form->addTextBox("code[{$emo}]", ":{$code}:", false, false, true)),
 												   array("<input type=\"checkbox\" name=\"clicky[{$emo}]\" value=\"1\" class=\"check\" />", " align='center'"),
 												   array("<input type=\"checkbox\" name=\"import[{$emo}]\" value=\"{$emo}\" class=\"check\" />", " align='center'")));
 
 						$i++;
 					}
 
-					$this->OnePanel->form->addHidden('skin', $this->_skin);
+					$this->MyPanel->form->addHidden('skin', $this->_skin);
 				}
 				else
 				{
-					$this->OnePanel->table->addRow(array(array($this->LanguageHandler->emo_all_err_none, "colspan='5' align='center'")));
+					$this->MyPanel->table->addRow(array(array($this->LanguageHandler->emo_all_err_none, "colspan='5' align='center'")));
 				}
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -630,7 +630,7 @@ class ModuleObject extends MasterObject
 
 		if(false == isset($import))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->emo_all_err_empty,
+			$this->MyPanel->messenger($this->LanguageHandler->emo_all_err_empty,
 									   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}&amp;code=06");
 		}
 
@@ -654,7 +654,7 @@ class ModuleObject extends MasterObject
 
 			if(isset($list[trim($code[$emo])]))
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->emo_all_err_code,
+				$this->MyPanel->messenger($this->LanguageHandler->emo_all_err_code,
 										   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}&amp;code=06");
 			}
 
@@ -676,7 +676,7 @@ class ModuleObject extends MasterObject
 
 		$this->CacheHandler->updateCache('emoticons');
 
-		$this->OnePanel->messenger($this->LanguageHandler->emo_all_err_done,
+		$this->MyPanel->messenger($this->LanguageHandler->emo_all_err_done,
 								   GATEWAY . "?a=emoticons&amp;skin={$this->_skin}");
 	}
 

@@ -47,7 +47,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -74,8 +74,8 @@ class ModuleObject extends MasterObject
 		$this->_code = isset($this->get['code'])  ?	   $this->get['code']  : 00;
 		$this->_hash = isset($this->post['hash']) ?	   $this->post['hash'] : null;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
@@ -105,32 +105,32 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '01':
-				$this->OnePanel->_make_nav(1, 4);
+				$this->MyPanel->_make_nav(1, 4);
 				$this->_showSearchForm();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(1, 4);
+				$this->MyPanel->_make_nav(1, 4);
 				$this->_doSearch();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(1, 4);
+				$this->MyPanel->_make_nav(1, 4);
 				$this->_viewEmail();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(1, 4);
+				$this->MyPanel->_make_nav(1, 4);
 				$this->_doRemove();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(1, 4);
+				$this->MyPanel->_make_nav(1, 4);
 				$this->_showSearchForm();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -145,30 +145,30 @@ class ModuleObject extends MasterObject
 	*/
 	function _showSearchForm()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->email_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->email_form_header);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=email&amp;code=02#results">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=email&amp;code=02#results">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_field, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_term,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_field, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_term,  "align='left'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->email_tbl_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->email_tbl_header);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_sender,
-											   $this->OnePanel->form->addSelect('sender_type', $this->_comp1, false, false, false, true),
-											   $this->OnePanel->form->addTextBox('sender', false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->email_form_sender,
+											   $this->MyPanel->form->addSelect('sender_type', $this->_comp1, false, false, false, true),
+											   $this->MyPanel->form->addTextBox('sender', false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_recipient,
-											   $this->OnePanel->form->addSelect('recipient_type', $this->_comp1, false, false, false, true),
-											   $this->OnePanel->form->addTextBox('recipient', false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->email_form_recipient,
+											   $this->MyPanel->form->addSelect('recipient_type', $this->_comp1, false, false, false, true),
+											   $this->MyPanel->form->addTextBox('recipient', false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->email_form_subject,
-											   $this->OnePanel->form->addSelect('subject_type', $this->_comp1, false, false, false, true),
-											   $this->OnePanel->form->addTextBox('subject', false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->email_form_subject,
+											   $this->MyPanel->form->addSelect('subject_type', $this->_comp1, false, false, false, true),
+											   $this->MyPanel->form->addTextBox('subject', false, false, false, true)));
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -211,7 +211,7 @@ class ModuleObject extends MasterObject
 		extract($this->post);
 		extract($this->get);
 
-		$this->OnePanel->addHeader($this->LanguageHandler->email_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->email_form_header);
 
 		$query = array();
 
@@ -274,7 +274,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $query)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_fields, GATEWAY . '?a=email');
+			$this->MyPanel->messenger($this->LanguageHandler->email_err_no_fields, GATEWAY . '?a=email');
 		}
 
 		$query = substr(implode(" \n", $query), 4);
@@ -304,35 +304,35 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
+			$this->MyPanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
 		}
 
-		$this->OnePanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
+		$this->MyPanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_id);
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_sender,	" align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_recipient, " align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_subject,   " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->email_tbl_date,	  " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_id);
+		$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_sender,	" align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_recipient, " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_subject,   " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->email_tbl_date,	  " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;');
 
-		$this->OnePanel->table->startTable(number_format($row['Count']) .  ' ' . $this->LanguageHandler->email_form_results);
+		$this->MyPanel->table->startTable(number_format($row['Count']) .  ' ' . $this->LanguageHandler->email_form_results);
 
 			while($row = $sql->getRow())
 			{
-				$this->OnePanel->table->addRow(array(array("<strong>{$row['email_id']}</strong>", ' align="center"', 'headera'),
+				$this->MyPanel->table->addRow(array(array("<strong>{$row['email_id']}</strong>", ' align="center"', 'headera'),
 											   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a>",	" align='center'", 'headerb'),
 											   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a>", " align='center'", 'headerb'),
 											   array($row['email_subject'], '', 'headerb'),
 											   array(date($this->config['date_short'], $row['email_date']), " align='center'", 'headerb'),
-											   array("<a href=\"" . GATEWAY . "?a=email&amp;code=03&amp;id={$row['email_id']}\">{$this->LanguageHandler->link_view}</a> | " .
+											   array("<a href=\"" . GATEWAY . "?a=email&amp;code=03&amp;id={$row['email_id']}\">{$this->LanguageHandler->link_view}</a> " .
 													 "<a href=\"" . GATEWAY . "?a=email&amp;code=04&amp;id={$row['email_id']}&{$pageQuery}\"><strong>{$this->LanguageHandler->link_delete}</strong></a>", ' align="center"', 'headerc')));
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
+		$this->MyPanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
 	}
 
    // ! Action Method
@@ -364,14 +364,14 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->email_form_no_results, GATEWAY . '?a=email');
+			$this->MyPanel->messenger($this->LanguageHandler->email_form_no_results, GATEWAY . '?a=email');
 		}
 
 		$row = $sql->getRow();
 
-		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->email_read_viewing, $row['email_id']));
+		$this->MyPanel->addHeader(sprintf($this->LanguageHandler->email_read_viewing, $row['email_id']));
 
-		$this->OnePanel->appendBuffer("
+		$this->MyPanel->appendBuffer("
 		<p style=\"font: normal normal 14px Courier;\">
 			<b>From:</b>&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_sender_id']}\">{$row['email_sender']}</a><br />
 			<b>To:</b>&nbsp;&nbsp;&nbsp;<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['email_recipient_id']}\">{$row['email_recipient']}</a><br />
@@ -411,7 +411,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
+			$this->MyPanel->messenger($this->LanguageHandler->email_err_no_results, GATEWAY . '?a=email');
 		}
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "emails WHERE email_id = {$this->_id}");

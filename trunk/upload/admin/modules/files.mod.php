@@ -40,7 +40,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    // ! Action Method
 
@@ -77,8 +77,8 @@ class ModuleObject extends MasterObject
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler  = new FileHandler($this->config);
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
@@ -100,32 +100,32 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->files_main_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->files_main_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(1, 21);
+				$this->MyPanel->_make_nav(1, 21);
 				$this->_showSearchForm();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(1, 21);
+				$this->MyPanel->_make_nav(1, 21);
 				$this->_viewResults();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(1, 21);
+				$this->MyPanel->_make_nav(1, 21);
 				$this->_delAttachment();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(1, 21);
+				$this->MyPanel->_make_nav(1, 21);
 				$this->_showSearchForm();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -140,40 +140,40 @@ class ModuleObject extends MasterObject
 	*/
 	function _showSearchForm()
 	{
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=files&amp;code=01">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=files&amp;code=01">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->mem_search_form_tbl_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->mem_search_form_tbl_header);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_name,
-										   $this->OnePanel->form->addSelect('file_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('file',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_name,
+										   $this->MyPanel->form->addSelect('file_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('file',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_ext,
-										   $this->OnePanel->form->addSelect('ext_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('ext',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_ext,
+										   $this->MyPanel->form->addSelect('ext_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('ext',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_author,
-										   $this->OnePanel->form->addSelect('author_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('author',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_author,
+										   $this->MyPanel->form->addSelect('author_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('author',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_size,
-										   $this->OnePanel->form->addSelect('size_type', $this->_comp2, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('size',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_size,
+										   $this->MyPanel->form->addSelect('size_type', $this->_comp2, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('size',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_hits,
-										   $this->OnePanel->form->addSelect('hits_type', $this->_comp2, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('hits',	 false, false, false, true))));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_hits,
+										   $this->MyPanel->form->addSelect('hits_type', $this->_comp2, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('hits',	 false, false, false, true))));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->files_form_days,
-										   $this->OnePanel->form->addSelect('days_type', $this->_comp3, false, false, false, true),
-										   array($this->OnePanel->form->addTextBox('days',	 false, false, false, true))));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->files_form_days,
+										   $this->MyPanel->form->addSelect('days_type', $this->_comp3, false, false, false, true),
+										   array($this->MyPanel->form->addTextBox('days',	 false, false, false, true))));
 
- 			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+ 			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
 	function _viewResults()
@@ -342,7 +342,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $query)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->files_err_no_fields, GATEWAY . '?a=files');
+			$this->MyPanel->messenger($this->LanguageHandler->files_err_no_fields, GATEWAY . '?a=files');
 		}
 
 		$query = substr(implode(" \n", $query), 4);
@@ -367,7 +367,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $num)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->files_err_no_match, GATEWAY . '?a=files');
+			$this->MyPanel->messenger($this->LanguageHandler->files_err_no_match, GATEWAY . '?a=files');
 		}
 
 		$this->_PageHandler->setRows($num);
@@ -375,24 +375,24 @@ class ModuleObject extends MasterObject
 
 		$sql = $this->_PageHandler->getData($string);
 
-		$this->OnePanel->appendBuffer("<a name='results'></a>");
+		$this->MyPanel->appendBuffer("<a name='results'></a>");
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_id,	 "align='center' width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_name,   "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_topic,  "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_poster, "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_date,   "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_size,   "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->files_result_hits,   "align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="10%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_id,	 "align='center' width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_name,   "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_topic,  "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_poster, "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_date,   "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_size,   "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->files_result_hits,   "align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="10%"');
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 
-		$this->OnePanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
+		$this->MyPanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
 
 		while($row = $sql->getRow())
 		{
-			$this->OnePanel->table->addRow(array(array("<strong>{$row['upload_id']}</strong>", ' align="center"', 'headera'),
+			$this->MyPanel->table->addRow(array(array("<strong>{$row['upload_id']}</strong>", ' align="center"', 'headera'),
 												 array("<a href=\"{$this->config['site_link']}index.php?a=misc&amp;CODE=01&amp;id={$row['upload_id']}\">{$row['upload_name']}</a>", 'headerb'),
 												 array("<a href=\"{$this->config['site_link']}?a=read&amp;CODE=02&amp;p={$row['upload_post']}\" title=\"\">{$row['topics_title']}</a>"),
 												 array("<a href=\"" . GATEWAY . "?a=members&code=05&id={$row['members_id']}\" title=\"\">{$row['members_name']}</a>", 'align="center"'),
@@ -402,10 +402,10 @@ class ModuleObject extends MasterObject
 												 array("<a href=\"" . GATEWAY . "?a=files&amp;{$pageQuery}&amp;code=02&amp;id={$row['upload_id']}\" onclick='return confirm(\"{$this->LanguageHandler->files_del_conf}\");'><strong>{$this->LanguageHandler->link_delete}</strong></a>", " align='center'", 'headerc')));
 		}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");
 	}
 
 	function _delAttachment()
@@ -441,7 +441,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->files_err_no_file, GATEWAY . "?a=files&code=01&{$pageQuery}");
+			$this->MyPanel->messenger($this->LanguageHandler->files_err_no_file, GATEWAY . "?a=files&code=01&{$pageQuery}");
 		}
 
 		$upload	= $sql->getRow();
@@ -449,7 +449,7 @@ class ModuleObject extends MasterObject
 
 		if(false == file_exists($file_path))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->files_err_no_file, GATEWAY . "?a=files&code=01&{$pageQuery}");
+			$this->MyPanel->messenger($this->LanguageHandler->files_err_no_file, GATEWAY . "?a=files&code=01&{$pageQuery}");
 		}
 
 		unlink($file_path);

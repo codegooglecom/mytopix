@@ -54,7 +54,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -98,8 +98,8 @@ class ModuleObject extends MasterObject
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler  = new FileHandler($this->config);
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
 		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1, 
@@ -141,77 +141,77 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(3, 10);
+				$this->MyPanel->_make_nav(3, 10);
 				$this->_showAddForm();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(3, 10);
+				$this->MyPanel->_make_nav(3, 10);
 				$this->_doAdd();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(3, 9);
+				$this->MyPanel->_make_nav(3, 9);
 				$this->_showSearchForm();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(3, 9);
+				$this->MyPanel->_make_nav(3, 9);
 				$this->_doSearch();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(3, 9, -1, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, -1, $this->_id);
 				$this->_doDelete();
 				break;
 
 			case '05':
-				$this->OnePanel->_make_nav(3, 9, 15, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 15, $this->_id);
 				$this->_editGeneral();
 				break;
 
 			case '06':
-				$this->OnePanel->_make_nav(3, 9, 15, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 15, $this->_id);
 				$this->_doEditGeneral();
 				break;
 
 			case '07':
-				$this->OnePanel->_make_nav(3, 9, 16, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 16, $this->_id);
 				$this->_editPersonal();
 				break;
 
 			case '08':
-				$this->OnePanel->_make_nav(3, 9, 16, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 16, $this->_id);
 				$this->_doEditPersonal();
 				break;
 
 			case '09':
-				$this->OnePanel->_make_nav(3, 9, 17, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 17, $this->_id);
 				$this->_editEmail();
 				break;
 
 			case '10':
-				$this->OnePanel->_make_nav(3, 9, 17, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 17, $this->_id);
 				$this->_doEditEmail();
 				break;
 
 			case '11':
-				$this->OnePanel->_make_nav(3, 9, 18, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 18, $this->_id);
 				$this->_editPassword();
 				break;
 
 			case '12':
-				$this->OnePanel->_make_nav(3, 9, 18, $this->_id);
+				$this->MyPanel->_make_nav(3, 9, 18, $this->_id);
 				$this->_doEditPassword();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(3, 9);
+				$this->MyPanel->_make_nav(3, 9);
 				$this->_showSearchForm();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -226,36 +226,36 @@ class ModuleObject extends MasterObject
 	*/
 	function _showAddForm()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->mem_add_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->mem_add_form_header);
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=members&amp;code=01');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=members&amp;code=01');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('name', false, false, 
+			$this->MyPanel->form->addTextBox('name', false, false, 
 									array(1, $this->LanguageHandler->mem_add_form_name_title, 
 											 $this->LanguageHandler->mem_add_form_name_desc));
 
-			$this->OnePanel->form->addPassBox('password', false, false, 
+			$this->MyPanel->form->addPassBox('password', false, false, 
 									array(1, $this->LanguageHandler->mem_add_form_pass_title, 
 											 $this->LanguageHandler->mem_add_form_pass_desc));
 
-			$this->OnePanel->form->addPassBox('cpassword', false, false, 
+			$this->MyPanel->form->addPassBox('cpassword', false, false, 
 									array(1, $this->LanguageHandler->mem_add_form_cpass_title,
 											 $this->LanguageHandler->mem_add_form_cpass_desc));
 
-			$this->OnePanel->form->addTextBox('email', false, false, 
+			$this->MyPanel->form->addTextBox('email', false, false, 
 									array(1, $this->LanguageHandler->mem_add_form_mail_title, 
 											 $this->LanguageHandler->mem_add_form_mail_desc));
 
-			$this->OnePanel->form->addTextBox('cemail', false, false, 
+			$this->MyPanel->form->addTextBox('cemail', false, false, 
 									array(1, $this->LanguageHandler->mem_add_form_cmail_title,
 											 $this->LanguageHandler->mem_add_form_cmail_desc));
 
-			$this->OnePanel->form->addWrapSelect('skin', $this->_fetchSkins(false), false, false, 
+			$this->MyPanel->form->addWrapSelect('skin', $this->_fetchSkins(false), false, false, 
 								   array(1, $this->LanguageHandler->mem_add_form_skin_title,
 											$this->LanguageHandler->mem_add_form_skin_desc));
 
-			$this->OnePanel->form->addWrapSelect('language', $this->_fetchPacks(false), false, false, 
+			$this->MyPanel->form->addWrapSelect('language', $this->_fetchPacks(false), false, false, 
 								   array(1, $this->LanguageHandler->mem_add_form_lang_title, 
 											$this->LanguageHandler->mem_add_form_lang_desc));
 
@@ -267,25 +267,25 @@ class ModuleObject extends MasterObject
 				$list[$row['class_id']] = $row['class_title'];
 			}
 
-			$this->OnePanel->form->addWrapSelect('group', $list, 2, false, 
+			$this->MyPanel->form->addWrapSelect('group', $list, 2, false, 
 								   array(1, $this->LanguageHandler->mem_add_form_class_title,
 											$this->LanguageHandler->mem_add_form_class_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('admin', 1, false, false,
+			$this->MyPanel->form->addCheckBox('admin', 1, false, false,
 											false, ($this->config['closed'] ? true : false),$this->LanguageHandler->mem_add_form_admin_desc, false, 'checkwrap_4');
 
-			$this->OnePanel->form->addCheckBox('mod', 1, false, false,
+			$this->MyPanel->form->addCheckBox('mod', 1, false, false,
 											false, ($this->config['closed'] ? true : false),$this->LanguageHandler->mem_add_form_mod_desc);
 
-			$this->OnePanel->form->addCheckBox('notify', 1, false, false,
+			$this->MyPanel->form->addCheckBox('notify', 1, false, false,
 											false, ($this->config['closed'] ? true : false),$this->LanguageHandler->mem_add_form_notify_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -302,19 +302,19 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if(strlen($password) < 3 || strlen($password) > 15 || $password != $cpassword)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_add_err_pass, GATEWAY . '?a=members&amp;code=00');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_add_err_pass, GATEWAY . '?a=members&amp;code=00');
 		}
 
 		if(false == preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/i", $email) || $email != $cemail)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_add_err_mail, GATEWAY . '?a=members&amp;code=00');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_add_err_mail, GATEWAY . '?a=members&amp;code=00');
 		}
 
 		$len_name = stripslashes($name);
@@ -323,7 +323,7 @@ class ModuleObject extends MasterObject
 		$sql = $this->DatabaseHandler->query("SELECT members_id FROM " . DB_PREFIX . "members WHERE members_name = '{$name}'");
 		if($sql->getNumRows() || strlen($len_name) < 3 || strlen($len_name) > 20)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_add_err_taken, GATEWAY . '?a=members&amp;code=00');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_add_err_taken, GATEWAY . '?a=members&amp;code=00');
 		}
 		
 		$admin = false == isset($admin) ? 0 : (int) $admin;
@@ -362,6 +362,8 @@ class ModuleObject extends MasterObject
 			{$admin},
 			{$mod})");
 
+		$name = str_replace ( '$', '&#36;', $name );
+
 		$this->config['latest_member_id']   = $this->DatabaseHandler->insertid();
 		$this->config['latest_member_name'] = $this->ParseHandler->parseText(stripslashes($name), F_ENTS);
 		$this->config['total_members']++;
@@ -385,7 +387,7 @@ class ModuleObject extends MasterObject
 			$this->_MailHandler->doSend();			
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->mem_add_err_done, GATEWAY . '?a=members&amp;code=05&amp;id=' . $this->DatabaseHandler->insertId());
+		$this->MyPanel->messenger($this->LanguageHandler->mem_add_err_done, GATEWAY . '?a=members&amp;code=05&amp;id=' . $this->DatabaseHandler->insertId());
 	}
 
    // ! Action Method
@@ -400,51 +402,51 @@ class ModuleObject extends MasterObject
 	*/
 	function _showSearchForm()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->mem_search_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->mem_search_form_header);
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=members&amp;code=03#results">');
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . '?a=members&amp;code=03#results">');
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left'");
-			$this->OnePanel->table->addColumn('&nbsp;');
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left'");
+			$this->MyPanel->table->addColumn('&nbsp;');
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->mem_search_form_tbl_header);
+			$this->MyPanel->table->startTable($this->LanguageHandler->mem_search_form_tbl_header);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_name,
-										   $this->OnePanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('name',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_name,
+										   $this->MyPanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('name',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_ip,
-										   $this->OnePanel->form->addSelect('ip_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('ip',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_ip,
+										   $this->MyPanel->form->addSelect('ip_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('ip',	 false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_mail,
-										   $this->OnePanel->form->addSelect('email_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('email',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_mail,
+										   $this->MyPanel->form->addSelect('email_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('email',	 false, false, false, true)));
 
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_post,
-										   $this->OnePanel->form->addSelect('post_type', $this->_comp2, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('post',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_post,
+										   $this->MyPanel->form->addSelect('post_type', $this->_comp2, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('post',	 false, false, false, true)));
 
-				$post_from = $this->OnePanel->form->addSelect('from_day',   $this->TimeHandler->buildDays(),   false, false, false, true) . ' of ' .
-							 $this->OnePanel->form->addSelect('from_month', $this->TimeHandler->buildMonths('F'), false, false, false, true) . ' in ' .
-							 $this->OnePanel->form->addSelect('from_year',  $this->TimeHandler->buildYears(2003),   false, false, false, true);
+				$post_from = $this->MyPanel->form->addSelect('from_day',   $this->TimeHandler->buildDays(),   false, false, false, true) . ' of ' .
+							 $this->MyPanel->form->addSelect('from_month', $this->TimeHandler->buildMonths('F'), false, false, false, true) . ' in ' .
+							 $this->MyPanel->form->addSelect('from_year',  $this->TimeHandler->buildYears(2003),   false, false, false, true);
 
-				$post_to   = $this->OnePanel->form->addSelect('to_day',	 $this->TimeHandler->buildDays(),   false, false, false, true) . ' of ' .
-							 $this->OnePanel->form->addSelect('to_month',   $this->TimeHandler->buildMonths('F'), false, false, false, true) . ' in ' .
-							 $this->OnePanel->form->addSelect('to_year',	$this->TimeHandler->buildYears(2003),   false, false, false, true);
+				$post_to   = $this->MyPanel->form->addSelect('to_day',	 $this->TimeHandler->buildDays(),   false, false, false, true) . ' of ' .
+							 $this->MyPanel->form->addSelect('to_month',   $this->TimeHandler->buildMonths('F'), false, false, false, true) . ' in ' .
+							 $this->MyPanel->form->addSelect('to_year',	$this->TimeHandler->buildYears(2003),   false, false, false, true);
 
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mem_search_tbl_from, " valign='top'"), array($post_from, " align='right' colspan='2'")));
-				$this->OnePanel->table->addRow(array(array($this->LanguageHandler->mem_search_tbl_to,   " valign='top'"), array($post_to,   " align='right' colspan='2'")));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mem_search_tbl_from, " valign='top'"), array($post_from, " align='right' colspan='2'")));
+				$this->MyPanel->table->addRow(array(array($this->LanguageHandler->mem_search_tbl_to,   " valign='top'"), array($post_to,   " align='right' colspan='2'")));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_lang,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_lang,
 										   '&nbsp;',
-										   $this->OnePanel->form->addSelect('language', $this->_fetchPacks(), false, false, false, true)));
+										   $this->MyPanel->form->addSelect('language', $this->_fetchPacks(), false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_skin,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_skin,
 										   '&nbsp;',
-										   $this->OnePanel->form->addSelect('skin', $this->_fetchSkins(), false, false, false, true)));
+										   $this->MyPanel->form->addSelect('skin', $this->_fetchSkins(), false, false, false, true)));
 
 				$sql = $this->DatabaseHandler->query("SELECT class_id, class_title FROM " . DB_PREFIX . "class ORDER BY class_title ASC");
 
@@ -455,20 +457,20 @@ class ModuleObject extends MasterObject
 					$list[$row['class_id']] = $row['class_title'];
 				}
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_group,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_group,
 										   '&nbsp;',
-										   $this->OnePanel->form->addSelect('group', $list, false, false, false, true)));
+										   $this->MyPanel->form->addSelect('group', $list, false, false, false, true)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_admin,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_admin,
 										   '&nbsp;',
-										   $this->OnePanel->form->addYesNo('admin', false, false, false, true, false)));
+										   $this->MyPanel->form->addYesNo('admin', false, false, false, true, false)));
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_mod,
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_mod,
 										   '&nbsp;',
-										   $this->OnePanel->form->addYesNo('mod', false, false, false, true, false)));
+										   $this->MyPanel->form->addYesNo('mod', false, false, false, true, false)));
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -483,7 +485,7 @@ class ModuleObject extends MasterObject
 	*/
 	function _doSearch()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->mem_search_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->mem_search_form_header);
 
 		$pageQuery = '';
 
@@ -627,7 +629,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $query)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_search_err_no_fields, GATEWAY . '?a=members&code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_search_err_no_fields, GATEWAY . '?a=members&code=02');
 		}
 
 		$query = substr(implode(" \n", $query), 4);
@@ -649,7 +651,7 @@ class ModuleObject extends MasterObject
 
 		if(false == $num)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_search_err_no_results, GATEWAY . '?a=members&code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_search_err_no_results, GATEWAY . '?a=members&code=02');
 		}
 
 		$this->_PageHandler->setRows($num);
@@ -657,32 +659,32 @@ class ModuleObject extends MasterObject
 
 		$sql = $this->_PageHandler->getData($query);
 
-		$this->OnePanel->appendBuffer("<a name='results'></a>");
+		$this->MyPanel->appendBuffer("<a name='results'></a>");
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_posts,  "align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="10%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_id,	 "align='center' width='1%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_name,   "align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_joined, "align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_posts,  "align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="10%"');
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");	 
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");	 
 
-		$this->OnePanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
+		$this->MyPanel->table->startTable(number_format($num) . ' ' .$this->LanguageHandler->mem_search_tbl_header);
 
 		while($row = $sql->getRow())
 		{
-			$this->OnePanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
+			$this->MyPanel->table->addRow(array(array("<strong>{$row['members_id']}</strong>", ' align="center"', 'headera'),
 												 array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['members_id']}\">{$row['members_name']}</a>", 'headerb'),
 												 array(date($this->config['date_short'], $row['members_registered']), " align=\"center\"", 'headerb'),
 												 array($row['members_posts'], 'align="center"'),
-												 array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['members_id']}\">{$this->LanguageHandler->link_edit}</a> | " . 
+												 array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$row['members_id']}\">{$this->LanguageHandler->link_edit}</a> " . 
 													   "<a href=\"" . GATEWAY . "?a=members&amp;code=04&amp;id={$row['members_id']}\" onclick='return confirm(\"{$this->LanguageHandler->mem_search_err_confirm}\");'><b>{$this->LanguageHandler->link_delete}</b></a>", " align='center'", 'headerc')));
 		}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");	   
+		$this->MyPanel->appendBuffer("<div id=\"bar\">" . $this->_PageHandler->getSpan() . "</div>");	   
 	}
 
    // ! Action Method
@@ -710,7 +712,7 @@ class ModuleObject extends MasterObject
 
 		if($row['members_id'] == 2)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_rem_err_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_rem_err_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$this->DatabaseHandler->query("UPDATE " . DB_PREFIX . "posts  SET posts_author	   = 1, posts_author_name	   = '{$row['members_name']}' WHERE posts_author	   = {$this->_id}");
@@ -730,7 +732,7 @@ class ModuleObject extends MasterObject
 
 		$this->_FileHandler->updateFileArray($this->config, 'config', SYSTEM_PATH . 'config/settings.php');
 
-	   $this->OnePanel->messenger($this->LanguageHandler->mem_rem_err_gone, GATEWAY . '?a=members&amp;code=02');	
+	   $this->MyPanel->messenger($this->LanguageHandler->mem_rem_err_gone, GATEWAY . '?a=members&amp;code=02');	
 	}
 
    // ! Action Method
@@ -749,26 +751,26 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && $row['members_id'] != USER_ID)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
-		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->mem_gen_form_header, $row['members_name']));
+		$this->MyPanel->addHeader(sprintf($this->LanguageHandler->mem_gen_form_header, $row['members_name']));
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=members&amp;code=06&amp;id={$row['members_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=members&amp;code=06&amp;id={$row['members_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('name', $row['members_name'], false, 
+			$this->MyPanel->form->addTextBox('name', $row['members_name'], false, 
 									array(1, $this->LanguageHandler->mem_gen_form_name_title, 
 											 $this->LanguageHandler->mem_gen_form_name_desc));
 
-			$this->OnePanel->form->addCheckBox('name_notify', 1, false, false,
+			$this->MyPanel->form->addCheckBox('name_notify', 1, false, false,
 											false, false,$this->LanguageHandler->mem_gen_name_notify_title, '', 'checkwrap_4');
 
 			$sql = $this->DatabaseHandler->query("SELECT class_id, class_title FROM " . DB_PREFIX . "class ORDER BY class_title ASC");
@@ -779,31 +781,31 @@ class ModuleObject extends MasterObject
 				$list[$result['class_id']] = $result['class_title'];
 			}
 
-			$this->OnePanel->form->addWrapSelect('group', $list, $row['members_class'], false, 
+			$this->MyPanel->form->addWrapSelect('group', $list, $row['members_class'], false, 
 								   array(1, $this->LanguageHandler->mem_gen_form_class_title, 
 											$this->LanguageHandler->mem_gen_form_class_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
 
-			$this->OnePanel->form->addCheckBox('admin', 1, false, false,
+			$this->MyPanel->form->addCheckBox('admin', 1, false, false,
 											false, ($row['members_is_admin'] ? true : false),$this->LanguageHandler->mem_add_form_admin_desc);
 
-			$this->OnePanel->form->addCheckBox('mod', 1, false, false,
+			$this->MyPanel->form->addCheckBox('mod', 1, false, false,
 											false, ($row['members_is_super_mod'] ? true : false),$this->LanguageHandler->mem_add_form_mod_desc);
 
-			$this->OnePanel->form->addCheckBox('notify', 1, false, false,
+			$this->MyPanel->form->addCheckBox('notify', 1, false, false,
 											false, ($row['members_noteNotify'] ? true : false),$this->LanguageHandler->mem_gen_form_notify_desc);
 
-			$this->OnePanel->form->addCheckBox('email', 1, false, false,
+			$this->MyPanel->form->addCheckBox('email', 1, false, false,
 											false, ($row['members_show_email'] ? true : false),$this->LanguageHandler->mem_gen_form_email_desc);
 
-			$this->OnePanel->form->addCheckBox('ban', 1, false, false,
+			$this->MyPanel->form->addCheckBox('ban', 1, false, false,
 											false, ($row['members_is_banned'] ? true : false),$this->LanguageHandler->mem_gen_form_banned, '', 'checkwrap_4');
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -820,21 +822,21 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
 
 		if($this->_id == 2 && USER_ID != 2)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$sql = $this->DatabaseHandler->query("SELECT members_name, members_email FROM " . DB_PREFIX . "members WHERE members_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_no_match, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_no_match, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$member	   = $sql->getRow();
@@ -858,17 +860,17 @@ class ModuleObject extends MasterObject
 
 			if($sql->getNumRows())
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_name_taken, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
+				$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_name_taken, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
 			}
 
 			if(strlen($len_user) < 3)
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_name_short, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
+				$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_name_short, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
 			}
 			
 			if(strlen($len_user) > 32)
 			{
-				$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_name_long, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
+				$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_name_long, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
 			}
 
 			if($this->config['banned_names'])
@@ -877,7 +879,7 @@ class ModuleObject extends MasterObject
 				{
 					if($names == strtolower($name))
 					{
-						$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_name_bad, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
+						$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_name_bad, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
 					}
 				}
 			}
@@ -912,7 +914,7 @@ class ModuleObject extends MasterObject
 			members_noteNotify   = " . (false == isset($notify) ? 0 : (int) $notify) . " 
 		WHERE members_id = {$this->_id}");
 
-		$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
+		$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05");
 	}
 
    // ! Action Method
@@ -931,60 +933,60 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && $row['members_id'] != USER_ID)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
-		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
+		$this->MyPanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
 
 		$row['members_sig'] = $this->ParseHandler->doFormatEditImage($row['members_sig']);		
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=members&amp;code=08&amp;id={$row['members_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=members&amp;code=08&amp;id={$row['members_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('location', $this->ParseHandler->parseText($row['members_location'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('location', $this->ParseHandler->parseText($row['members_location'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_loc_title, 
 											 $this->LanguageHandler->mem_per_form_loc_desc));
 
-			$this->OnePanel->form->addTextBox('icq', $this->ParseHandler->parseText($row['members_icq'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('icq', $this->ParseHandler->parseText($row['members_icq'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_icq_title,
 											 $this->LanguageHandler->mem_per_form_icq_desc));
 
-			$this->OnePanel->form->addTextBox('msn', $this->ParseHandler->parseText($row['members_msn'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('msn', $this->ParseHandler->parseText($row['members_msn'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_msn_title,
 											 $this->LanguageHandler->mem_per_form_msn_desc));
 
-			$this->OnePanel->form->addTextBox('aim', $this->ParseHandler->parseText($row['members_aim'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('aim', $this->ParseHandler->parseText($row['members_aim'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_aim_title,
 											 $this->LanguageHandler->mem_per_form_aim_desc));
 
-			$this->OnePanel->form->addTextBox('yim', $this->ParseHandler->parseText($row['members_yim'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('yim', $this->ParseHandler->parseText($row['members_yim'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_yim_title,
 											 $this->LanguageHandler->mem_per_form_yim_desc));
 
-			$this->OnePanel->form->addTextBox('website', $this->ParseHandler->parseText($row['members_homepage'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('website', $this->ParseHandler->parseText($row['members_homepage'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_home_title,
 											 $this->LanguageHandler->mem_per_form_home_desc));
 
-			$this->OnePanel->form->addTextArea('sig', $this->ParseHandler->parseText($row['members_sig'], F_ENTS), false, 
+			$this->MyPanel->form->addTextArea('sig', $this->ParseHandler->parseText($row['members_sig'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_sig_title,
 											 $this->LanguageHandler->mem_per_form_sig_desc));
 
-			$this->OnePanel->form->addWrapSelect('skin', $this->_fetchSkins(false), $row['members_skin'], false, 
+			$this->MyPanel->form->addWrapSelect('skin', $this->_fetchSkins(false), $row['members_skin'], false, 
 								   array(1, $this->LanguageHandler->mem_per_form_skin_title,
 											$this->LanguageHandler->mem_per_form_skin_desc));
 
-			$this->OnePanel->form->addWrapSelect('language', $this->_fetchPacks(false), $row['members_language'], false, 
+			$this->MyPanel->form->addWrapSelect('language', $this->_fetchPacks(false), $row['members_language'], false, 
 								   array(1, $this->LanguageHandler->mem_per_form_lang_title,
 											$this->LanguageHandler->mem_per_form_lang_desc));
 
-			$this->OnePanel->form->addWrapSelect('timezone', $this->TimeHandler->makeTimeZones(), $row['members_timeZone'], '',
+			$this->MyPanel->form->addWrapSelect('timezone', $this->TimeHandler->makeTimeZones(), $row['members_timeZone'], '',
 								   array(1, $this->LanguageHandler->mem_per_form_zone_title,
 											$this->LanguageHandler->mem_per_form_zone_desc));
 
@@ -992,22 +994,22 @@ class ModuleObject extends MasterObject
 						   3 => $this->LanguageHandler->mem_per_ava_type_upload,
 						   1 => $this->LanguageHandler->mem_per_ava_type_gallery);
 
-			$this->OnePanel->form->addWrapSelect('ava_type', $types, $row['members_avatar_type'], '',
+			$this->MyPanel->form->addWrapSelect('ava_type', $types, $row['members_avatar_type'], '',
 								   array(1, $this->LanguageHandler->mem_per_form_ava_type_title,
 											$this->LanguageHandler->mem_per_form_ava_type_desc));
 
-			$this->OnePanel->form->addTextBox('ava_dims', $this->ParseHandler->parseText($row['members_avatar_dims'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('ava_dims', $this->ParseHandler->parseText($row['members_avatar_dims'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_ava_dim_title,
 											 $this->LanguageHandler->mem_per_form_ava_dim_desc));
 
-			$this->OnePanel->form->addTextBox('ava_location', $this->ParseHandler->parseText($row['members_avatar_location'], F_ENTS), false, 
+			$this->MyPanel->form->addTextBox('ava_location', $this->ParseHandler->parseText($row['members_avatar_location'], F_ENTS), false, 
 									array(1, $this->LanguageHandler->mem_per_form_ava_loc_title,
 											 $this->LanguageHandler->mem_per_form_ava_loc_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -1024,7 +1026,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -1033,26 +1035,26 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && USER_ID != 2)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		if($icq && false == is_numeric($icq) && false == intval($icq))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_bad_icq, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_bad_icq, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
 		}
 
 		$sig = $this->ParseHandler->prePostImage($sig);
 
 		if(substr_count($ava_dims, 'x') > 1)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_bad_dims, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_bad_dims, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
 		}
 
 		if($website && false == preg_match("#^http://#", $website))
@@ -1077,7 +1079,7 @@ class ModuleObject extends MasterObject
 			members_avatar_type	 = " . (int) $ava_type . "
 		WHERE members_id = {$this->_id}");
 
-		$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
+		$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07");
 	}
 
    // ! Action Method
@@ -1092,41 +1094,41 @@ class ModuleObject extends MasterObject
 	*/
 	function _editEmail()
 	{
-		$this->OnePanel->tabs->addTabs($this->_tabList, $this->_code);
+		$this->MyPanel->tabs->addTabs($this->_tabList, $this->_code);
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "members WHERE members_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && $row['members_id'] != USER_ID)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
-		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
+		$this->MyPanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
 
    		
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=members&amp;code=10&amp;id={$row['members_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=members&amp;code=10&amp;id={$row['members_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addTextBox('email', $row['members_email'], false, 
+			$this->MyPanel->form->addTextBox('email', $row['members_email'], false, 
 									array(1, $this->LanguageHandler->mem_mail_form_email_title,
 											 $this->LanguageHandler->mem_mail_form_email_desc));
 
-			$this->OnePanel->form->addTextBox('cemail', $row['members_email'], false, 
+			$this->MyPanel->form->addTextBox('cemail', $row['members_email'], false, 
 									array(1, $this->LanguageHandler->mem_mail_form_cmail_title,
 											 $this->LanguageHandler->mem_mail_form_cmail_desc));
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -1143,7 +1145,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -1152,29 +1154,29 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && USER_ID != 2)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		if($email != $cemail)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_mail_err_confirm, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_mail_err_confirm, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
 		}
 
 		if(false == preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/i", $email))
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_mail_err_invalid, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_mail_err_invalid, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
 		}
 
 		$this->DatabaseHandler->query("UPDATE " . DB_PREFIX . "members SET members_email = '{$email}' WHERE members_id = {$this->_id}");
 
-		$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
+		$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=09");
 	}
 
    // ! Action Method
@@ -1189,46 +1191,46 @@ class ModuleObject extends MasterObject
 	*/
 	function _editPassword()
 	{
-		$this->OnePanel->tabs->addTabs($this->_tabList, $this->_code);
+		$this->MyPanel->tabs->addTabs($this->_tabList, $this->_code);
 
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "members WHERE members_id = {$this->_id}");
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && $row['members_id'] != USER_ID)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
-		$this->OnePanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
+		$this->MyPanel->addHeader(sprintf($this->LanguageHandler->mem_per_form_header, $row['members_name']));
 
 		
 
-		$this->OnePanel->form->startForm(GATEWAY . "?a=members&amp;code=12&amp;id={$row['members_id']}");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=members&amp;code=12&amp;id={$row['members_id']}");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addPassBox('password', false, false, 
+			$this->MyPanel->form->addPassBox('password', false, false, 
 									array(1, $this->LanguageHandler->mem_pass_form_pass_title,
 											 $this->LanguageHandler->mem_pass_form_pass_desc));
 
-			$this->OnePanel->form->addPassBox('cpassword', false, false, 
+			$this->MyPanel->form->addPassBox('cpassword', false, false, 
 									array(1, $this->LanguageHandler->mem_pass_form_cpass_title,
 											 $this->LanguageHandler->mem_pass_form_cpass_desc));
 
-			$this->OnePanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
+			$this->MyPanel->form->appendBuffer("<h1>{$this->LanguageHandler->mem_add_form_options}</h1>");
 			
-			$this->OnePanel->form->addCheckBox('notify', 1, false, false,
+			$this->MyPanel->form->addCheckBox('notify', 1, false, false,
 											false, false, $this->LanguageHandler->mem_pass_form_notify_desc);
 
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -1245,7 +1247,7 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		extract($this->post);
@@ -1257,24 +1259,24 @@ class ModuleObject extends MasterObject
 
 		if(false == $sql->getNumRows())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_results, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		$row = $sql->getRow();
 
 		if($row['members_id'] == 2 && USER_ID != 2)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
+			$this->MyPanel->messenger($this->LanguageHandler->mem_per_err_no_admin, GATEWAY . '?a=members&amp;code=02');
 		}
 
 		if(false == $password)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_pass_err_invalid, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_pass_err_invalid, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
 		}
 
 		if($password != $cpassword)
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->mem_pass_err_confirm, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
+			$this->MyPanel->messenger($this->LanguageHandler->mem_pass_err_confirm, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
 		}
 
 		$salt = $row['members_pass_salt'];
@@ -1305,7 +1307,7 @@ class ModuleObject extends MasterObject
 			$this->_MailHandler->doSend();
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
+		$this->MyPanel->messenger($this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=11");
 	}
 
    // ! Action Method

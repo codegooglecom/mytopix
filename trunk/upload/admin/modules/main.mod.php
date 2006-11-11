@@ -26,7 +26,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    // ! Action Method
 
@@ -47,8 +47,8 @@ class ModuleObject extends MasterObject
 							  'begin'   => $this->LanguageHandler->comp_begin,
 							  'end'	 => $this->LanguageHandler->comp_end);
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 	}
 
    // ! Action Method
@@ -63,10 +63,10 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->_make_nav(0, 0);
+		$this->MyPanel->_make_nav(0, 0);
 
-		$this->OnePanel->addHeader($this->LanguageHandler->main_header);
-		$this->OnePanel->appendBuffer($this->LanguageHandler->main_tip);
+		$this->MyPanel->addHeader($this->LanguageHandler->main_header);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->main_tip);
 
 		$sql = $this->DatabaseHandler->query("
 		SELECT COUNT(*) AS Count
@@ -77,15 +77,15 @@ class ModuleObject extends MasterObject
 
 		$count = $sql->getRow();
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->sync_over_tbl_var,  " align='left' width='80%'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->sync_over_tbl_val,  " align='center'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->sync_over_tbl_var,  " align='left' width='80%'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->sync_over_tbl_val,  " align='center'");
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->main_stats_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->main_stats_header);
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_members),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_members),
 										   array(number_format($this->config['total_members']), " align='center'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->main_validating_count),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->main_validating_count),
 										   array("<a href=\"" . GATEWAY . "?a=queue\">" . number_format($count['Count']) . '</a>', ' align="center"')));
 
 			$sql = $this->DatabaseHandler->query("
@@ -97,33 +97,33 @@ class ModuleObject extends MasterObject
 
 			$count = $sql->getRow();
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->main_coppa_count),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->main_coppa_count),
 										   array("<a href=\"" . GATEWAY . "?a=queue&amp;code=02\">" . number_format($count['Count']) . '</a>', ' align="center"')));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_latest),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_latest),
 										   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$this->config['latest_member_id']}\" " .
 												 "title=\"\">{$this->config['latest_member_name']}</a>", " align='center'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_topics),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_topics),
 										   array(number_format($this->config['topics']), " align='center'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_posts),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_posts),
 										   array(number_format($this->config['posts'])," align='center'")));
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=members&amp;code=03#results\">");
+		$this->MyPanel->appendBuffer("<form method=\"post\" action=\"" . GATEWAY . "?a=members&amp;code=03#results\">");
 
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left' width='33%'");
-			$this->OnePanel->table->addColumn('&nbsp;', " width='33%'");
-			$this->OnePanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_field, "align='left' width='33%'");
+			$this->MyPanel->table->addColumn('&nbsp;', " width='33%'");
+			$this->MyPanel->table->addColumn($this->LanguageHandler->mem_search_tbl_term,  "align='left'");
 
-			$this->OnePanel->table->startTable($this->LanguageHandler->main_usr_find);
+			$this->MyPanel->table->startTable($this->LanguageHandler->main_usr_find);
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_name,
-										   $this->OnePanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
-										   $this->OnePanel->form->addTextBox('name',	 false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_name,
+										   $this->MyPanel->form->addSelect('name_type', $this->_comp1, false, false, false, true),
+										   $this->MyPanel->form->addTextBox('name',	 false, false, false, true)));
 
 				$sql = $this->DatabaseHandler->query("SELECT class_id, class_title FROM " . DB_PREFIX . "class ORDER BY class_title ASC");
 
@@ -134,13 +134,13 @@ class ModuleObject extends MasterObject
 					$list[$row['class_id']] = $row['class_title'];
 				}
 
-				$this->OnePanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_group, '&nbsp;',
-										   $this->OnePanel->form->addSelect('group', $list, false, false, false, true)));
+				$this->MyPanel->table->addRow(array($this->LanguageHandler->mem_search_tbl_group, '&nbsp;',
+										   $this->MyPanel->form->addSelect('group', $list, false, false, false, true)));
 
-			$this->OnePanel->table->endTable(true);
-			$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+			$this->MyPanel->table->endTable(true);
+			$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 }
 

@@ -323,7 +323,7 @@ class ModuleObject extends MasterObject
 			{
 				foreach(explode(' ', $this->_hlight) as $word)
 				{
-					$this->_hlight = preg_quote($word, '/');
+					$word = preg_quote($word, '/');
 					
 					while(preg_match("/(^|\s|,!|;)(" . $word . ")(\s|,|!|&|$)/i", $row['posts_body']))
 					{
@@ -484,7 +484,7 @@ class ModuleObject extends MasterObject
 			   $this->UserHandler->getField('class_canPost'))
 			{
 				$button_reply = "<a href=\"" . GATEWAY . "?a=post&amp;CODE=04&amp;t={$topic['topics_id']}\" title=\"\"><macro:btn_main_reply></a>";
-				$button_qwik  = "<a href=\"#qwik\" onclick=\"javascript:toggleBox('qwikwrap');\" title=\"\"><macro:btn_main_qreply></a>";
+				$button_qwik  = "<a href=\"#qwik\" onclick=\"javascript:return toggleBox('qwikwrap');\" title=\"\"><macro:btn_main_qreply></a>";
 				$replier	  = eval($this->TemplateHandler->fetchTemplate('reply_bit'));
 			}
 

@@ -1,6 +1,6 @@
 <?php
 
-define('ONEPANEL', 1);
+define('MYPANEL', 1);
 
 require_once 'init.php';
 require_once 'lib/form.han.php';

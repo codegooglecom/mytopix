@@ -1,6 +1,11 @@
 MyTopix | Personal Message Board - Change Log
 =============================================
 
+Version: 1.3.0
+- November 09, 2006
+
+1. Moved database connection info to a seperate file. They are now stored as constants.
+
 Version: 1.2.3
 - January 04, 2005
 

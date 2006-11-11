@@ -421,10 +421,9 @@ class ModuleObject extends MasterObject
 	function _sig()
 	{
 		$options = F_BREAKS | F_SMILIES | F_CODE;
-
-		$sig	 = isset($this->post['body']) ? $this->post['body'] : $this->UserHandler->getField('members_sig');
+		$sig     = isset($this->post['body']) ? $this->post['body'] : $this->UserHandler->getField('members_sig');
 		$parsed  = $this->ParseHandler->parseText($sig, $options);
-		$sig	 = $this->ParseHandler->doFormatEditImage($sig);
+		$sig     = $this->ParseHandler->doFormatEditImage($sig);
 
 		$error_list = '';
 
@@ -441,12 +440,12 @@ class ModuleObject extends MasterObject
 		$this->TemplateHandler->addTemplate(array('bbcode_field', 'smilie_wrapper'));
 
 		$emoticons = $FormHandler->getEmoticonBox($this->config['emoticon_rows'], $this->config['emoticon_cols']);
-		$bbcode	= eval($this->TemplateHandler->fetchTemplate('bbcode_field'));
+		$bbcode    = eval($this->TemplateHandler->fetchTemplate('bbcode_field'));
 
 		$ucp_tabs = $this->_doNav();
-		$hash	 = $this->UserHandler->getUserHash();
+		$hash     = $this->UserHandler->getUserHash();
 		$content  = eval($this->TemplateHandler->fetchTemplate('ucp_sig'));
-		return	  eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		return      eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
 	

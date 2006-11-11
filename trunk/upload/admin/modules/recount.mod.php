@@ -28,7 +28,7 @@ class ModuleObject extends MasterObject
 	* @access Public
 	* @var Object
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Allows direct manipulation of files
@@ -56,8 +56,8 @@ class ModuleObject extends MasterObject
 
 		$this->_code = isset($this->get['code']) ? $this->get['code'] : 00;
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler  = new FileHandler($this->config);
@@ -76,41 +76,41 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->sync_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->sync_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(1, 3, 41);
+				$this->MyPanel->_make_nav(1, 3, 41);
 				$this->_showOverView();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(1, 3, 42);
+				$this->MyPanel->_make_nav(1, 3, 42);
 				$this->_SynchBoard();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(1, 3, 43);
+				$this->MyPanel->_make_nav(1, 3, 43);
 				$this->_SynchMembers();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(1, 3, 44);
+				$this->MyPanel->_make_nav(1, 3, 44);
 				$this->_SynchForums();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(1, 3, 45);
+				$this->MyPanel->_make_nav(1, 3, 45);
 				$this->_SynchCache();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(1, 3, 41);
+				$this->MyPanel->_make_nav(1, 3, 41);
 				break;
 		}
 
-   		$this->OnePanel->flushBuffer();
+   		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -127,31 +127,31 @@ class ModuleObject extends MasterObject
 	function _showOverView()
 	{
 
-		$this->OnePanel->appendBuffer($this->LanguageHandler->sync_over_tip);
+		$this->MyPanel->appendBuffer($this->LanguageHandler->sync_over_tip);
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->sync_over_tbl_var,  " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->sync_over_tbl_val, " align='right'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->sync_over_tbl_var,  " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->sync_over_tbl_val, " align='right'");
 
-		$this->OnePanel->table->startTable($this->LanguageHandler->sync_over_tbl_header);
+		$this->MyPanel->table->startTable($this->LanguageHandler->sync_over_tbl_header);
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_posts),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_posts),
 										   array(number_format($this->config['posts']), " align='right'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_topics),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_topics),
 										   array(number_format($this->config['topics']), " align='right'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_members),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_members),
 										   array(number_format($this->config['total_members']), " align='right'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_latest),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_latest),
 										   array("<a href=\"" . GATEWAY . "?a=members&amp;code=05&amp;id={$this->config['latest_member_id']}\" " . 
 												 "title=\"\">{$this->config['latest_member_name']}</a>", " align='right'")));
 
-			$this->OnePanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_forums),
+			$this->MyPanel->table->addRow(array(array($this->LanguageHandler->sync_over_tbl_forums),
 										   array(number_format(sizeof($this->CacheHandler->getCacheByKey('forums'))), " align='right'")));
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -189,6 +189,8 @@ class ModuleObject extends MasterObject
 		$sql	= $this->DatabaseHandler->query("SELECT posts_id FROM " . DB_PREFIX . "posts");
 		$post   = $sql->getNumRows();
 
+		$latest['members_name'] = str_replace ( '$', '&#36;', $latest['members_name'] );
+
 		$this->config['latest_member_id']   = $latest['members_id'];
 		$this->config['latest_member_name'] = $this->ParseHandler->parseText($latest['members_name']);
 		$this->config['total_members']	  = $count;
@@ -212,7 +214,7 @@ class ModuleObject extends MasterObject
 			WHERE topics_id = {$row['topics_id']}");
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->synch_err_board_done, GATEWAY . '?a=recount');
+		$this->MyPanel->messenger($this->LanguageHandler->synch_err_board_done, GATEWAY . '?a=recount');
 	}
 
    // ! Action Method
@@ -252,7 +254,7 @@ class ModuleObject extends MasterObject
 			}
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->synch_err_members_done, GATEWAY . '?a=recount');
+		$this->MyPanel->messenger($this->LanguageHandler->synch_err_members_done, GATEWAY . '?a=recount');
 	}
 
    // ! Action Method
@@ -270,7 +272,7 @@ class ModuleObject extends MasterObject
 	{
 		$this->ForumHandler->updateForumStats();
 
-		$this->OnePanel->messenger($this->LanguageHandler->synch_err_forums_done, GATEWAY . '?a=recount');
+		$this->MyPanel->messenger($this->LanguageHandler->synch_err_forums_done, GATEWAY . '?a=recount');
 	}
 
    // ! Action Method
@@ -288,7 +290,7 @@ class ModuleObject extends MasterObject
 	{
 		$this->CacheHandler->updateAllCache();
 
-		$this->OnePanel->messenger($this->LanguageHandler->synch_err_cache_done, GATEWAY . '?a=recount');
+		$this->MyPanel->messenger($this->LanguageHandler->synch_err_cache_done, GATEWAY . '?a=recount');
 	}
 }
 

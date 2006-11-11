@@ -47,7 +47,7 @@ class ModuleObject extends MasterObject
 	* @access Private
 	* @var Integer
 	*/
-	var $OnePanel;
+	var $MyPanel;
 
    /**
 	* Variable Description
@@ -85,8 +85,8 @@ class ModuleObject extends MasterObject
 			$this->_skin = $this->get['skin'];
 		}
 
-		require_once SYSTEM_PATH . 'admin/lib/onepanel.php';
-		$this->OnePanel = new OnePanel($this);
+		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
+		$this->MyPanel = new MyPanel($this);
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		$this->_FileHandler  = new FileHandler($this->config);
@@ -104,42 +104,42 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
-		$this->OnePanel->addHeader($this->LanguageHandler->image_form_header);
+		$this->MyPanel->addHeader($this->LanguageHandler->image_form_header);
 
 		switch($this->_code)
 		{
 			case '00':
-				$this->OnePanel->_make_nav(4, 16, 27, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, 27, $this->_skin);
 				$this->_showImages();
 				break;
 
 			case '01':
-				$this->OnePanel->_make_nav(4, 16, 28, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, 28, $this->_skin);
 				$this->_addImage();
 				break;
 
 			case '02':
-				$this->OnePanel->_make_nav(4, 16, 28, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, 28, $this->_skin);
 				$this->_doAddImage();
 				break;
 
 			case '03':
-				$this->OnePanel->_make_nav(4, 16, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, -2, $this->_skin);
 				$this->_doDeleteImage();
 				break;
 
 			case '04':
-				$this->OnePanel->_make_nav(4, 16, -2, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, -2, $this->_skin);
 				$this->_viewImage();
 				break;
 
 			default:
-				$this->OnePanel->_make_nav(4, 16, 27, $this->_skin);
+				$this->MyPanel->_make_nav(4, 16, 27, $this->_skin);
 				$this->_showImages();
 				break;
 		}
 
-		$this->OnePanel->flushBuffer();
+		$this->MyPanel->flushBuffer();
 	}
 
    // ! Action Method
@@ -154,7 +154,7 @@ class ModuleObject extends MasterObject
 	*/
 	function _showImages()
 	{
-		$this->OnePanel->appendBuffer("
+		$this->MyPanel->appendBuffer("
 		<script language='javascript'>
 			function popup(url, width, height)
 			{
@@ -164,22 +164,22 @@ class ModuleObject extends MasterObject
 
 		$skins = $this->_fetchSkins();
 
-		$this->OnePanel->form->startForm(GATEWAY . '?a=image');
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . '?a=image');
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-			$this->OnePanel->form->addWrapSelect('skin', $skins, $this->_skin, '',
+			$this->MyPanel->form->addWrapSelect('skin', $skins, $this->_skin, '',
 											 array(1, $this->LanguageHandler->image_form_skin_title,
 													  $this->LanguageHandler->image_form_skin_desc));
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
-		$this->OnePanel->table->addColumn($this->LanguageHandler->image_tbl_name, " align='left'");
-		$this->OnePanel->table->addColumn($this->LanguageHandler->image_tbl_size);
-		$this->OnePanel->table->addColumn($this->LanguageHandler->image_tbl_dims, " align='center'");
-		$this->OnePanel->table->addColumn('&nbsp;', ' width="15%"');
+		$this->MyPanel->table->addColumn($this->LanguageHandler->image_tbl_name, " align='left'");
+		$this->MyPanel->table->addColumn($this->LanguageHandler->image_tbl_size);
+		$this->MyPanel->table->addColumn($this->LanguageHandler->image_tbl_dims, " align='center'");
+		$this->MyPanel->table->addColumn('&nbsp;', ' width="15%"');
 
-		$this->OnePanel->table->startTable(sprintf($this->LanguageHandler->image_tbl_header,
+		$this->MyPanel->table->startTable(sprintf($this->LanguageHandler->image_tbl_header,
 												   $skins[$this->_skin]));
 
 			$dir  = SYSTEM_PATH . "skins/{$this->_skin}/";
@@ -211,19 +211,19 @@ class ModuleObject extends MasterObject
 				$popup = "javascript: popup(\"" . GATEWAY . "?a=image&amp;code=04&amp;file={$file}&amp;" .
 						 "skin={$this->_skin}\", {$width}, {$height});";
 
-				$this->OnePanel->table->addRow(array(array($file, '', 'headerb'),
+				$this->MyPanel->table->addRow(array(array($file, '', 'headerb'),
 											   array($this->_FileHandler->getFileSize(filesize($dir . $file)), ' align="center"', 'headerb'),
 											   array($dims[0] . 'x' . $dims[1], ' align="center"', 'headerb'),
 											   array("<a href='#' onclick='{$popup}'>{$this->LanguageHandler->link_view}</a>" .
-													 " | <a href=\"" . GATEWAY . "?a=image&amp;file={$file}&amp;skin=" .
+													 " <a href=\"" . GATEWAY . "?a=image&amp;file={$file}&amp;skin=" .
 													 "{$this->_skin}&amp;code=03\" onclick='return confirm(\"" .
 													 "{$this->LanguageHandler->image_tbl_confirm}\");'><b>"   .
 													 "{$this->LanguageHandler->link_delete}</b></a>",
 													 ' align="center"', 'headerc')));
 			}
 
-		$this->OnePanel->table->endTable();
-		$this->OnePanel->appendBuffer($this->OnePanel->table->flushBuffer());
+		$this->MyPanel->table->endTable();
+		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
    // ! Action Method
@@ -238,8 +238,8 @@ class ModuleObject extends MasterObject
 	*/
 	function _addImage()
 	{
-		$this->OnePanel->form->startForm(GATEWAY . "?a=image&amp;code=02", '', 'POST', " enctype='multipart/form-data'");
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->startForm(GATEWAY . "?a=image&amp;code=02", '', 'POST', " enctype='multipart/form-data'");
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 
 			$ext   = explode('|', $this->config['good_image_types']);
 			$types = '';
@@ -251,20 +251,20 @@ class ModuleObject extends MasterObject
 
 			$types = substr($types, 0, strlen($types) - 2);
 
-			$this->OnePanel->form->addFile('image',
+			$this->MyPanel->form->addFile('image',
 								 array(1, $this->LanguageHandler->image_new_form_upload_title,
 										  sprintf($this->LanguageHandler->image_new_form_upload_desc,
 												  $types)));
 
-			$this->OnePanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
+			$this->MyPanel->form->addWrapSelect('skin',  $this->_fetchSkins(), $this->_skin, false,
 											 array(1, $this->LanguageHandler->image_form_skin_title,
 													  $this->LanguageHandler->image_form_skin_desc));
 
-			$this->OnePanel->form->addHidden('skin', $this->_skin);
-			$this->OnePanel->form->addHidden('hash', $this->UserHandler->getUserHash());
+			$this->MyPanel->form->addHidden('skin', $this->_skin);
+			$this->MyPanel->form->addHidden('hash', $this->UserHandler->getUserHash());
 
-		$this->OnePanel->form->endForm();
-		$this->OnePanel->appendBuffer($this->OnePanel->form->flushBuffer());
+		$this->MyPanel->form->endForm();
+		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
    // ! Action Method
@@ -281,12 +281,12 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
 		{
-			$this->OnePanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
+			$this->MyPanel->messenger($this->LanguageHandler->invalid_access, $this->config['site_link']);
 		}
 
 		if(false == is_writable(SYSTEM_PATH . "/skins/{$this->_skin}/"))
 		{
-			$this->OnePanel->messenger(sprintf($this->LanguageHandler->chmod_images, $this->_skin),
+			$this->MyPanel->messenger(sprintf($this->LanguageHandler->chmod_images, $this->_skin),
 									   GATEWAY . "?a=image&skin={$this->_skin}&code=01");
 		}
 
@@ -301,10 +301,10 @@ class ModuleObject extends MasterObject
 		if(false == $UploadHandler->doUpload())
 		{
 			$error_msg = $UploadHandler->getError();
-			return $this->OnePanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . "?a=image&skin={$this->_skin}&code=01");
+			return $this->MyPanel->messenger($this->LanguageHandler->$error_msg, GATEWAY . "?a=image&skin={$this->_skin}&code=01");
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->image_new_form_done, GATEWAY . "?a=image&skin={$this->_skin}");
+		$this->MyPanel->messenger($this->LanguageHandler->image_new_form_done, GATEWAY . "?a=image&skin={$this->_skin}");
 	}
 
    // ! Action Method
@@ -328,7 +328,7 @@ class ModuleObject extends MasterObject
 			exit();
 		}
 
-		$this->OnePanel->messenger($this->LanguageHandler->image_err_not_writable, GATEWAY . "?a=image&amp;skin={$this->_skin}");
+		$this->MyPanel->messenger($this->LanguageHandler->image_err_not_writable, GATEWAY . "?a=image&amp;skin={$this->_skin}");
 	}
 
    // ! Action Method
@@ -346,14 +346,14 @@ class ModuleObject extends MasterObject
 		$sql = $this->DatabaseHandler->query("SELECT skins_name FROM " . DB_PREFIX . "skins WHERE skins_id = {$this->_skin}");
 		$row = $sql->getRow();
 
-		$this->OnePanel->clearBuffer();
-		$this->OnePanel->appendBuffer("<title>{$this->LanguageHandler->image_view_title} {$this->_file} ( {$row['skins_name']} )</title>");
-		$this->OnePanel->appendBuffer("<style>body{margin:0px;}</style>");
-		$this->OnePanel->appendBuffer("<a href='javascript:this.close();' title='{$this->LanguageHandler->image_view_close}'>");
-		$this->OnePanel->appendBuffer("<img src='" . SYSTEM_PATH . "skins/{$this->_skin}/{$this->_file}' border='0' alt='' />");
-		$this->OnePanel->appendBuffer("</a>");
+		$this->MyPanel->clearBuffer();
+		$this->MyPanel->appendBuffer("<title>{$this->LanguageHandler->image_view_title} {$this->_file} ( {$row['skins_name']} )</title>");
+		$this->MyPanel->appendBuffer("<style>body{margin:0px;}</style>");
+		$this->MyPanel->appendBuffer("<a href='javascript:this.close();' title='{$this->LanguageHandler->image_view_close}'>");
+		$this->MyPanel->appendBuffer("<img src='" . SYSTEM_PATH . "skins/{$this->_skin}/{$this->_file}' border='0' alt='' />");
+		$this->MyPanel->appendBuffer("</a>");
 
-		echo $this->OnePanel->buffer;
+		echo $this->MyPanel->buffer;
 		exit();
 	}
 
