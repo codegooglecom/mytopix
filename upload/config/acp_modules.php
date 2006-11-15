@@ -1,14 +1,11 @@
 <?php
 
-$modules = array();
+$modules   = array();
 
 $modules[] = 'config';
-$modules[] = 'email';
 $modules[] = 'emoticons';
 $modules[] = 'filter';
 $modules[] = 'groups';
-$modules[] = 'help';
-$modules[] = 'image';
 $modules[] = 'main';
 $modules[] = 'members';
 $modules[] = 'prune';
@@ -25,4 +22,5 @@ $modules[] = 'moderators';
 $modules[] = 'macros';
 $modules[] = 'files';
 $modules[] = 'queue';
+
 ?>

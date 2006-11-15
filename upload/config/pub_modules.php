@@ -5,8 +5,6 @@ $modules = array();
 //MODULE NAMES:        CACHE GROUPS:
 
 $modules['active']   = array('forums');
-$modules['email']    = array('filter');
-$modules['help']     = array('emoticons');
 $modules['logon']    = array();
 $modules['main']     = array('forums', 'moderators');
 $modules['members']  = array('titles');

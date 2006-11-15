@@ -7,9 +7,12 @@ require_once 'lib/form.han.php';
 require_once 'lib/table.han.php';
 require_once 'lib/tab.han.php';
 
+$MyTopix = new MyTopix ( '../' );
+
 ob_start();
-$mytopix = new MyTopix('../');
-$mytopix->initialize();
+
+$MyTopix->initialize();
+
 ob_end_flush();
 
 ?>

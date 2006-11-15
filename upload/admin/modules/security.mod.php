@@ -1,65 +1,16 @@
 <?php
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
-/**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
 class ModuleObject extends MasterObject
 {
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_code;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_hash;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $MyPanel;
+	var $PageHandler;
+	var $FileHandler;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_PageHandler;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_FileHandler;
-
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function ModuleObject(& $module, & $config)
 	{
 		$this->MasterObject($module, $config);
@@ -81,52 +32,42 @@ class ModuleObject extends MasterObject
 		$this->_FileHandler  = new FileHandler($this->config);
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function execute()
 	{
 		switch($this->_code)
 		{
 			case '00':
-				$this->MyPanel->_make_nav(1, 1, 7);
+				$this->MyPanel->make_nav(1, 1, 7);
 				$this->_showNames();
 				break;
 
 			case '01':
-				$this->MyPanel->_make_nav(1, 1, 8);
+				$this->MyPanel->make_nav(1, 1, 8);
 				$this->_showEmail();
 				break;
 
 			case '02':
-				$this->MyPanel->_make_nav(1, 1, 9);
+				$this->MyPanel->make_nav(1, 1, 9);
 				$this->_showIP();
 				break;
 
 			case '03':
-				$this->MyPanel->_make_nav(1, 1, 7);
+				$this->MyPanel->make_nav(1, 1, 7);
 				$this->_doUpdateSimple();
 				break;
 
 			case '04':
-				$this->MyPanel->_make_nav(1, 1, 10);
+				$this->MyPanel->make_nav(1, 1, 10);
 				$this->_showSuspended();
 				break;
 
 			case '05':
-				$this->MyPanel->_make_nav(1, 1, 10);
+				$this->MyPanel->make_nav(1, 1, 10);
 				$this->_doSuspended();
 				break;
 
 			default:
-				$this->MyPanel->_make_nav(1, 1, 7);
+				$this->MyPanel->make_nav(1, 1, 7);
 				$this->_showNames();
 				break;
 		}
@@ -134,16 +75,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->flushBuffer();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showNames()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->names_form_header);
@@ -165,16 +96,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showEmail()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->email_form_header);
@@ -196,16 +117,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showIP()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->ip_form_header);
@@ -227,16 +138,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doUpdateSimple()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
@@ -263,16 +164,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->messenger($this->LanguageHandler->ban_err_done, GATEWAY . "?a=security&code={$code}");
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showSuspended()
 	{
 		$sql = $this->DatabaseHandler->query("
@@ -336,16 +227,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer('<p id="bar">' . $this->_PageHandler->getSpan() . '</p>');
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doSuspended()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())

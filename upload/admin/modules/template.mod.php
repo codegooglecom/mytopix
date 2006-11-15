@@ -1,79 +1,18 @@
 <?php
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
-/**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
 class ModuleObject extends MasterObject
 {
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_id;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_code;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_hash;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_skin;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_section;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $MyPanel;
+	var $FileHandler;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_FileHandler;
-
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function ModuleObject(& $module, & $config)
 	{
 		$this->MasterObject($module, $config);
@@ -109,16 +48,6 @@ class ModuleObject extends MasterObject
 		$this->_FileHandler = new FileHandler($this->config);
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function execute()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->skin_temp_header);
@@ -126,27 +55,27 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->MyPanel->_make_nav(4, 14, -1);
+				$this->MyPanel->make_nav(4, 14, -1);
 				$this->_showSections();
 				break;
 
 			case '01':
-				$this->MyPanel->_make_nav(4, 14, -1);
+				$this->MyPanel->make_nav(4, 14, -1);
 				$this->_showTemplateList();
 				break;
 
 			case '02':
-				$this->MyPanel->_make_nav(4, 14, -1);
+				$this->MyPanel->make_nav(4, 14, -1);
 				$this->_showTemplate();
 				break;
 
 			case '03':
-				$this->MyPanel->_make_nav(4, 14, -1);
+				$this->MyPanel->make_nav(4, 14, -1);
 				$this->_doEditTemplate();
 				break;
 
 			default:
-				$this->MyPanel->_make_nav(4, 14, -1);
+				$this->MyPanel->make_nav(4, 14, -1);
 				$this->_showSections();
 				break;
 		}
@@ -154,16 +83,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->flushBuffer();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showSections()
 	{
 		$skins = $this->_fetchSkins();
@@ -218,16 +137,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showTemplateList()
 	{
 		$sql = $this->DatabaseHandler->query("SELECT skins_id, skins_name FROM " . DB_PREFIX . "skins " .
@@ -300,16 +209,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showTemplate()
 	{
 		extract($this->post);
@@ -382,16 +281,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doEditTemplate()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
@@ -414,16 +303,6 @@ class ModuleObject extends MasterObject
 								   GATEWAY . "?a=template&code=02&skin={$this->_skin}&section={$this->_section}&temps={$temps}");
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _fetchSkins()
 	{
 		$list = array();
