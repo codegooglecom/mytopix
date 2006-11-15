@@ -462,8 +462,9 @@ class CacheHandler
 			$array = array();
 			while(false !== ($file = readdir($handle)))
 			{
-				if($file != '.'  &&
-				   $file != '..' &&
+				if($file != '.'    &&
+				   $file != '..'   &&
+				   $file != '.svn' &&
 				   $file != 'index.html')
 				{
 					$array[] = $file;

@@ -1,65 +1,16 @@
 <?php
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
-/**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
 class ModuleObject extends MasterObject
 {
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_id;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_code;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_hash;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_skin;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $MyPanel;
 
-
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function ModuleObject(& $module, & $config)
 	{
 		$this->MasterObject($module, $config);
@@ -82,16 +33,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel = new MyPanel($this);
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function execute()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->title_form_header);
@@ -99,37 +40,37 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->MyPanel->_make_nav(3, 12, 21, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, 21, $this->_skin);
 				$this->_showTitles();
 				break;
 
 			case '01':
-				$this->MyPanel->_make_nav(3, 12, 22, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, 22, $this->_skin);
 				$this->_addTitle();
 				break;
 
 			case '02':
-				$this->MyPanel->_make_nav(3, 12, 22, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, 22, $this->_skin);
 				$this->_doAddTitle();
 				break;
 
 			case '03':
-				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, -5, $this->_skin);
 				$this->_editTitle();
 				break;
 
 			case '04':
-				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, -5, $this->_skin);
 				$this->_doEditTitle();
 				break;
 
 			case '05':
-				$this->MyPanel->_make_nav(3, 12, -5, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, -5, $this->_skin);
 				$this->_doDeleteTitle();
 				break;
 
 			default:
-				$this->MyPanel->_make_nav(3, 12, 21, $this->_skin);
+				$this->MyPanel->make_nav(3, 12, 21, $this->_skin);
 				$this->_showTitles();
 				break;
 		}
@@ -137,16 +78,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->flushBuffer();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showTitles()
 	{
 		$skins = $this->_fetchSkins();
@@ -197,16 +128,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _addTitle()
 	{
 		$this->MyPanel->form->startForm(GATEWAY . '?a=titles&amp;code=02');
@@ -250,16 +171,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doAddTitle()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
@@ -298,16 +209,6 @@ class ModuleObject extends MasterObject
 								   GATEWAY . "?a=titles&amp;skin={$this->_skin}");
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _editTitle()
 	{
 		$sql = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "titles WHERE titles_id = {$this->_id}");
@@ -363,16 +264,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->form->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doEditTitle()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())
@@ -412,16 +303,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->messenger($this->LanguageHandler->title_edit_form_done, GATEWAY . "?a=titles&amp;id={$this->_id}&amp;code=03");
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doDeleteTitle()
 	{
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "titles WHERE titles_id = {$this->_id}");
@@ -431,16 +312,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->messenger($this->LanguageHandler->title_edit_removed, GATEWAY . "?a=titles&amp;skin={$this->_skin}");
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _fetchSkins()
 	{
 		$sql  = $this->DatabaseHandler->query("SELECT skins_id, skins_name FROM " . DB_PREFIX . "skins");
@@ -453,7 +324,6 @@ class ModuleObject extends MasterObject
 
 		return $list;
 	}
-
 }
 
 ?>

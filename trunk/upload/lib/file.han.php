@@ -90,20 +90,20 @@ class FileHandler
 
 		if(false == is_dir($to))
 		{
-			if(false == @mkdir($to, 0777))
-            {
+			if(false == mkdir($to, 0777))
+			{
 				return false;
-            }
+			}
 			else {
 				chmod($to,  0777);
-            }
+			}
 		}
 
 		chdir($from);
 		$handle = opendir('.');
 		while(false !== ($file = readdir($handle)))
 		{
-			if(($file != '.') & ($file != '..'))
+			if(($file != '.') & ($file != '..') & ($file != '.svn'))
 			{
 
 				if(is_dir($file))

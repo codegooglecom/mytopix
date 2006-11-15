@@ -339,75 +339,72 @@ class ModuleObject extends MasterObject
 
 				while($row = $sql->getRow())
 				{
-					if(false == $row['topics_hidden'] || $this->UserHandler->getField('class_canSeeHidden'))
-					{	
-						$inlineNav = '';
+					$inlineNav = '';
 
-						if($links = $this->_PageHandler->getInlinePages($row['topics_posts'], $row['topics_id']))
-						{
-							$inlineNav = eval($this->TemplateHandler->fetchTemplate('page_wrapper'));
-						}
-
-						$read_time = isset($this->read_topics[$row['topics_id']]) && 
-									 $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit') 
-								   ? $this->read_topics[$row['topics_id']] 
-								   : $this->UserHandler->getField('members_lastvisit');
-
-						if(isset($this->read_forums[$this->_forum]) && 
-						  $this->read_forums[$this->_forum] > $read_time)
-						{
-							$read_time = $this->read_forums[$this->_forum];
-						}
-
-						$row['topics_marker'] = $this->_IconHandler->getIcon($row, $read_time);
-
-						if(false == $row['topics_subject'])
-						{
-							$row['topics_subject'] = $this->LanguageHandler->topic_no_subject;
-						}
-
-						if($row['topics_moved'])
-						{
-							$row['topics_views'] = $this->LanguageHandler->blank;
-							$row['topics_posts'] = $this->LanguageHandler->blank;
-						}
-						else {
-							$row['topics_views']  = number_format($row['topics_views'], 0, '', $this->config['number_format']);
-							$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
-						}
-
-						$row['topics_prefix'] = '';
-
-						if($this->_IconHandler->is_new)
-						{
-							$new_posts = true;
-
-							$row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
-						}
-
-						if($row['topics_has_file'])
-						{
-							$row['topics_prefix'] .= '<macro:img_clip>';
-						}
-
-						$row['topics_author'] = $row['topics_author'] != 1 
-											  ? "<a href='" . GATEWAY . "?getuser=" . 
-												"{$row['topics_author']}'>{$row['members_name']}</a>"
-											  : "{$row['topics_author_name']}";
-
-						$row['topics_poster'] = $row['topics_last_poster'] != 1 
-											  ? "<a href='" . GATEWAY . "?getuser=" . 
-												"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
-											  : "{$row['topics_last_poster_name']}";
-
-						$row['topics_date']   = $this->TimeHandler->doDateFormat($this->config['date_long'],
-																				$row['topics_date']);
-
-						$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
-																				$row['topics_last_post_time']);
-
-						$list .= eval($this->TemplateHandler->fetchTemplate('topic_row')) . "\n";
+					if($links = $this->_PageHandler->getInlinePages($row['topics_posts'], $row['topics_id']))
+					{
+						$inlineNav = eval($this->TemplateHandler->fetchTemplate('page_wrapper'));
 					}
+
+					$read_time = isset($this->read_topics[$row['topics_id']]) && 
+								 $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit') 
+							   ? $this->read_topics[$row['topics_id']] 
+							   : $this->UserHandler->getField('members_lastvisit');
+
+					if(isset($this->read_forums[$this->_forum]) && 
+					  $this->read_forums[$this->_forum] > $read_time)
+					{
+						$read_time = $this->read_forums[$this->_forum];
+					}
+
+					$row['topics_marker'] = $this->_IconHandler->getIcon($row, $read_time);
+
+					if(false == $row['topics_subject'])
+					{
+						$row['topics_subject'] = $this->LanguageHandler->topic_no_subject;
+					}
+
+					if($row['topics_moved'])
+					{
+						$row['topics_views'] = $this->LanguageHandler->blank;
+						$row['topics_posts'] = $this->LanguageHandler->blank;
+					}
+					else {
+						$row['topics_views']  = number_format($row['topics_views'], 0, '', $this->config['number_format']);
+						$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
+					}
+
+					$row['topics_prefix'] = '';
+
+					if($this->_IconHandler->is_new)
+					{
+						$new_posts = true;
+
+						$row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
+					}
+
+					if($row['topics_has_file'])
+					{
+						$row['topics_prefix'] .= '<macro:img_clip>';
+					}
+
+					$row['topics_author'] = $row['topics_author'] != 1 
+										  ? "<a href='" . GATEWAY . "?getuser=" . 
+											"{$row['topics_author']}'>{$row['members_name']}</a>"
+										  : "{$row['topics_author_name']}";
+
+					$row['topics_poster'] = $row['topics_last_poster'] != 1 
+										  ? "<a href='" . GATEWAY . "?getuser=" . 
+											"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
+										  : "{$row['topics_last_poster_name']}";
+
+					$row['topics_date']   = $this->TimeHandler->doDateFormat($this->config['date_long'],
+																			$row['topics_date']);
+
+					$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
+																			$row['topics_last_post_time']);
+
+					$list .= eval($this->TemplateHandler->fetchTemplate('topic_row')) . "\n";
 				}
 			}
 

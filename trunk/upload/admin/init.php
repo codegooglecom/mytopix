@@ -2,61 +2,24 @@
 
 error_reporting(0);
 
-ini_set("arg_separator.output", "&amp;");
-ini_set("magic_quotes_runtime", 0);
+ini_set ( 'arg_separator.output', '&amp;' );
+ini_set ( 'magic_quotes_runtime', 0 );
 
 session_start();
 
-/**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
 class MyTopix
 {
+	var $path;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_path;
-
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
-	function MyTopix($path)
+	function MyTopix ( $path )
 	{
-		$this->_path = $path;
+		$this->path = $path;
 	}
 
-	
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function initialize()
 	{
-		define('SYSTEM_PATH', $this->_path);
-		define('SYSTEM_ACP',  true);
+		define ( 'SYSTEM_PATH', $this->path );
+		define ( 'SYSTEM_ACP',  true);
 
 		require_once SYSTEM_PATH . 'config/db_config.php';
 		require_once SYSTEM_PATH . 'config/settings.php';
@@ -75,44 +38,30 @@ class MyTopix
 		require_once SYSTEM_PATH . 'lib/cache.han.php';
 		require_once               'lib/event.han.php';
 
-		$_GET  = HttpHandler::checkVars($_GET);
-		$_POST = HttpHandler::checkVars($_POST);
+		$_GET  = HttpHandler::checkVars ( $_GET );
+		$_POST = HttpHandler::checkVars ( $_POST );
 
-		if(isset($_GET['debug']))
+		if ( isset ( $_GET[ 'debug' ] ) )
 		{
-			define('DEBUG', true);
+			define ( 'DEBUG', true );
 		}
 		else {
-			define('DEBUG', false);
+			define ( 'DEBUG', false );
 		}
 
-		$this->Event = new EventHandler($this->_setEvent(), $config);
+		$this->Event = new EventHandler ( $this->_setEvent(), $config );
 
-		ob_start();
-		
-		echo $this->Event->doEvent();
-
-		ob_end_flush();
+		return $this->Event->executeEvent();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _setEvent()
 	{
-		if(false == isset($_GET['a']))
+		if ( false == isset ( $_GET[ 'a' ] ) )
 		{
-			$_GET['a'] = 'main';
+			$_GET[ 'a '] = 'main';
 		}
-		
-		return $_GET['a'];
+
+		return $_GET[ 'a' ];
 	}
 }
 

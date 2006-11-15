@@ -356,11 +356,11 @@ class ParseHandler
 			{
 				if($clickable && $emoticon['emo_click'])
 				{
-					$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" alt=\"\" />",
+					$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
 											   'CODE' => $emoticon['emo_code']);
 				}
 				else {
-					$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" alt=\"\" />",
+					$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
 											   'CODE' => $emoticon['emo_code']);
 				}
 			}

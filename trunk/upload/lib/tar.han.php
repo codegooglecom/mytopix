@@ -3,942 +3,775 @@
 /**
 * Tarball Handling Class
 *
-* This is an all-purpose tarball handler written simply
-* because there is a real lack of decent tar'ing methods
-* for use in php.
+* This library allows one to create and extract 
+* tarball file archives on the fly. There is also
+* functionality for gzip compression of archives.
 *
-* USEAGE:
-* ------------------------------------------------------
-* Writing a tarball:
-* ------------------------------------------------------
+* USAGE INSTRUCTIONS:
+* --------------------------------------------------------
 *
-* $TarHandler = new TarHandler(); 
+* Creating a tarball ( uncompressed ):
 *
-* $TarHandler->newTar('path/to/new/tar/', 'my_tar.tar');
-* $TarHandler->addDirectory("path/to/directory/");
-* $TarHandler->addFile('path/to/file.txt');
+* $TarHandler = new TarHandler();
+*
+* $TarHandler->newTar ( 'name_of_archive.tar', 'path/to/store/' );
+* $TarHandler->addDirectory ( 'path/to/archive/directory' );
+* $TarHandler->addFile ( 'path/to/single/file.exe' );
+*
 * $TarHandler->writeTar();
 *
-* ------------------------------------------------------
+* Creating a tarball ( compressed ):
+*
+* $TarHandler = new TarHandler();
+*
+* $TarHandler->newTar ( 'name_of_archive.tar', 'path/to/store/' );
+* $TarHandler->setGzLevel ( 9 );
+* $TarHandler->addDirectory ( 'path/to/archive/directory' );
+* $TarHandler->addFile ( 'path/to/single/file.exe' );
+*
+* $TarHandler->writeTar();
+*
 * Extracting a tarball:
-* ------------------------------------------------------
-*
-* $TarHandler = new TarHandler(); 
-*
-* $TarHandler->extractTar('tar_name.tar', 'path/to/tar/', 'extract/to/path');
-*
-* ------------------------------------------------------
-* Listing tarball contents:
-* ------------------------------------------------------
 *
 * $TarHandler = new TarHandler();
-* 
-* $TarHandler->setCurrent('absolute/path/to/tar/');
-* 
-* $files = $TarHandler->listTarFiles('tar_name.tar');
 *
-* OR PULL ONLY CERTAIN FILE TYPES:
-* 
-* $files = $TarHandler->listTarFiles('tar_name.tar', array('txt', 'html'));
-* 
-* foreach($files as $file)
-* {
-*     echo $file . '<br />';
-* }
+* $TarHandler->extractTar ( 'name_of_archive.tar', './path/to/archive/', './path/to/destination/' );
 *
-* ------------------------------------------------------
-* Searching for files:
-* ------------------------------------------------------
-*
-* $TarHandler = new TarHandler();
-* 
-* $TarHandler->setCurrent('absolute/path/to/tar/');
-* 
-* $files = $TarHandler->searchTar('tar_name.tar', array('index.html'));
-* 
-* foreach($files as $file)
-* {
-*     echo $file . '<br />';
-* }
-*
-*
-* ERROR HANDLING:
-* ------------------------------------------------------
-* This system comes complete with a comprehensive error
-* handling system that covers just about any error type.
-* Almost every public function within this class can 
-* exit with an error ( if there is one ). To determine
-* what error has occurred, try the following method:
-*
-* if(false == $TarHandler->addFile('path/to/file.txt'))
-* {
-*     echo $TarHandler->getError();
-* }
-*
-* @version $Id: tar.han.php murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive / http://www.jaia-interactive.com
-* @package MyTopix - Personal Message Board
+* @version $Id: TarHandler.class.php murdochd Exp $
+* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
+* @company Jaia Interactive http://www.jaia-interactive.com/
+* @package none ( stand alone library )
 */
-class TarHandler
-{
-   /**
-    * Error listing
-    * @access Private
-    * @var Array
-    */    
-	var $_error_list;
+class TarHandler {
 
    /**
-    * Identifier of last error
-    * @access Private
-    * @var Integer
-    */    
-    var $_error_last;
-
-   /**
-    * A list of files for tar'ing
-    * @access Private
-    * @var Array
-    */    
-	var $_tar_cache;
-
-   /**
-    * Filename of current tar
-    * @access Private
-    * @var String
-    */    
+	* The new archive's file name
+	* @access Private
+	* @var String
+	*/
 	var $_tar_name;
 
    /**
-    * Path to tar file
-    * @access Private
-    * @var String
-    */    
-    var $_tar_path;
+	* The full destination path of a new archive.
+	* @access Private
+	* @var String
+	*/
+	var $_tar_full_path;
 
    /**
-    * Full literal path to tar file
-    * @access Private
-    * @var String
-    */    
-    var $_tar_full_path;
+	* Contains data for all archived files before packing.
+	* @access Private
+	* @var Array
+	*/
+	var $_files;
 
    /**
-    * Original location of tar
-    * @access Private
-    * @var String
-    */    
-    var $_path_from;
+	* The raw contents of an opened tarball.
+	* @access Private
+	* @var String
+	*/
+	var $_tar_cache;
 
    /**
-    * Destination point for extracted
-    * tarball files
-    * @access Private
-    * @var String
-    */    
-    var $_path_to;
+	* A simple counter that tallies files.
+	* @access Private
+	* @var Integer
+	*/
+	var $_file_count;
 
    /**
-    * Currently accessed directory
-    * @access Private
-    * @var String
-    */    
-    var $_current;
+	* The current directory for storage.
+	* @access Private
+	* @var String
+	*/
+	var $_current;
 
+   /**
+	* Determines whether gzip compression is enabled.
+	* @access Private
+	* @var Boolean
+	*/
+	var $_gz_compress;
+
+   /**
+	* What level of compression should be used.
+	* @access Private
+	* @var Integer
+	*/
+	var $_gz_level;
 
    // ! Constructor Method
 
    /**
-    * Initiates tar handling class and defines
-    * all instance variables.
-    *
-    * @param None
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Void
-    */
-    function TarHandler()
-    {
-        $this->_current       = getcwd() ? getcwd() : './';
-        $this->_tar_name      = '';
-        $this->_tar_full_path = '';
-        $this->_tar_path      = '';
-        $this->_path_from     = '';
-        $this->_path_to       = '';
-
-        $this->_tar_cache     = array();
-        $this->_error_last    = array();
-        $this->_error_list    = array(1  => 'Could not find or create tar file destination \'%s\' .',
-                                      2  => 'File stats for \'%s\' could not be pulled.',
-                                      3  => 'Could not add file \'%s\' to tar.',
-                                      4  => 'A file name or path was not included for writing a new tar file.',
-                                      5  => 'There is no data within \'%s\'  to write a tar with.',
-                                      6  => 'Filename \'%s\' is too large.',
-                                      7  => 'Filepath \'%s\' is too large.',
-                                      8  => 'Directory \'%s\' could not be added because it does not exist.',
-                                      9  => 'Extraction destination \'%s\' is not a valid directory.',
-                                      10 => 'Tar read error has occurred.',
-                                      11 => 'File \'%s\' could not be found.',
-                                      12 => 'Directory \'%s\' could not be found.',
-                                      13 => 'Cannot extract archive. Directory \'%s\' cannot be located.',
-                                      14 => 'Cannot extract archive. File \'%s\' cannot be located.',
-                                      15 => 'You must enter a file name to search for.',
-                                      16 => 'Search failed. Could not locate \'%s\' within the archive.',
-                                      17 => 'Read failed. \'%s\' could not be located.',
-                                      18 => 'Search failed. Could not locate filetypes \'%s\' within the archive.',
-                                      19 => 'There are no errors to report.');
-
-    }
+	* Instansiates class and defines instance variables.
+	*
+	* @param none
+	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
+	* @since v 0.0.1
+	* @access Public
+	* @return Void
+	*/
+	function TarHandler()
+	{
+		$this->_tar_name      = '';
+		$this->_tar_full_path = '';
+		$this->_files         = array();
+		$this->_tar_cache     = '';
+		$this->_file_count    = 0;
+		$this->_current       = getcwd() . '/';
+		$this->_gz_compress   = false;
+		$this->_gz_level      = 9;
+	}
 
    // ! Mutator Method
 
    /**
-    * USAGE
-    * --------------
-    * $TarHandler->setCurrent( str(CURRENT DIRECTORY) );
-    * 
-    * Allows a user to set a user-defined
-    * directory path starting point.
-    *
-    * @param String $path Directory path to desired location
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function setCurrent($path)
-    {
-        if(false == is_dir($path))
-        {
-            $this->_error_last = array(12, $path);
-            return false;
-        }
-
-        $this->_current = $path;
-        return true;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->newTar( str(DESTINATION PATH), str(TARBALL NAME) );
-    * 
-    * Initiates the tar creation process and
-    * prepares handler to build internal file
-    * listing.
-    *
-    * @param String $to_path Tarball save location
-    * @param String $name    Tarball file name
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function newTar($to_path, $name)
-    {
-        $to_path = preg_replace('~/$~', '', $to_path);
-
-        if(false == is_dir($to_path))
-        {
-            if(false == @mkdir($to_path, 0777))
-            {
-                $this->_error_last = array(1, $to_path);
-                return false;
-            }
-        }
-
-        $this->_tar_name      = $name;
-        $this->_tar_full_path      = $to_path;
-        $this->_tar_full_path = $this->_tar_full_path . '/' . $this->_tar_name;
-
-  		chdir($this->_current);
-
-        return true;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->addDirectory( str(DIRECTORY PATH) );
-    * 
-    * Allows user to add the contents of an
-    * entire directory for archiving.
-    *
-    * @param String $path Directory path to spider for files
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function addDirectory($path)
-    {
-        if(false == is_dir($path))
-        {
-            $this->_error_last = array(12, $path);
-            return false;
-        }
-
-        chdir($this->_current);
-
-        $this->_spiderDirectory($path);
-
-        return true;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->addFile( str(FILEPATH AND NAME) );
-    * 
-    * Allows user to add a single file to the
-    * internal file listing. Error checking
-    * allows for troubleshooting.
-    *
-    * @param String $file Filepath & name to add to file listing
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function addFile($file)
-    {
-        if(false == file_exists($file))
-        {
-            $this->_error_last = array(11, $file);
-            return false;
-        }
-
-        $data = '';
-        $link = '';
-
-        $stat = stat($file);
-
-        if(false == $stat)
-        {
-            $this->_error_last = array(2, $stat);
-            return false;
-        }
-
-        if(is_file($file))
-        {
-            $typeflag = 0;
-
-            if($handle = fopen($file, 'rb'))
-            {
-                $data = fread($handle, filesize($file));
-                fclose($handle);
-            }
-            else {
-                $this->_error_last = array(3, $file);
-                return false;
-            }
-        }
-        elseif(is_link($file))
-        {
-            $typeflag = 1;
-            $link = @readlink($file);
-        }
-        elseif(is_dir($file))
-        {
-            $typeflag = 5;
-        }
-        else {
-            $typeflag = 'p00p';
-        }
-
-        $this->_tar_cache[] = array('name'     => $file,
-                                    'mode'     => fileperms($file),
-                                    'uid'      => $stat[4],
-                                    'gid'      => $stat[5],
-                                    'size'     => strlen($data),
-                                    'mtime'    => filemtime($file),
-                                    'chksum'   => '      ',
-                                    'typeflag' => $typeflag,
-                                    'linkname' => $link,
-                                    'magic'    => 'ustar\0',
-                                    'version'  => '00',
-                                    'uname'    => 'unknown',
-                                    'gname'    => 'unknown',
-                                    'devmajor' => '',
-                                    'devminor' => '',
-                                    'prefix'   => '',
-                                    'data'     => $data);
-
-        @clearstatcache();
-        @chdir($this->_current);
-
-        return true;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->writeTar(  );
-    * 
-    * Takes the internal file listing and
-    * builds a properly formatted tarball
-    * archive. Will stop on error, see USEAGE
-    * within this file's header for trouble-
-    * shooting.
-    *
-    * @param None
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function writeTar()
-    {
-		if(false == $this->_tar_full_path)
-        {
-			$this->_error_last = array(4, false);
+	* USAGE
+	* --------------
+	* $TarHandler->setCurrent( str(CURRENT_DIRECTORY) );
+	* 
+	* Allows a user to set a user-defined directory path 
+	* starting point.
+	*
+	* @param String $path Directory path to desired location
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function setCurrent ( $path )
+	{
+		if ( false == is_dir ( $path ) )
+		{
 			return false;
 		}
 
-		if(false == $this->_tar_cache)
-        {
-			$this->_error_last = array(5, false);
+		$this->_current = $path;
+
+		return true;
+	}
+
+   // ! Mutator Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->setGzLevel( int(GZIP_LEVEL) );
+	* 
+	* Turns on gzip compression based on user-defined 
+	* compression level.
+	*
+	* @param Integer $level Level of compression
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function setGzLevel ( $level = 5 )
+	{
+		if ( false == function_exists ( 'gzopen' ) )
+		{
 			return false;
 		}
 
-		$data = '';
-
-		foreach($this->_tar_cache as $file) {
-
-			$prefix   = '';
-			$tmp      = '';
-			$checksum = 0;
-
-            if(strlen($file['name']) > 99)
-			{
-				$position = strrpos($file['name'], "/");
-
-				if(is_string($position) && false == $position)
-				{
-                    $this->_error_last = array(6, $file['name']);
-                    return false;
-				}
-
-				$prefix       = substr($file['name'], 0 , $position );
-				$file['name'] = substr($file['name'], ($position + 1));
-
-				if(strlen($prefix) > 154)
-				{
-                    $this->_error_last = array(7, $prefix);
-                    return false;
-				}
-			}
-
-			$mode  = sprintf("%6s ",  decoct($file['mode']));
-			$uid   = sprintf("%6s ",  decoct($file['uid']));
-			$gid   = sprintf("%6s ",  decoct($file['gid']));
-			$size  = sprintf("%11s ", decoct($file['size']));
-			$mtime = sprintf("%11s ", decoct($file['mtime']));
-
-            $tmp  = pack("a100a8a8a8a12a12", $file['name'], $mode, $uid, $gid, $size, $mtime);
-
-			$last  = pack("a1"   , $file['typeflag']);
-			$last .= pack("a100" , $file['linkname']);
-
-			$last .= pack("a6",   'ustar');
-			$last .= pack("a2",   '');
-			$last .= pack("a32",  $file['uname']);
-			$last .= pack("a32",  $file['gname']);
-			$last .= pack("a8",   '');
-			$last .= pack("a8",   '');
-			$last .= pack("a155", $prefix);
-			$last .= $this->_buildString("\0", (512 - strlen($tmp . $last . "12345678")));
-
-			for ($i = 0 ; $i < 148 ; $i++ )
-			{
-				$checksum += ord(substr($tmp, $i, 1));
-			}
-
-			for ($i = 148 ; $i < 156 ; $i++)
-			{
-				$checksum += ord(' ');
-			}
-
-			for ($i = 156, $j = 0 ; $i < 512 ; $i++, $j++)
-			{
-				$checksum += ord(substr($last, $j, 1));
-			}
-
-			$checksum = sprintf("%6s ", decoct($checksum));
-
-			$tmp .= pack("a8", $checksum);
-			$tmp .= $last;
-		   	$tmp .= $file['data'];
-
-		   	if($file['size'])
-		   	{
-		   		if($file['size'] % 512 != 0)
-		   		{
-		   			$tmp .= $this->_buildString("\0" , (512 - ($file['size'] % 512)));
-		   		}
-		   	}
-
-		   	$data .= $tmp;
-		}
-
-		$data .= pack("a512", "");
-
-        @chdir($this->_tar_full_path);
-
-		$handle = fopen($this->_tar_full_path, 'wb');
-		fputs($handle, $data, strlen($data));
-		fclose($handle);
-
-        return true;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->extractTar( str(TARBALL NAME), str(TARBALL DIRECTORY), str(EXTRACT TO PATH) );
-    * 
-    * Opens and extracts the contents of
-    * a tarball to a specified location.
-    * This method will stop and exit on 
-    * error. Consult this file's USAGE
-    * section for troubleshooting methods.
-    *
-    * @param String $tar         Name of tarball
-    * @param String $from        Current location of tarball
-    * @param String $destination Tarball's extraction point
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean
-    */
-    function extractTar($tar, $from, $destination)
-    {
-        if(false == is_dir($from))
-        {
-            $this->_error_last = array(13, $from);
-            return false;
-        }
-
-        if(false == file_exists($from . '/' . $tar))
-        {
-            $this->_error_last = array(14, $from . '/' . $tar);
-            return false;
-        }
-
-		if(false == is_dir($destination) )
+		if ( $level >= 0 && $level <= 9 )
 		{
-			$this->_error_last = array(9, $destination);
-			return false ;
+			$this->_gz_level    = $level;
+			$this->_gz_compress = true;
+
+			return true;
 		}
 
-        $this->_tar_name  = $tar;
-        $this->_path_from = $from;
-        $this->_path_to   = $destination;
-
-        chdir($this->_path_from);
-
-		foreach($this->_readTar() as $key => $file) 
-        {
-			if(preg_match("#/#", $file['name']))
-			{
-				$path_info = explode( "/" , $file['name'] );
-				$file_name = array_pop($path_info);
-			} 
-            else {
-				$path_info = array();
-				$file_name = $file['name'];
-			}
-			
-			if($path_info)
-			{
-				foreach($path_info as $dir_component)
-				{
-					if($dir_component)
-					{
-                        if(false == is_dir($dir_component))
-                        {
-                            @mkdir($this->_path_to . $dir_component, 0777);
-                            chmod($this->_path_to . $dir_component, 0777);
-                        }
-                    }
-				}
-			}
-			
-            chdir($this->_path_to . $dir_component);
-
-			if(false == $file['typeflag'])
-			{
-				if($handle = @fopen($file_name, "wb"))
-				{
-					fputs($handle, $file['data'], strlen($file['data']));
-					fclose($handle);
-				}
-			}
-			elseif ($file['typeflag'] == 5)
-			{
-				if(false == is_dir($file_name))
-				{
-					@mkdir($file_name, 0777);
-				}
-			}
-
-            @chmod($file_name, $file['mode']);
-			@touch($file_name, $file['mtime']);
-		}
-
-        @chdir($this->_current);
-
-        return true;
-    }
+		return false;
+	}
 
    // ! Action Method
 
    /**
-    * USAGE
-    * --------------
-    * $TarHandler->searchTar( str(TAR PATH AND NAME), [ arr(FILES TO SEARCH) ] );
-    * 
-    * Allows a user to search an
-    * existing tarball for predefined 
-    * filenames.
-    *
-    * MUST USE setCurrent(); METHOD
-    *
-    * @param String $tar   Name of target tarball
-    * @param Array  $files Listing of filenames to search for
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean on error / Array on success
-    */
-    function searchTar($tar, $files = array())
-    {
-        if(false == $files)
-        {
-			$this->_error_last = array(15, false);
-			return false ;            
-        }
-
-        $this->_tar_name = $tar;
-
-        chdir($this->_current);
-
-        if(false == ($list = $this->_readTar()))
-        {
-            return false;
-        }
-
-        $out = array();
-        foreach($list as $file)
-        {
-            $paths = explode("/" , $file['name']);
-            $name  = array_pop($paths);
-
-            foreach($files as $names)
-            {
-                if($name == $names)
-                {
-                    $out[] = 'Found: ' . $file['name'];
-                }
-            }
-        }
-
-        if(false == $out)
-        {
-			$this->_error_last = array(16, implode(', ', $files));
-			return false ;  
-        }
-
-        return $out;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * $TarHandler->listTarFiles( str(TAR PATH AND NAME), [ arr(TYPES TO SEARCH) ] );
-    * 
-    * Opens a pre-existing tarball and 
-    * generates an array containing a list
-    * of archived files. A user may also 
-    * specify what filetypes to list by using
-    * the second parameter.
-    *
-    * MUST USE setCurrent(); METHOD
-    *
-    * @param String $tar   Name of target tarball
-    * @param Array  $types Listing of filetypes to search for
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return Boolean on error / Array on success
-    */
-    function listTarFiles($tar, $types = array())
-    {
-        $this->_tar_name = $tar;
-
-        chdir($this->_current);
-
-        if(false == ($list = $this->_readTar()))
-        {
-            return false;
-        }
-
-        $out = array();
-        foreach($list as $file)
-        {
-            if(sizeof($types))
-            {
-                foreach($types as $ext)
-                {
-                    if(end(explode('.', $file['name'])) == strtolower($ext))
-                    {
-                        $out[] = $file['name'];
-                    }
-                }
-            }
-            else {
-                $out[] = $file['name'];
-            }
-        }
-
-        if(false == $out)
-        {
-			$this->_error_last = array(18, implode(', ', $types));
-			return false ;  
-        }
-
-        return $out;
-    }
-
-   // ! Action Method
-
-   /**
-    * USAGE
-    * --------------
-    * echo $TarHandler->getError(  );
-    * 
-    * Retrieves the last error generated by
-    * the tar handler.
-    *
-    * @param None
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Public
-    * @return String on success / Boolean on failure
-    */
-    function getError()
-    {
-        if($this->_error_last)
-        {
-            return sprintf($this->_error_list[$this->_error_last[0]], $this->_error_last[1]);
-        }
-
-        return $this->_error_list['19'];        
-    }
-
-    /*********************************************
-     * ALL METHODS BELOW THIS POINT ARE PRIVATE: *
-     *********************************************/
-
-   // ! Action Method
-
-   /**
-    * Opens a specified tarball archive and
-    * creates an array containing detailed
-    * information about it's contents.
-    *
-    * @param None
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Private
-    * @return Array
-    */
-    function _readTar()
-    {
-        if(false == file_exists($this->_tar_name))
-        {
-			$this->_error_last = array(17, $this->_tar_name);
-			return false ;  
-        }
-
-		$handle = fopen($this->_tar_name, 'rb');
-		
-		while(false == feof($handle)) 
-        {
-			$buffer   = fread($handle, 512);
-			$checksum = 0;
-			
-			for ($i = 0 ; $i < 148 ; $i++) 
-            {
-				$checksum += ord(substr($buffer, $i, 1));
-			}
-
-			for ($i = 148 ; $i < 156 ; $i++)
-            {
-				$checksum += ord(' ');
-			}
-
-			for ($i = 156 ; $i < 512 ; $i++)
-            {
-				$checksum += ord(substr($buffer, $i, 1));
-			}
-			
-			$attrib = unpack('a100filename/a8mode/a8uid/a8gid/a12size/'  .
-                             'a12mtime/a8chksum/a1typeflag/a100link'     .
-                             '/a6magic/a2version/a32uname/a32gname/a8de' .
-                             'vmajor/a8devminor/a155/prefix', 
-                             $buffer);
-
-			$name   = trim($attrib['filename']);
-            $size   = OctDec(trim($attrib['size']));
-			$prefix = @trim($attrib['prefix']);
-            $chksum = OctDec(trim($attrib['chksum']));
-
-			if(($checksum == 256) && ($chksum == 0))
-            {
-				break;
-			}
-			
-			if($prefix)
-            {
-				$name = $prefix.'/'.$name;
-			}
-
-			if((preg_match( "#/$#" , $name)) && (false == $name))
-            {
-				$typeflag = 5;
-			}
-
-			if($buffer == $this->_buildString('\0' , 512))
-            {
-				break;
-			}
-			
-    		$data = fread($handle, $size);
-			
-			if(strlen($data) != $size)
-            {
-				$this->_error_last = array(10, $name);
-				fclose($handle);
-				return array();
-			}
-			
-			$diff = $size % 512;
-			
-			if($diff != 0)
-            {
-				$crap = fread($handle, (512 - $diff));
-			}
-			
-			if(false == $name)
-            {
-				break;
-			}
-
-    		$info[] = array('name'     => $name,
-                            'mode'     => OctDec(trim($attrib['mode'])),
-                            'uid'      => OctDec(trim($attrib['uid'])),
-                            'gid'      => OctDec(trim($attrib['gid'])),
-                            'size'     => $size,
-                            'mtime'    => OctDec(trim($attrib['mtime'])),
-                            'chksum'   => $chksum,
-                            'typeflag' => trim($attrib['typeflag']),
-                            'linkname' => @trim($attrib['linkname']),
-                            'magic'    => trim($attrib['magic']),
-                            'version'  => trim($attrib['version']),
-                            'uname'    => trim($attrib['uname']),
-                            'gname'    => trim($attrib['gname']),
-                            'devmajor' => OctDec(trim($attrib['devmajor'])),
-                            'devminor' => OctDec(trim($attrib['devminor'])),
-                            'prefix'   => $prefix,
-                            'data'     => $data);
-		}
-		
-		fclose($handle);
-		
-		return $info;
-    }
-
-   // ! Action Method
-
-   /**
-    * A recursive method that spiders a
-    * specified directory tree. It will 
-    * add to the current file cache any
-    * file it comes across.
-    *
-    * @param String $string Description
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Private
-    * @return Boolean
-    */
-    function _spiderDirectory($path)
-    {
-        if(false == is_dir($path))
-        {
-			$this->_error_last = array(12, $path);
-			return false ;  
-        }
-
-		$handle = opendir($path);
-		while(false !== ($file = readdir($handle)))
+	* USAGE
+	* --------------
+	* $TarHandler->addDirectory( str(DIRECTORY_PATH) );
+	* 
+	* Adds an entire directory as well as contained files
+	* for archiving.
+	*
+	* @param String $path Directory to add for archiving.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function addDirectory ( $path )
+	{
+		if ( false == is_dir ( $path ) )
 		{
-			if(($file != '.') & ($file != '..'))
-			{
-				if(@is_dir($path . '/' . $file))
-                {
-					$this->_spiderDirectory($path . '/' . $file);
-                }
-
-				if(@is_file($path . '/' . $file))
-                {
-					$this->addFile($path . '/' . $file);
-                }
-			}
+			return false;
 		}
-		closedir($handle);
 
-        return true;
-    }
+		chdir ( $this->_current );
+
+		$this->_spiderDirectory ( $path );
+
+		return true;
+	}
 
    // ! Action Method
 
    /**
-    * A simple method that creates garbage
-    * data and returns it as a string based on
-    * how many iterations are passed.
-    *
-    * @param String  $data       String to build upon
-    * @param Integer $iterations Amount of cycles that will generate the garbage data
-    * @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-    * @since v1.0
-    * @access Private
-    * @return String
-    */
-	function _buildString($data, $iterations) {
+	* USAGE
+	* --------------
+	* $TarHandler->newTar( str(TAR_NAME), str(DESTINATION_PATH) );
+	* 
+	* Begins the tarball creation process.
+	*
+	* @param String $tar_name    Name of new tarball arcive
+	* @param String $destination Directory where the new tarball will be stored.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function newTar ( $tar_name, $destination )
+	{
+		$destination = preg_replace ( '~/$~', '', $destination );
 
-		$out = '';
-		for($i = 0 ; $i < $iterations ; ++$i )
-        {
-			$out .= $data;
+		if ( false == is_dir ( $destination ) )
+		{
+			if ( false == @mkdir ( $destination, 0777 ) )
+			{
+				return false;
+			}
+		}
+
+		$this->_tar_name      = $tar_name;
+		$this->_tar_full_path = $destination;
+	}
+
+   // ! Action Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->addFile( str(FILE), bool(STRIP_PATH) );
+	* 
+	* Adds a file to the current file queue.
+	*
+	* @param String  $file    Full path / name of file to add.
+	* @param Boolean $no_path Strips path of file.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function addFile ( $file, $no_path = false )
+	{
+		if ( false == file_exists ( $file ) )
+		{
+			return false;
+		}
+
+		if ( $this->fileExists ( $file ) )
+		{
+			return false;
+		}
+
+		$file_data     = stat ( $file );
+		$file_contents = '';
+
+		if ( false == is_dir ( $file ) )
+		{
+			$file_pointer  = fopen ( $file, 'rb' );
+			$file_contents = fread ( $file_pointer, filesize ( $file ) );
+			
+			fclose ( $file_pointer );
+		}
+		else {
+			if ( false == preg_match ( '#/$#', $file ) )
+			{
+				$file = $file . '/';
+			}
+		}
+
+		$this->_file_count++;
+
+		if ( $no_path )
+		{
+			$file = end ( explode ( '/', $file ) );
+		}
+		else {
+			$file = preg_replace ( '#^\.{1,}/{1,}#', '', $file );
+		}
+
+		$this->_files[ $this->_file_count ][ 'name' ]       = $file;
+		$this->_files[ $this->_file_count ][ 'mode' ]       = $file_data[ 'mode' ];
+		$this->_files[ $this->_file_count ][ 'user_id' ]    = $file_data[ 'uid' ];
+		$this->_files[ $this->_file_count ][ 'group_id' ]   = $file_data[ 'gid' ];
+		$this->_files[ $this->_file_count ][ 'size' ]       = $file_data[ 'size' ];
+		$this->_files[ $this->_file_count ][ 'time' ]       = $file_data[ 'mtime' ];
+		$this->_files[ $this->_file_count ][ 'checksum' ]   = '';
+		$this->_files[ $this->_file_count ][ 'user_name' ]  = '';
+		$this->_files[ $this->_file_count ][ 'group_name' ] = '';
+		$this->_files[ $this->_file_count ][ 'file' ]       = $file_contents;
+
+		//clearstatcache();
+
+		chdir ( $this->_current );
+
+		return true;
+	}
+
+   // ! Action Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->writeTar();
+	* 
+	* Takes the files in queue and tarballs'em.
+	*
+	* @param none
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function writeTar()
+	{
+		if ( false == $this->_file_count || 
+			 false == $this->_tar_name   || 
+			 false == $this->_tar_full_path )
+		{
+			return false;
+		}
+
+		foreach ( $this->_files as $key => $val )
+		{
+			$tar_header  = '';
+			$tar_header .= str_pad ( $val[ 'name' ], 100, chr ( 0 ) );
+
+			$tar_header .= str_pad ( decoct ( $val[ 'mode' ] ),     7,  0, STR_PAD_LEFT) . chr ( 0 );
+			$tar_header .= str_pad ( decoct ( $val[ 'user_id' ] ),  7,  0, STR_PAD_LEFT) . chr ( 0 );
+			$tar_header .= str_pad ( decoct ( $val[ 'group_id' ] ), 7,  0, STR_PAD_LEFT) . chr ( 0 );
+			$tar_header .= str_pad ( decoct ( $val[ 'size' ] ),     11, 0, STR_PAD_LEFT) . chr ( 0 );
+			$tar_header .= str_pad ( decoct ( $val[ 'time' ] ),     11, 0, STR_PAD_LEFT) . chr ( 0 );
+
+			$tar_header .= str_repeat ( ' ', 8 );
+			$tar_header .= 0;
+			$tar_header .= str_repeat ( chr ( 0 ), 100 );
+			$tar_header .= str_pad ( 'ustar', 6, chr ( 32 ) );
+			$tar_header .= chr ( 32 ) . chr ( 0 );
+			$tar_header .= str_pad($val[ 'user_name' ],  32, chr ( 0 ) );
+			$tar_header .= str_pad($val[ 'group_name' ], 32, chr ( 0 ) );
+
+			$tar_header .= str_repeat ( chr ( 0 ), 8 );
+			$tar_header .= str_repeat ( chr ( 0 ), 8 );
+			$tar_header .= str_repeat ( chr ( 0 ), 155 );
+			$tar_header .= str_repeat ( chr ( 0 ), 12 );
+
+			$checksum = str_pad ( decoct ( $this->_headerChecksum ( $tar_header ) ), 6, 0, STR_PAD_LEFT );
+
+			for ( $i = 0; $i < 6; $i++ )
+			{
+				$tar_header[ ( 148 + $i ) ] = substr ( $checksum, $i, 1 );
+			}
+
+			$tar_header[ 154 ] = chr ( 0 );
+			$tar_header[ 155 ] = chr ( 32 );
+
+			$file_contents = str_pad ( $val[ 'file' ], ( ceil ( $val[ 'size'] / 512 ) * 512 ), chr ( 0 ) );
+
+			$this->_tar_cache .= $tar_header . $file_contents;
+		}
+
+		$this->_tar_cache .= str_repeat ( chr ( 0 ), 512 );
+
+		chdir ( $this->_tar_full_path );
+
+		$this->_tar_full_path = $this->_tar_full_path . '/' . $this->_tar_name;
+
+		if ( $this->_gz_compress )
+		{
+			$file_pointer = gzopen ( $this->_tar_full_path . '.gz', "wb{$this->_gz_level}" );
+			gzwrite($file_pointer, $this->_tar_cache);
+			gzclose($file_pointer);
+		}
+		else {
+			$file_pointer = fopen( $this->_tar_full_path, 'wb' );
+			fwrite ( $file_pointer, $this->_tar_cache );
+			fclose ( $file_pointer );
+		}
+
+		$this->_wipeClean();
+
+		return true;
+	}
+
+   // ! Action Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->extractTar( str(ARCHIVE_NAME), str(ARCHIVE_PATH), str(ARCHIVE_DESTINATION) );
+	* 
+	* Extracts a tarball to the specified location.
+	*
+	* @param String $tar_name         Name of archive.
+	* @param String $tar_path         Path to said archive.
+	* @param String $destination_path Location to extract files.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function extractTar ( $tar_name, $tar_path, $destination_path )
+	{
+		if ( false == file_exists ( $tar_path . $tar_name ) )
+		{
+			return false;
+		}
+
+		if ( false == file_exists ( $destination_path ) )
+		{
+			return false;
+		}
+
+		$this->_tar_cache = $this->_openTar ( $tar_name, $tar_path );
+
+		chdir ( $destination_path );
+
+		$tar_files = $this->_readTar();
+
+		foreach ( $tar_files as $key => $file )
+		{
+			$type_flag = 0;
+
+			if ( preg_match ( '#/#', $file[ 'name' ]) )
+			{
+				$path_info = explode( '/' , $file[ 'name' ] );
+				$file_name = array_pop ( $path_info );
+
+				$this->_createDirTree ( $path_info );
+			}
+
+			if ( preg_match ( '#/$#', $file[ 'name' ] ) )
+			{
+				$type_flag = 5;
+			}
+
+			if ( false == $type_flag )
+			{
+				if ( $handle = fopen ( $file[ 'name' ], 'wb' ) )
+				{
+					fwrite ( $handle, $file[ 'data' ], strlen ( $file[ 'data' ] ) );
+					fclose ( $handle );
+				}
+			}
+
+			chdir ( $destination_path );
+
+			@chmod ( $file[ 'name' ], $file['mode'] );
+			@touch ( $file[ 'name' ], $file['mtime'] );
+		}
+
+		return true;
+	}
+
+   // ! Accessor Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->fileExists( str(FILE_NAME) );
+	* 
+	* Checks if a file has already been added to the queue.
+	*
+	* @param String $file Name and path of file to check.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function fileExists ( $file )
+	{
+		foreach ( $this->_files as $key => $val )
+		{
+			if ( $val[ 'name' ] == $file )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+   // ! Accessor Method
+
+   /**
+	* USAGE
+	* --------------
+	* $TarHandler->listContents(  str(ARCHIVE_NAME), str(ARCHIVE_PATH) );
+	* 
+	* Lists the contents of a tarball.
+	*
+	* @param String $tar_name Name of archive.
+	* @param String $tar_path Path to said archive.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Public
+	* @return Boolean
+	*/
+	function listContents ( $tar_name, $tar_path )
+	{
+		if ( false == file_exists ( $tar_path . $tar_name ) )
+		{
+			return false;
+		}
+
+		$this->_tar_cache = $this->_openTar ( $tar_name, $tar_path );
+
+		$out = array();
+
+		foreach ( $this->_readTar() as $file )
+		{
+			$out[] = $file[ 'name' ];
 		}
 
 		return $out;
+	}
+
+   // ! Accessor Method
+
+   /**
+	* Checks if a file has already been added to the queue.
+	*
+	* @param String $tar_name Name of archive.
+	* @param String $tar_path Path to said archive.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Prciate
+	* @return Boolean
+	*/
+	function _openTar ( $tar_name, $tar_path )
+	{
+		$out = '';
+
+		if ( end ( explode ( '.', $tar_name ) ) == 'gz' )
+		{
+			if ( false == function_exists ( 'gzopen' ) )
+			{
+				return false;
+			}
+
+			$file_pointer = gzopen ( $tar_path . $tar_name, 'rb' );
+
+			while ( false == gzeof ( $file_pointer ) )
+			{
+				$out .= gzread ( $file_pointer, 81920 );
+			}
+
+			gzclose($file_pointer);
+		}
+		else {
+
+			$file_pointer = fopen ( $tar_path . $tar_name, 'rb' );
+			$out          = fread ( $file_pointer, filesize ( $tar_path . $tar_name ) );
+
+			fclose ( $file_pointer );
+		}
+
+		return $out;
+	}
+
+   // ! Accessor Method
+
+   /**
+	* Simply reads the contents of a tarball and places the
+	* results in a stack.
+	*
+	* @param none
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return Boolean
+	*/
+	function _readTar()
+	{
+		$tar_length  = strlen ( $this->_tar_cache );
+		$main_offset = 0;
+		$files       = array();
+
+		while ( $main_offset < $tar_length )
+		{
+			if ( substr ( $this->_tar_cache, $main_offset, 512 ) == str_repeat ( chr ( 0 ), 512 ) )
+			{
+				break;
+			}
+
+			$this->_file_count++;
+
+			$files[ $this->_file_count ][ 'mode' ]     = substr ( $this->_tar_cache, $main_offset + 100, 8 );
+			$files[ $this->_file_count ][ 'user_id' ]  = octdec ( substr ( $this->_tar_cache, $main_offset + 108, 8 ) );
+			$files[ $this->_file_count ][ 'group_id' ] = octdec ( substr ( $this->_tar_cache, $main_offset + 116, 8 ) );
+			$files[ $this->_file_count ][ 'size' ]     = octdec ( substr ( $this->_tar_cache, $main_offset + 124, 12 ) );
+			$files[ $this->_file_count ][ 'time' ]     = octdec ( substr ( $this->_tar_cache, $main_offset + 136, 12 ) );
+			$files[ $this->_file_count ][ 'checksum' ] = octdec ( substr ( $this->_tar_cache, $main_offset + 148, 6 ) );
+
+			$files[ $this->_file_count ][ 'name' ]       = $this->_parseNullString ( substr ( $this->_tar_cache, $main_offset,       100 ) );
+			$files[ $this->_file_count ][ 'user_name' ]  = $this->_parseNullString ( substr ( $this->_tar_cache, $main_offset + 265, 32 ) );
+			$files[ $this->_file_count ][ 'group_name' ] = $this->_parseNullString ( substr ( $this->_tar_cache, $main_offset + 297, 32 ) );
+
+			if ( $this->_headerChecksum ( substr ( $this->_tar_cache, $main_offset, 512 ) ) != $files[ $this->_file_count ][ 'checksum' ] )
+			{
+				return false;
+			}
+
+			$file_contents = substr ( $this->_tar_cache, $main_offset + 512, $files[ $this->_file_count ][ 'size' ] );
+
+			$files[ $this->_file_count ][ 'data' ] = $file_contents;
+
+			$main_offset += 512 + ( ceil ( $files[ $this->_file_count ][ 'size' ] / 512 ) * 512 );
+		}
+
+		return $files;
+	}
+
+   // ! Accessor Method
+
+   /**
+	* A recursive algorithm that searchs a directory tree
+	* for files to archive.
+	*
+	* @param String $path Directory to spider.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return Boolean
+	*/
+	function _spiderDirectory ( $path )
+	{
+		if ( false == is_dir ( $path ) )
+		{
+			return false;
+		}
+
+		$file_pointer = opendir ( $path );
+
+		while ( false !== ( $file = readdir ( $file_pointer ) ) )
+		{
+			if ( ( $file != '.' ) & ( $file != '..' ) & ( $file != '.svn' ) )
+			{
+				if ( @is_dir ( $path . '/' . $file ) )
+				{
+					$this->_spiderDirectory ( $path . '/' . $file );
+					$this->addFile ( $path . '/' . $file );
+				}
+
+				if ( @is_file ( $path . '/' . $file ) )
+				{
+					$this->addFile ( $path . '/' . $file );
+				}
+			}
+		}
+
+		closedir ( $file_pointer );
+
+		return true;
+	}
+
+   // ! Action Method
+
+   /**
+	* Creates the checksum for an archive header.
+	*
+	* @param String $string String to create a checksum for.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return String
+	*/
+	function _headerChecksum ( $string )
+	{
+		$out = '';
+
+		for ( $i = 0; $i < 512; $i++ )
+		{
+			$out += ord ( $string[ $i ] );
+		}
+
+		for ( $i = 0; $i < 8; $i++ )
+		{
+			$out -= ord ( $string[ 148 + $i ] );
+		}
+
+		return $out += ord ( ' ' ) * 8;
+	}
+
+   // ! Action Method
+
+   /**
+	* Reverses a null padded string.
+	*
+	* @param String $string String to convert
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return String
+	*/
+	function _parseNullString ( $string )
+	{
+		return substr ( $string, 0, strpos ( $string, chr ( 0 ) ) );
+	}
+
+   // ! Mutator Method
+
+   /**
+	* Clears all library cache for a clean start.
+	*
+	* @param none
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return Boolean
+	*/
+	function _wipeClean()
+	{
+		$this->_tar_name      = '';
+		$this->_tar_full_path = '';
+		$this->_files         = array();
+		$this->_tar_cache     = '';
+		$this->_file_count    = 0;
+		$this->_current       = getcwd() . '/';
+
+		return true;
+	}
+
+   // ! Action Method
+
+   /**
+	* Takes a file path and creates the entire directory tree.
+	*
+	* @param Array $path_info Directory components to create.
+	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
+	* @since v1.0
+	* @access Private
+	* @return Boolean
+	*/
+	function _createDirTree ( $path_info )
+	{
+		$path = getcwd();
+
+		foreach ( $path_info as $dir )
+		{
+			$path .= '/' . $dir;
+
+			if ( false == is_dir ( $path ) )
+			{
+				 mkdir ( $path, 0777 );
+				 chmod ( $path, 0777 );
+			}
+		}
+
+		return true;
 	}
 }
 

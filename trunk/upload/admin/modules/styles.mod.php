@@ -1,58 +1,15 @@
 <?php
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
-/**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
 class ModuleObject extends MasterObject
 {
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_code;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_id;
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $_hash;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
 	var $MyPanel;
 
-
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function ModuleObject(& $module, & $config)
 	{
 		$this->MasterObject($module, $config);
@@ -65,16 +22,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel = new MyPanel($this);
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function execute()
 	{
 		$this->MyPanel->addHeader($this->LanguageHandler->style_form_header);
@@ -82,27 +29,27 @@ class ModuleObject extends MasterObject
 		switch($this->_code)
 		{
 			case '00':
-				$this->MyPanel->_make_nav(4, 15, -1);
+				$this->MyPanel->make_nav(4, 15, -1);
 				$this->_showStyles();
 				break;
 
 			case '01':
-				$this->MyPanel->_make_nav(4, 15, -1);
+				$this->MyPanel->make_nav(4, 15, -1);
 				$this->_doDownload();
 				break;
 
 			case '02':
-				$this->MyPanel->_make_nav(4, 15, -1);
+				$this->MyPanel->make_nav(4, 15, -1);
 				$this->_editStyle();
 				break;
 
 			case '03':
-				$this->MyPanel->_make_nav(4, 15, -1);
+				$this->MyPanel->make_nav(4, 15, -1);
 				$this->_doEditStyle();
 				break;
 
 			default:
-				$this->MyPanel->_make_nav(4, 15, -1);
+				$this->MyPanel->make_nav(4, 15, -1);
 				$this->_showStyles();
 				break;
 		}
@@ -110,16 +57,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->flushBuffer();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _showStyles()
 	{
 		$this->MyPanel->table->addColumn($this->LanguageHandler->skin_temp_tbl_id, " width='1%'");
@@ -158,16 +95,6 @@ class ModuleObject extends MasterObject
 		$this->MyPanel->appendBuffer($this->MyPanel->table->flushBuffer());
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doDownload()
 	{
 		extract($this->get);
@@ -195,16 +122,6 @@ class ModuleObject extends MasterObject
 		exit();
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _editStyle()
 	{
 		extract($this->get);
@@ -244,16 +161,6 @@ class ModuleObject extends MasterObject
 
 	}
 
-   // ! Action Method
-
-   /**
-	* Comment
-	*
-	* @param String $string Description
-	* @author Daniel Wilhelm II Murdoch <wilhelm@cyberxtreme.org>
-	* @since v1.0
-	* @return String
-	*/
 	function _doEditStyle()
 	{
 		if($this->_hash != $this->UserHandler->getUserhash())

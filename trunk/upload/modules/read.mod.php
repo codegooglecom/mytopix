@@ -518,8 +518,10 @@ class ModuleObject extends MasterObject
 			$mod	  = eval($this->TemplateHandler->fetchTemplate('read_mod_list'));
 		}
 
+		$this->config[ 'title' ] = $topic['topics_title']; // A little hack-ish, I know, but it does the trick just fine!
+
 		$content = eval($this->TemplateHandler->fetchTemplate('container_read'));
-		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
    // ! Action Method
@@ -677,7 +679,7 @@ class ModuleObject extends MasterObject
 		FROM " . DB_PREFIX . "posts
 		WHERE
 			posts_topic  =  {$post['posts_topic']} AND
-			  posts_id   <= {$this->_post}",
+			posts_id   <= {$this->_post}",
 		__FILE__, __LINE__);
 
 		$count = $sql->getRow();
@@ -700,11 +702,17 @@ class ModuleObject extends MasterObject
 	*/
 	function _getLastPost($posts)
 	{
+		$last_read_date = isset ( $this->read_topics[ $this->_id ] ) 
+						? $this->read_topics[ $this->_id ] 
+						: $this->UserHandler->getField('members_last_visit');
+
 		$sql = $this->DatabaseHandler->query("
 		SELECT posts_id
 		FROM " . DB_PREFIX . "posts
-		WHERE posts_topic = {$this->_id}
-		ORDER BY posts_id DESC LIMIT 0, 1",
+		WHERE 
+			posts_topic = {$this->_id} AND
+			posts_date  > {$last_read_date}
+		ORDER BY posts_date LIMIT 0, 1",
 		__FILE__, __LINE__);
 
 		$row = $sql->getRow();
