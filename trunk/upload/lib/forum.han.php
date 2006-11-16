@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 /**
 * Forum Handling Class
 *
@@ -464,7 +483,7 @@ class ForumHandler
 	* @access public
 	* @return String
 	*/
-	function makeAllowableList($select = 0, $parent = 0, $space = '')
+	function makeAllowableList($select = 0, $parent = 0, $space = '', $highlight_all = false)
 	{
 		$out = null;
 		foreach($this->_sortForums($parent) as $val)
@@ -475,13 +494,13 @@ class ForumHandler
 				$dot	  = $parent ? '&nbsp;|' : '';
 				$selected = '';
 
-				if($select && $val['forum_id'] == $select)
+				if($highlight_all || $select && $val['forum_id'] == $select )
 				{
 					$selected = " selected=\"selected\"";
 				}
 
 				$out .= "<option value=\"{$val['forum_id']}\"{$selected}>{$dot}{$space} {$val['forum_name']}" .
-						"</option>\n" . $this->makeAllowableList($select, $val['forum_id'], $space . ' - -');
+						"</option>\n" . $this->makeAllowableList($select, $val['forum_id'], $space . ' - -', $highlight_all);
 			}
 		}
 

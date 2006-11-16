@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
 /**
@@ -61,9 +80,9 @@ class ModuleObject extends MasterObject
 	{
 		$this->MasterObject ( $module, $config );
 
-		$this->_id   = isset ( $this->get[ 'id' ] )    ? (int) $this->get[ 'id' ]    : 0;
-		$this->_code = isset ( $this->get[ 'code' ] )  ?       $this->get[ 'code' ]  : 00;
-		$this->_hash = isset ( $this->post[ 'hash' ] ) ?       $this->post[ 'hash' ] : null;
+		$this->_forum = isset ( $this->get[ 'forum' ] ) ? (int) $this->get[ 'forum' ] : 0;
+		$this->_code  = isset ( $this->get[ 'code' ] )  ?       $this->get[ 'code' ]  : 00;
+		$this->_hash  = isset ( $this->post[ 'hash' ] ) ?       $this->post[ 'hash' ] : null;
 
 		require_once SYSTEM_PATH . 'admin/lib/mypanel.php';
 		$this->MyPanel = new MyPanel ( $this );
@@ -739,7 +758,6 @@ class ModuleObject extends MasterObject
 			$this->MyPanel->appendBuffer ( $this->MyPanel->form->flushBuffer() );
 		}
 		else {
-
 			$sql = $this->DatabaseHandler->query ("
 			SELECT topics_id
 			FROM " . DB_PREFIX . "topics

@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
 class ModuleObject extends MasterObject
@@ -176,7 +195,7 @@ class ModuleObject extends MasterObject
 										   array($author, " align='center'", 'headerb'),
 										   array($hidden, " align='center'", 'headerb'),
 										   array($active, " align='center'", 'headerb'),
-										   array(number_format($row['skins_count']), " align='center'", 'headerb'),
+										   array(number_format($row['skins_count'] - 1), " align='center'", 'headerb'),
 										   array($option, " align='center'", 'headerc')));
 			}
 
@@ -585,7 +604,7 @@ class ModuleObject extends MasterObject
 		$UploadHandler = new UploadHandler($this->files, $dir, 'upload');
 
 		$UploadHandler->setExtTypes(array('tar'));
-		$UploadHandler->setMaxSize(500);
+		$UploadHandler->setMaxSize(false);
 
 		$this->CacheHandler->updateCache('skins');
 		$this->CacheHandler->updateCache('emoticons');
