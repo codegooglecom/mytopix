@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> Hack attempt detected!' );
 
 class ModuleObject extends MasterObject
@@ -815,7 +834,7 @@ class ModuleObject extends MasterObject
 				$sent = date ( $this->config[ 'date_short' ], time() );
 				$who  = $this->config[ 'title' ];
 
-				$message  = eval ( $this->TemplateHandler->fetchTemplate ('mail_header' ) );
+				$message  = eval ( $this->TemplateHandler->fetchTemplate ( 'mail_header' ) );
 				$message .= eval ( $this->TemplateHandler->fetchTemplate ( 'mail_admin_user_name' ) );
 				$message .= eval ( $this->TemplateHandler->fetchTemplate ( 'mail_footer' ) );
 
@@ -826,14 +845,14 @@ class ModuleObject extends MasterObject
 			}
 		}
 
-		$this->DatabaseHandler->query("
+		$this->DatabaseHandler->query ( "
 		UPDATE " . DB_PREFIX . "members SET
-			members_class        = " . false == isset ( $group )  ? 2 : (int) $group  . ",
-			members_is_admin     = " . false == isset ( $admin )  ? 0 : (int) $admin  . ",
-			members_is_super_mod = " . false == isset ( $mod )    ? 0 : (int) $mod    . ",
-			members_show_email   = " . false == isset ( $email )  ? 0 : (int) $email  . ",
-			members_is_banned    = " . false == isset ( $ban )    ? 0 : (int) $ban    . ",
-			members_noteNotify   = " . false == isset ( $notify ) ? 0 : (int) $notify . "
+			members_class        = " . ( false == isset ( $group )  ? 2 : (int) $group )  . ",
+			members_is_admin     = " . ( false == isset ( $admin )  ? 0 : (int) $admin )  . ",
+			members_is_super_mod = " . ( false == isset ( $mod )    ? 0 : (int) $mod )    . ",
+			members_show_email   = " . ( false == isset ( $email )  ? 0 : (int) $email )  . ",
+			members_is_banned    = " . ( false == isset ( $ban )    ? 0 : (int) $ban )    . ",
+			members_noteNotify   = " . ( false == isset ( $notify ) ? 0 : (int) $notify ) . "
 		WHERE members_id = {$this->_id}" );
 
 		$this->MyPanel->messenger ( $this->LanguageHandler->mem_gen_err_done, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=05" );

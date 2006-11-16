@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
 
 /**
@@ -1006,106 +1025,6 @@ class ModuleObject extends MasterObject
 		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'mod_err_locked_off', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1));
-	}
-
-   // ! Action Method
-
-   /**
-	* Searches for child categories based on the provided
-	* parent category id.
-	*
-	* @param Int $parent Parent id used to find children
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access private
-	* @return Array
-	*/
-	function _hideTopic()
-	{
-		if($this->_hash != $this->UserHandler->getUserhash())
-		{
-			return $this->messenger();
-		}
-
-		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			topics_id, 
-			topics_posts,
-			topics_forum,
-			topics_title
-		FROM " . DB_PREFIX . "topics 
-		WHERE topics_id = {$this->_id}", 
-		__FILE__, __LINE__);
-
-		if(false == $sql->getNumRows())
-		{
-			return $this->messenger();
-		}
-
-		$row = $sql->getRow();
-
-		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'hide_topics'))
-		{
-			return $this->messenger(array('MSG' => 'err_no_perm'));
-		}
-
-		$sql = $this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "topics 
-		SET topics_hidden = 1
-		WHERE topics_id  = {$this->_id}", 
-		__FILE__, __LINE__);
-
-		return $this->messenger(array('MSG' => 'mod_err_private_on', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1));
-	}
-
-   // ! Action Method
-
-   /**
-	* Searches for child categories based on the provided
-	* parent category id.
-	*
-	* @param Int $parent Parent id used to find children
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access private
-	* @return Array
-	*/
-	function _showTopic()
-	{
-		if($this->_hash != $this->UserHandler->getUserhash())
-		{
-			return $this->messenger();
-		}
-
-		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			topics_id, 
-			topics_posts,
-			topics_forum,
-			topics_title
-		FROM " . DB_PREFIX . "topics 
-		WHERE topics_id = {$this->_id}", 
-		__FILE__, __LINE__);
-
-		if(false == $sql->getNumRows())
-		{
-			return $this->messenger();
-		}
-
-		$row = $sql->getRow();
-
-		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'hide_topics'))
-		{
-			return $this->messenger(array('MSG' => 'err_no_perm'));
-		}
-
-		$sql = $this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "topics 
-		SET topics_hidden = 0
-		WHERE topics_id  = {$this->_id}", 
-		__FILE__, __LINE__);
-
-		return $this->messenger(array('MSG' => 'mod_err_private_off', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1));
 	}
 
    // ! Action Method

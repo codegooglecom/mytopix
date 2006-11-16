@@ -1,5 +1,24 @@
 <?php
 
+/***
+ * MyTopix | Personal Message Board
+ * Copyright (C) 2005 - 2007 Wilhelm Murdoch
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ ***/
+
 /**
 * Class Name
 *
@@ -78,12 +97,6 @@ class IconHandler
 		else {
 			$new = '<macro:icon_open_new';
 			$old = '<macro:icon_open_old';
-		}
-
-		if($topic['topics_hidden'])
-		{
-			$new = '<macro:icon_private_new';
-			$old = '<macro:icon_private_old';
 		}
 
 		if($topic['topics_pinned'])
