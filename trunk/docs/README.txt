@@ -8,4 +8,4 @@ that will need proper CHMODing. Please do so.
 5. Follow all prompts to install your board
 
 If you require free support follow the link below:
-http://support.jaia-interactive.com/?getforum=33
+http://support.jaia-interactive.com/

@@ -342,6 +342,8 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "posts WHERE posts_id = {$this->_id}", __FILE__, __LINE__);
 
+		$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX . "members SET members_posts = members_posts - 1 WHERE members_id = {$row['posts_author']}");
+
 		$sql = $this->DatabaseHandler->query("
 		SELECT posts_id 
 		FROM " . DB_PREFIX . "posts 

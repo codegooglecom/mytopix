@@ -95,7 +95,7 @@ class MySqlHandler extends DatabaseHandler
 	* @access Public
 	* @return Object ( Iterator Class )
 	*/
-	function query($sql, $file = '', $line = '')
+	function query($sql, $file = '', $line = '', $ignore_errors = false)
 	{
 		if(DEBUG)
 		{
@@ -103,7 +103,13 @@ class MySqlHandler extends DatabaseHandler
 			$start = $start[1] + $start[0];
 		}
 
-		$result = mysql_query($sql, $this->getConnectionId()) or die($this->getLastError($sql, $file, $line));
+		if ( $ignore_errors )
+		{
+			$result = mysql_query($sql, $this->getConnectionId());
+		}
+		else {
+			$result = mysql_query($sql, $this->getConnectionId()) or die($this->getLastError($sql, $file, $line));
+		}
 
 		if(DEBUG)
 		{

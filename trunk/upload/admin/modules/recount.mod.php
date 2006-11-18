@@ -286,6 +286,7 @@ class ModuleObject extends MasterObject
 	function _SynchForums()
 	{
 		$this->ForumHandler->updateForumStats();
+		$this->CacheHandler->updateCache ( 'forums' );
 
 		$this->MyPanel->messenger ( $this->LanguageHandler->synch_err_forums_done, GATEWAY . '?a=recount' );
 	}
