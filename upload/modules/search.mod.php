@@ -256,7 +256,6 @@ class ModuleObject extends MasterObject
 				$string	= "t.topics_last_post_time > " . ($this->UserHandler->getField('members_lastvisit') - 300);
 				$link	  = '?a=search&amp;CODE=03';
 				$trail	 = '';
-				$private   = '';
 				$in_forums = "AND t.topics_forum IN ('" . implode("','", $forums) . "')";
 				$order_by  = 't.topics_last_post_time DESC';
 				$message   = 'search_err_no_latest';
@@ -622,7 +621,6 @@ class ModuleObject extends MasterObject
 			p.posts_author =  {$this->_id} AND
 			posts_author   <> 1			AND
 			t.topics_forum IN ('{$in_forums}')
-			{$private}
 		ORDER BY p.posts_date DESC");
 
 		if(false == $sql->getNumRows())

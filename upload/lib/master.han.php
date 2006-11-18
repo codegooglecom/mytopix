@@ -204,6 +204,8 @@ class MasterObject
 		$this->welcome  =  '';
 		$this->sys_path =  SYSTEM_PATH;
 
+		$this->config[ 'forum_title' ] = $this->config[ 'title' ];
+
 		// Create alias' for environmental variables:
 
 		$this->server        = $_SERVER;

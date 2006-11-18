@@ -31,7 +31,7 @@ $config['max_smilies'] = '8';
 $config['notes_on'] = '1';
 $config['page_sep'] = ' · ';
 $config['per_page'] = '15';
-$config['posts'] = '43';
+$config['posts'] = '42';
 $config['regs_on'] = '1';
 $config['search_on'] = '1';
 $config['servertime'] = '-6';
@@ -95,4 +95,5 @@ $config['coppa_mail'] = '';
 $config['recursive_stats'] = '1';
 $config['cap_protect'] = '1';
 $config['attach_ext'] = 'cgi|pl|js|asp|php|html|htm|jsp|jar|txt|rar|zip|ppt';
+$config['forum_title'] = 'My Community';
 ?>

@@ -377,6 +377,7 @@ class ModuleObject extends MasterObject
 					}
 
 					$row['topics_marker'] = $this->_IconHandler->getIcon($row, $read_time);
+					$row['topics_prefix'] = '';
 
 					if(false == $row['topics_subject'])
 					{
@@ -389,17 +390,15 @@ class ModuleObject extends MasterObject
 						$row['topics_posts'] = $this->LanguageHandler->blank;
 					}
 					else {
+						if($this->_IconHandler->is_new)
+						{
+							$new_posts = true;
+
+							$row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
+						}
+
 						$row['topics_views']  = number_format($row['topics_views'], 0, '', $this->config['number_format']);
 						$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
-					}
-
-					$row['topics_prefix'] = '';
-
-					if($this->_IconHandler->is_new)
-					{
-						$new_posts = true;
-
-						$row['topics_prefix'] .= eval($this->TemplateHandler->fetchTemplate('topic_prefix'));
 					}
 
 					if($row['topics_has_file'])
@@ -473,6 +472,8 @@ class ModuleObject extends MasterObject
 			
 			$board_stats =  eval($this->TemplateHandler->fetchTemplate('topic_stats'));
 		}
+
+		$this->config['forum_title'] .= " - {$forum_data['forum_name']}";
 
 		$content = eval($this->TemplateHandler->fetchTemplate('container_main'));
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));

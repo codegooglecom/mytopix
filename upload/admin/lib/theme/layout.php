@@ -14,7 +14,7 @@
 				<div id="logo">&nbsp;</div>
 				<div id="first_lvl_nav"><?php echo $this->_nav_top; ?></div>
 			</div>
-			<div id="welcome"><p><a href="?a=main"><?php echo $this->System->LanguageHandler->layout_link_main; ?></a> | <a href="../index.php?a=main"><?php echo $this->System->LanguageHandler->layout_link_board; ?></a> | <a href="../index.php?a=logon&CODE=02"><?php echo $this->System->LanguageHandler->layout_link_logoff; ?></a></p><?php echo $this->System->LanguageHandler->layout_welcome; ?> <a href="?a=members&code=05&uid=<?php echo $this->System->UserHandler->getField('members_id'); ?>"><strong><?php echo $this->System->UserHandler->getField('members_name'); ?></strong></a>!</div>
+			<div id="welcome"><p><a href="?a=main"><?php echo $this->System->LanguageHandler->layout_link_main; ?></a> | <a href="../index.php?a=main"><?php echo $this->System->LanguageHandler->layout_link_board; ?></a> | <a href="../index.php?a=logon&CODE=02"><?php echo $this->System->LanguageHandler->layout_link_logoff; ?></a></p><?php echo $this->System->LanguageHandler->layout_welcome; ?> <a href="?a=members&code=05&id=<?php echo $this->System->UserHandler->getField('members_id'); ?>"><strong><?php echo $this->System->UserHandler->getField('members_name'); ?></strong></a>!</div>
 
 			<?php if($this->_nav_middle): ?>
 				<br style="clear: both;" />

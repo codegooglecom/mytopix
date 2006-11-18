@@ -437,7 +437,7 @@ class FormHandler
 	* @access Public
 	* @return Void
 	*/
-	function _getModeratorBit($announce = null, $locked = '', $pinned = '', $hidden = '')
+	function _getModeratorBit($announce = null, $locked = '', $pinned = '')
 	{
 		if($this->_ForumHandler->getModAccess($this->_forum, 'lock_topics'))
 		{
@@ -781,8 +781,7 @@ class NewReplyForm extends FormHandler
 		{
 			$tools = $this->_getModeratorBit($topic['topics_announce'], 
 											 $topic['topics_state'], 
-											 $topic['topics_pinned'], 
-											 $topic['topics_hidden']);
+											 $topic['topics_pinned']);
 		}
 
 		$polls = false;
@@ -877,8 +876,7 @@ class EditPostForm extends FormHandler
 		{
 			$tools = $this->_getModeratorBit($topic['topics_announce'], 
 											 $topic['topics_state'], 
-											 $topic['topics_pinned'], 
-											 $topic['topics_hidden']);
+											 $topic['topics_pinned']);
 		}
 
 		$polls = false;
@@ -973,8 +971,7 @@ class QuotePostForm extends FormHandler
 		{
 			$tools = $this->_getModeratorBit($topic['topics_announce'], 
 											 $topic['topics_state'], 
-											 $topic['topics_pinned'], 
-											 $topic['topics_hidden']);
+											 $topic['topics_pinned']);
 		}
 
 		$polls = false;

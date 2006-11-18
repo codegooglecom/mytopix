@@ -825,7 +825,13 @@ class ModuleObject extends MasterObject
 				}
 			}
 
-			$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX ."members SET members_name = '{$name}' WHERE members_id = {$this->_id}" );
+			$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX ."members SET members_name            = '{$name}' WHERE members_id         = {$this->_id}" );
+			$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX. "posts   SET posts_author_name       = '{$name}' WHERE posts_author       = {$this->_id}" );
+			$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX. "topics  SET topics_last_poster_name = '{$name}' WHERE topics_last_poster = {$this->_id}" );
+
+			$this->ForumHandler->updateForumStats();
+
+			$this->CacheHandler->updateCache ( 'forums' );
 
 			if ( $name_notify )
 			{

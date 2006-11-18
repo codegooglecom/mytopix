@@ -190,12 +190,14 @@ class ModuleObject extends MasterObject
 						: "<a href=\"" . GATEWAY . "?a=skin&amp;code=01&amp;skin={$row['skins_id']}\">" .
 						  "{$this->LanguageHandler->link_edit}</a> {$link_delete}";
 
+				$skin_count = $row['skins_count'] < 0 ? 0 : $row['skins_count'];
+
 				$this->MyPanel->table->addRow(array(array("<strong>{$row['skins_id']}</strong>", " align='center'", 'headera'),
 										   array($row['skins_name'], false, 'headerb'),
 										   array($author, " align='center'", 'headerb'),
 										   array($hidden, " align='center'", 'headerb'),
 										   array($active, " align='center'", 'headerb'),
-										   array(number_format($row['skins_count'] - 1), " align='center'", 'headerb'),
+										   array($skin_count, " align='center'", 'headerb'),
 										   array($option, " align='center'", 'headerc')));
 			}
 

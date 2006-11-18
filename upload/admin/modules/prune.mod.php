@@ -384,7 +384,6 @@ class ModuleObject extends MasterObject
 		}
 
 		if ( $locked )   $query[] = "AND t.topics_state    = {$locked}";
-		if ( $hidden )   $query[] = "AND t.topics_hidden   = {$hidden}";
 		if ( $stuck )    $query[] = "AND t.topics_pinned   = {$stuck}";
 		if ( $poll )     $query[] = "AND t.topics_is_poll  = {$poll}";
 		if ( $announce ) $query[] = "AND t.topics_announce = {$announce}";

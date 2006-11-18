@@ -537,7 +537,7 @@ class ModuleObject extends MasterObject
 			$mod	  = eval($this->TemplateHandler->fetchTemplate('read_mod_list'));
 		}
 
-		$this->config[ 'title' ] = $topic['topics_title']; // A little hack-ish, I know, but it does the trick just fine!
+		$this->config[ 'forum_title' ] = $topic['topics_title']; // A little hack-ish, I know, but it does the trick just fine!
 
 		$content = eval($this->TemplateHandler->fetchTemplate('container_read'));
 		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
@@ -721,9 +721,9 @@ class ModuleObject extends MasterObject
 	*/
 	function _getLastPost($posts)
 	{
-		$last_read_date = isset ( $this->read_topics[ $this->_id ] ) 
+		$last_read_date = isset ( $this->read_topics[ $this->_id ] )
 						? $this->read_topics[ $this->_id ] 
-						: $this->UserHandler->getField('members_last_visit');
+						: $this->UserHandler->getField('members_lastvisit');
 
 		$sql = $this->DatabaseHandler->query("
 		SELECT posts_id
@@ -735,6 +735,18 @@ class ModuleObject extends MasterObject
 		__FILE__, __LINE__);
 
 		$row = $sql->getRow();
+
+		if ( false == $sql->getNumRows() )
+		{
+			$sql = $this->DatabaseHandler->query("
+			SELECT posts_id
+			FROM " . DB_PREFIX . "posts
+			WHERE posts_topic = {$this->_id}
+			ORDER BY posts_id DESC LIMIT 0, 1",
+			__FILE__, __LINE__);
+
+			$row = $sql->getRow();
+		}
 
 		$page = ceil(($posts + 1 )/ $this->config['per_page']);
 		$page = $page < 1 ? 1 : $page;
