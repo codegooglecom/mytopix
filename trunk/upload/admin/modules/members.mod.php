@@ -745,9 +745,6 @@ class ModuleObject extends MasterObject
 			$this->MyPanel->form->addCheckBox ( 'notify', 1, false, false,
 												false, $row[ 'members_noteNotify' ] ? true : false, $this->LanguageHandler->mem_gen_form_notify_desc );
 
-			$this->MyPanel->form->addCheckBox ( 'email', 1, false, false,
-												false, $row[ 'members_show_email' ] ? true : false, $this->LanguageHandler->mem_gen_form_email_desc );
-
 			$this->MyPanel->form->addCheckBox ( 'ban', 1, false, false,
 												false, $row[ 'members_is_banned' ] ? true : false, $this->LanguageHandler->mem_gen_form_banned, '', 'checkwrap_4' );
 
@@ -856,7 +853,6 @@ class ModuleObject extends MasterObject
 			members_class        = " . ( false == isset ( $group )  ? 2 : (int) $group )  . ",
 			members_is_admin     = " . ( false == isset ( $admin )  ? 0 : (int) $admin )  . ",
 			members_is_super_mod = " . ( false == isset ( $mod )    ? 0 : (int) $mod )    . ",
-			members_show_email   = " . ( false == isset ( $email )  ? 0 : (int) $email )  . ",
 			members_is_banned    = " . ( false == isset ( $ban )    ? 0 : (int) $ban )    . ",
 			members_noteNotify   = " . ( false == isset ( $notify ) ? 0 : (int) $notify ) . "
 		WHERE members_id = {$this->_id}" );
@@ -883,8 +879,6 @@ class ModuleObject extends MasterObject
 		}
 
 		$this->MyPanel->addHeader ( sprintf ( $this->LanguageHandler->mem_per_form_header, $row[ 'members_name' ] ) );
-
-		$row[ 'members_sig' ] = $this->ParseHandler->doFormatEditImage ( $row[ 'members_sig' ] );
 
 		$this->MyPanel->form->startForm ( GATEWAY . "?a=members&amp;code=08&amp;id={$row[ 'members_id' ]}" );
 		$this->MyPanel->appendBuffer ( $this->MyPanel->form->flushBuffer() );
@@ -980,8 +974,6 @@ class ModuleObject extends MasterObject
 		{
 			$this->MyPanel->messenger ( $this->LanguageHandler->mem_per_err_bad_icq, GATEWAY . "?a=members&amp;id={$this->_id}&amp;code=07" );
 		}
-
-		$sig = $this->ParseHandler->prePostImage ( $sig );
 
 		if ( substr_count ( $ava_dims, 'x' ) > 1 )
 		{

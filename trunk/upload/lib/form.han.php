@@ -897,7 +897,7 @@ class EditPostForm extends FormHandler
 		$name	  = $this->_getNameBit();
 		$bbcode	= $this->_getBbCodeBit();
 		$emoticons = $this->_getEmoticonBit();
-		$message   = $this->_ParseHandler->doFormatEditImage($topic['posts_body']);
+		$message   = $topic['posts_body'];
 		$convert   = $this->_getConvertBit($topic['posts_code'], $topic['posts_emoticons'], $polls);
 		$upload	= $this->_getUploadBit($topic['upload_id'], $topic['upload_name']);
 		$hash	  = $this->_UserHandler->getUserHash();
@@ -989,7 +989,7 @@ class QuotePostForm extends FormHandler
 		$subject   = '';
 		$message   = $topic['posts_body'];
 
-		$quote	 = $this->_getQuoteBit($this->_ParseHandler->doFormatEditImage($topic['quote_body']), $topic['posts_author_name']);
+		$quote	 = $this->_getQuoteBit($topic['quote_body'], $topic['posts_author_name']);
 		$name	  = $this->_getNameBit();
 		$bbcode	= $this->_getBbCodeBit();
 		$emoticons = $this->_getEmoticonBit();

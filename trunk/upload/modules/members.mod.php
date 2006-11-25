@@ -203,7 +203,6 @@ class ModuleObject extends MasterObject
 			m.members_homepage,
 			m.members_registered,
 			m.members_posts,
-			m.members_show_email,
 			c.class_title,
 			c.class_prefix,
 			c.class_suffix
@@ -241,11 +240,6 @@ class ModuleObject extends MasterObject
 			$row['members_homepage']  = $row['members_homepage']
 									  ? "<a href=\"{$row['members_homepage']}\">" .
 										"<macro:btn_mini_homepage></a>"
-									  : $this->LanguageHandler->blank;
-
-			$row['members_email']	 = $row['members_show_email']
-									  ? "<a href=\"" .  GATEWAY . "?a=email&amp;id={$row['members_id']}\">" .
-										'<macro:btn_mini_email></a>'
 									  : $this->LanguageHandler->blank;
 
 			$row['members_posts']	 = $row['members_posts']

@@ -282,6 +282,7 @@ class MasterObject
 
 		$this->ForumHandler = new ForumHandler($this->DatabaseHandler,
 											   $this->LanguageHandler,
+											   $this->ParseHandler,
 											   $this->CacheHandler->getCacheByKey('forums'),
 											   $this->CacheHandler->getCacheByKey('moderators'),
 											   $this->config);

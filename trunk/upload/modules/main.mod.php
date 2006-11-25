@@ -178,6 +178,8 @@ class ModuleObject extends MasterObject
 			{
 				$forum_list = '';
 
+				$category[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $category[ 'forum_name'] );
+
 				foreach($this->ForumHandler->_forum_list as $forum)
 				{
 					if($forum['forum_parent'] == $category['forum_id'] &&
@@ -202,31 +204,21 @@ class ModuleObject extends MasterObject
 							$last_date = $this->LanguageHandler->blank;
 
 							$mods = '';
-							if($this->config['show_moderators'])
-							{
-								if($mods = $this->ForumHandler->getForumMods($forum['forum_id']))
-								{
-									$mod_list = implode(', ', $mods);
-								}
-								else {
-									$mod_list = $this->LanguageHandler->mod_none;
-								}
 
-								$mods = eval($this->TemplateHandler->fetchTemplate('main_mod_wrapper'));
+							if($this->config['show_moderators'] && 
+							   $mods = $this->ForumHandler->getForumMods($forum['forum_id']))
+							{
+								$mod_list = implode(', ', $mods);
+								$mods     = eval($this->TemplateHandler->fetchTemplate('main_mod_wrapper'));
 							}
 
 							$subs = '';
-							if($this->config['show_subs'])
-							{
-								if($subs = $this->ForumHandler->getChildren($forum['forum_id']))
-								{
-									$sub_list = implode(', ', $subs);
-								}
-								else {
-									$sub_list = $this->LanguageHandler->sub_none;
-								}
 
-								$subs = eval($this->TemplateHandler->fetchTemplate('main_sub_wrapper'));
+							if($this->config['show_subs'] &&
+							   $subforums = $this->ForumHandler->getChildren($forum['forum_id']))
+							{
+								$sub_list = implode(', ', $subforums);
+								$subs     = eval($this->TemplateHandler->fetchTemplate('main_sub_wrapper'));
 							}
 
 							if($forum['forum_last_post_time'])
@@ -268,8 +260,9 @@ class ModuleObject extends MasterObject
 
 							$forum['forum_description'] = $this->ParseHandler->parseText($forum['forum_description']);
 
-							$forum['forum_posts']  = number_format($forum['forum_posts'],  0, '', $this->config['number_format']);
-							$forum['forum_topics'] = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
+							$forum['forum_posts']   = number_format($forum['forum_posts'],  0, '', $this->config['number_format']);
+							$forum['forum_topics']  = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
+							$forum[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forum[ 'forum_name'] );
 
 							$last_post   = eval($this->TemplateHandler->fetchTemplate('main_last_post'));
 							$forum_list .= eval($this->TemplateHandler->fetchTemplate('main_cat_row'));

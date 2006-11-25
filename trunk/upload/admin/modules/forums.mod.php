@@ -280,7 +280,7 @@ class ModuleObject extends MasterObject
 
 		if ( false == preg_match ( "#^http://#", $red_url ) )
 		{
-			$red_url = "http://{$site_link}";
+			$red_url = "http://{$red_url}";
 		}
 
 		$matrix = $this->CacheHandler->getCacheBySub ( 'forums', $forum_perm_base, 'forum_access_matrix' );
@@ -361,6 +361,8 @@ class ModuleObject extends MasterObject
 		{
 			foreach ( $list as $category )
 			{
+				$category[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $category[ 'forum_name' ] );
+
 				if ( false == $category[ 'forum_parent' ] )
 				{
 					$this->MyPanel->table->addRow ( array ( array ( "<strong><a href=\"" . GATEWAY . "?a=forums&amp;code=02&amp;forum={$category['forum_id']}\">" . $category['forum_name'] . '</a></strong>', ' style="background-color: #F7F7F7;"' ),
@@ -370,6 +372,8 @@ class ModuleObject extends MasterObject
 
 					foreach ( $list as $forum )
 					{
+						$forum[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forum[ 'forum_name' ] );
+
 						if ( $forum[ 'forum_parent' ] == $category[ 'forum_id' ] )
 						{
 							$forum = $this->ForumHandler->calcForumStats ( $forum[ 'forum_id' ], $forum, true );
@@ -392,6 +396,8 @@ class ModuleObject extends MasterObject
 
 			$category = $list[ $this->_forum ];
 
+			$category[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $category[ 'forum_name' ] );
+
 			$this->MyPanel->table->addRow ( array ( array ( "<strong><a href=\"" . GATEWAY . "?a=forums&amp;code=02&amp;forum={$category['forum_parent']}\">Level Up</a> | " . $category[ 'forum_name' ] . '</strong>', ' style="background-color: #F7F7F7;"' ),
 													array ( '&nbsp;', ' style="background-color: #F7F7F7;"' ),
 													array ( $this->MyPanel->form->addSelect ( "pos[{$category['forum_id']}]", $positions, $category['forum_position'], false, false, true ), " align='center' style='background-color: #F7F7F7;'" , 'headerb' ),
@@ -406,6 +412,9 @@ class ModuleObject extends MasterObject
 
 			foreach ( $list as $forum )
 			{
+
+				$forum[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forum[ 'forum_name' ] );
+
 				if ( $forum[ 'forum_parent' ] == $this->_forum )
 				{
 					$forum = $this->ForumHandler->calcForumStats ( $forum[ 'forum_id' ], $forum, true );
@@ -613,9 +622,9 @@ class ModuleObject extends MasterObject
 			$this->MyPanel->messenger ( $this->LanguageHandler->forum_new_err_no_name, GATEWAY . "?a=forums&code=04&forum={$this->_forum}" );
 		}
 
-		if ( false == preg_match ( "# ^http://#", $red_url ) )
+		if ( false == preg_match ( "#^http://#", $red_url ) )
 		{ 
-			$red_url = "http://{$site_link}";
+			$red_url = "http://{$red_url}";
 		}
 
 		$matrix = array ( 'can_reply'  => '',

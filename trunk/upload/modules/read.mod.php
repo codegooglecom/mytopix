@@ -245,7 +245,7 @@ class ModuleObject extends MasterObject
 
 		if(isset($this->get['view']) == 'lastpost')
 		{
-			$this->_getLastPost($topic['topics_posts']);
+			return $this->_getLastPost($topic['topics_posts']);
 		}
 
 		$topic['topics_title'] = $this->ParseHandler->parseText($topic['topics_title'], F_CURSE);
@@ -269,7 +269,6 @@ class ModuleObject extends MasterObject
 			m.members_msn,
 			m.members_icq,
 			m.members_email,
-			m.members_show_email,
 			m.members_avatar_location,
 			m.members_avatar_dims,
 			c.class_title,
@@ -413,14 +412,6 @@ class ModuleObject extends MasterObject
 								'LINK'  => GATEWAY ."?getuser={$row['members_id']}"
 								)
 				);
-
-			if($row['members_show_email'] &&
-			   $this->UserHandler->getField('class_canSendEmail') &&
-			   $this->config['mailer_on'])
-			{
-				$contactLinks['EMAIL']  = array('TITLE' => 'btn_mini_email',
-												'LINK'  => GATEWAY ."?a=email&amp;id={$row['members_id']}");
-			}
 
 			$linkSpan = '';
 			foreach($contactLinks as $key => $val)

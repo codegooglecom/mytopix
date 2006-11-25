@@ -150,9 +150,9 @@ class ModuleObject extends MasterObject
 	*/
 	function _getForm()
 	{
-		$hash	= $this->UserHandler->getUserHash();
-		$content = eval($this->TemplateHandler->fetchTemplate('form'));
-		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		$hash    = $this->UserHandler->getUserHash();
+		$content = eval ( $this->TemplateHandler->fetchTemplate ( 'form' ) );
+		return     eval ( $this->TemplateHandler->fetchTemplate ( 'global_wrapper' ) );
 	}
 
    // ! Accessor Method
@@ -204,7 +204,7 @@ class ModuleObject extends MasterObject
 		if(md5(md5($row['members_pass_salt']) . md5($password)) != $row['members_pass'])
 		{
 			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => $this->_redirect));
-		}		
+		}
 
 		if($this->config['closed'] && false == $row['class_canViewClosedBoard'])
 		{
@@ -217,6 +217,11 @@ class ModuleObject extends MasterObject
 		$this->CookieHandler->setVar('pass', $row['members_pass_auto'], (86400 * 365));
 
 		$this->LanguageHandler->err_welcome_back = sprintf($this->LanguageHandler->err_welcome_back, $row['members_name']);
+
+		if ( strpos ( 'a=logon', $this->_redirect ) )
+		{
+			$this->_redirect = 'index.php?a=main';
+		}
 
 		return $this->messenger(array('MSG' => 'err_welcome_back', 'LEVEL' => 1, 'LINK' => $this->_redirect));
 	}
