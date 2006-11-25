@@ -378,7 +378,6 @@ class ModuleObject extends MasterObject
 			m.members_avatar_location,
 			m.members_see_avatars,
 			m.members_avatar_dims,
-			m.members_show_email,
 			c.class_title, 
 			c.class_prefix, 
 			c.class_suffix
@@ -440,14 +439,6 @@ class ModuleObject extends MasterObject
 							'LINK'  => GATEWAY ."?getuser={$row['members_id']}"
 							)
 			);
-
-		if($row['members_show_email'] && 
-		   $this->UserHandler->getField('class_canSendEmail') && 
-		   $this->config['mailer_on'])
-		{
-			$contactLinks['EMAIL']  = array('TITLE' => 'btn_mini_email',
-											'LINK'  => GATEWAY ."?a=email&amp;id={$row['members_id']}");
-		}
 
 		$linkSpan = '';
 		foreach($contactLinks as $key => $val)
@@ -605,11 +596,6 @@ class ModuleObject extends MasterObject
 		$cOption = isset($cOption) ? (int) $cOption : 0;
 		$eOption = isset($eOption) ? (int) $eOption : 0;
 
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
-
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "notes(
 			notes_id, 
@@ -702,12 +688,10 @@ class ModuleObject extends MasterObject
 
 		$note = $sql->getRow();
 
-		$note['notes_body'] = $this->ParseHandler->doFormatEditImage($note['notes_body']);
-
 		$recipient = isset($this->post['recipient']) ? $this->post['recipient'] : $note['members_name'];
 		$title	 = isset($this->post['title'])	 ? $this->post['title']	 : $note['notes_title'];
 		$body	  = isset($this->post['body'])	  ? $this->post['body']	  : '';
-		$quote	 = isset($this->post['quote'])	 ? $this->post['quote']	 : $this->ParseHandler->doFormatEditImage($note['notes_body']);
+		$quote	 = isset($this->post['quote'])	 ? $this->post['quote']	 : $note['notes_body'];
 
 		$error_list = '';
 

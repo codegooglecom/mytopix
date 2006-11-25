@@ -70,6 +70,13 @@ class ForumHandler
 	*/
 	var $_LanguageHandler;
 
+   /**
+	* Language Handler passed by reference
+	* @access Private
+	* @var Object
+	*/
+	var $_ParseHandler;
+
    // ! Constructor Method
 
    /**
@@ -83,7 +90,7 @@ class ForumHandler
 	* @since v1.0
 	* @return Void
 	*/
-	function ForumHandler(& $DatabaseHandler, & $LanguageHandler, $forum_list, $mod_list, $config)
+	function ForumHandler(& $DatabaseHandler, & $LanguageHandler, & $ParseHandler, $forum_list, $mod_list, $config)
 	{
 		$this->_config			= $config;
 		$this->_forum_list		= $forum_list;
@@ -93,6 +100,7 @@ class ForumHandler
 
 		$this->_DatabaseHandler =& $DatabaseHandler;
 		$this->_LanguageHandler =& $LanguageHandler;
+		$this->_ParseHandler    =& $ParseHandler;
 	}
 
    // ! Get Method
@@ -350,10 +358,15 @@ class ForumHandler
 
 		foreach($this->_forum_moderators as $val)
 		{
-			if($val['mod_forum'] == $forum &&
-			   false == $val['mod_group'])
+			if($val['mod_forum'] == $forum)
 			{
-				$array[$val['mod_user_id']] = "<a href=\"" . GATEWAY . "?getuser={$val['mod_user_id']}\">{$val['mod_user_name']}</a>";
+				if ( $val[ 'mod_group' ] )
+				{
+					$array[] = "<a href=\"" . GATEWAY . "?a=members&amp;sGroup={$val['mod_group']}\">{$val['mod_user_name']}</a>";
+				}
+				else {
+					$array[] = "<a href=\"" . GATEWAY . "?getuser={$val['mod_user_id']}\">{$val['mod_user_name']}</a>";
+				}
 			}
 		}
 
@@ -499,6 +512,8 @@ class ForumHandler
 					$selected = " selected=\"selected\"";
 				}
 
+				$val[ 'forum_name' ] = $this->_ParseHandler->translateUnicode ( $val[ 'forum_name'] );
+
 				$out .= "<option value=\"{$val['forum_id']}\"{$selected}>{$dot}{$space} {$val['forum_name']}" .
 						"</option>\n" . $this->makeAllowableList($select, $val['forum_id'], $space . ' - -', $highlight_all);
 			}
@@ -537,6 +552,8 @@ class ForumHandler
 			{
 				$selected = " selected=\"selected\"";
 			}
+
+			$val[ 'forum_name' ] = $this->_ParseHandler->translateUnicode ( $val[ 'forum_name'] );
 
 			$out .= "<option value=\"{$val['forum_id']}\"{$selected}>{$dot}{$space} {$val['forum_name']}" .
 					"</option>\n" . $this->makeDropDown($select, $val['forum_id'], $space . '--');
@@ -718,7 +735,7 @@ class ForumHandler
 
 		$this->_forum_is_parent = false;
 
-		return $forum['forum_last_post_time'] > $last_time ? $new : $old;
+		return $forum['forum_last_post_time'] > $last_time && USER_ID != 1 ? $new : $old;
 	}
 
    // ! Action Method

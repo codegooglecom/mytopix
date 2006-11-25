@@ -25,7 +25,7 @@ function codeBasic(e) {
 function codeList()
 {
 	var value = "init";
-	var list = "[LIST]\n";
+	var list = "[list]\n";
 	
 	while ( (value != "") && (value != null) ) {
 		value = prompt("Enter a list item to continue, press 'Cancel' when you are finished:", "");
@@ -34,7 +34,7 @@ function codeList()
 		}
 	}
 
-	document.REPLIER.body.value += list + "[/LIST]";
+	document.REPLIER.body.value += list + "[/list]";
 	document.REPLIER.body.focus();
 }
 
@@ -43,7 +43,7 @@ function fontFace(param)
 	text = prompt("Enter the text whose typeface you wish to change:", "");
 
 	if ( (text != "") && (text != null) ) {
-		document.REPLIER.body.value += "[FACE=" + param + "]" + text + "[/FACE]";
+		document.REPLIER.body.value += "[font=" + param + "]" + text + "[/font]";
 		document.REPLIER.body.focus();
 	} else {
 		alert("You must enter text to use this feature!");
@@ -55,7 +55,7 @@ function fontColor(param)
 	text = prompt("Enter the text whose color you wish to change:", "");
 
 	if ( (text != "") && (text != null) ) {
-		document.REPLIER.body.value += "[COLOR=" + param + "]" + text + "[/COLOR]";
+		document.REPLIER.body.value += "[color=" + param + "]" + text + "[/color]";
 		document.REPLIER.body.focus();
 	} else {
 		alert("You must enter text to use this feature!");
@@ -67,7 +67,7 @@ function fontSize(param)
 	text = prompt("Enter the text whose size you wish to change:", "");
 
 	if ( (text != "") && (text != null) ) {
-		document.REPLIER.body.value += "[SIZE=" + param + "]" + text + "[/SIZE]";
+		document.REPLIER.body.value += "[size=" + param + "]" + text + "[/size]";
 		document.REPLIER.body.focus();
 	} else {
 		alert("You must enter text to use this feature!");

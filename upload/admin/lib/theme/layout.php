@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $this->System->LanguageHandler->layout_language; ?>" xml:lang="<?php echo $this->System->LanguageHandler->layout_language; ?>" dir="<?php echo $this->System->LanguageHandler->layout_lang_dir; ?>">
 	<head>
-		<title>MyTopix | Personal Message Board&trade; - <?php echo $this->System->LanguageHandler->layout_title; ?></title>
+		<title>MyTopix - <?php echo $this->System->LanguageHandler->layout_title; ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $this->System->LanguageHandler->layout_charset; ?>" />
 		<meta name="generator" content="editplus" />
 		<meta name="author" content="" />

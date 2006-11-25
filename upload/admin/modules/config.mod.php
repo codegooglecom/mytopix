@@ -371,18 +371,7 @@ class ModuleObject extends MasterObject
 											   array ( 1, $this->LanguageHandler->images_form_itypes_title,
 													   $this->LanguageHandler->images_form_itypes_desc ) );
 
-			$this->MyPanel->form->addTextBox ( 'image_max_height', $this->config[ 'image_max_height' ], false,
-											   array ( 1, $this->LanguageHandler->images_dim_max_height_title,
-													   $this->LanguageHandler->images_dim_max_height_desc ) );
-
-			$this->MyPanel->form->addTextBox ( 'image_max_width', $this->config[ 'image_max_width' ], false,
-											   array ( 1, $this->LanguageHandler->images_dim_max_width_title,
-													   $this->LanguageHandler->images_dim_max_width_desc ) );
-
 			$this->MyPanel->form->appendBuffer ( "<h1>{$this->LanguageHandler->images_options}</h1>" );
-
-			$this->MyPanel->form->addCheckBox ( 'image_dim_check', 1, false, false,
-												false, $this->config[ 'image_dim_check' ] ? true : false, $this->LanguageHandler->images_check_dims );
 
 			$this->MyPanel->form->addCheckBox ( 'dynamic_img_on', 1, false, false,
 												false, $this->config[ 'dynamic_img_on' ] ? true : false, $this->LanguageHandler->images_dynamic );
@@ -418,9 +407,6 @@ class ModuleObject extends MasterObject
 		$this->config[ 'emoticon_cols' ]    = (int) $emoticon_cols;
 		$this->config[ 'emoticons_rows' ]   = (int) $emoticon_rows;
 		$this->config[ 'dynamic_img_on' ]   = (int) $dynamic_img_on;
-		$this->config[ 'image_max_height' ] = (int) $image_max_height;
-		$this->config[ 'image_max_width' ]  = (int) $image_max_width;
-		$this->config[ 'image_dim_check' ]  = (int) $image_dim_check;
 		$this->config[ 'good_image_types' ] =       $good_image_types;
 
 		$this->FileHandler->updateFileArray ( $this->config, 'config', SYSTEM_PATH . 'config/settings.php' );

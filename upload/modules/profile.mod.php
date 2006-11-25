@@ -166,11 +166,6 @@ class ModuleObject extends MasterObject
 																	 $row['members_lastvisit']) 
 								   : $this->LanguageHandler->blank;
 
-		$row['members_show_email'] = $row['members_show_email'] 
-								   ? "<a href='" . GATEWAY . "?a=email&amp;id={$row['members_id']}'>" . 
-									 "{$this->LanguageHandler->profile_link_email}</a>"
-								   : $this->LanguageHandler->blank;
-
 		$row['members_homepage']   = $row['members_homepage'] 
 								   ? "<a href=\"{$row['members_homepage']}\" target=\"_blank\">" . 
 									 "{$row['members_homepage']}</a>"

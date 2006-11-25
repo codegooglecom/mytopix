@@ -108,12 +108,12 @@ class UserHandler
 	{
 		$this->_System =& $System;
 
-		$this->_module	  = $this->_System->module;
-		$this->_id		  = false;
-		$this->_pass		= '';
-		$this->_session	 = $this->_System->session['id'];
+		$this->_module      = $this->_System->module;
+		$this->_id          = false;
+		$this->_pass        = '';
+		$this->_session     = $this->_System->session['id'];
 		$this->_user_agent  = $this->_System->server['HTTP_USER_AGENT'];
-		$this->_user_ip	 = $this->_System->server['REMOTE_ADDR'];
+		$this->_user_ip     = $this->_System->server['REMOTE_ADDR'];
 		$this->_user_fields = array();
 		$this->_user_is_bot = 0;
 
@@ -196,7 +196,7 @@ class UserHandler
 				'{$this->_user_ip}',
 				{$this->_user_fields['members_id']},
 				'{$this->_user_fields['members_name']}',
-				'{$this->_System->module}',
+				'{$this->_module}',
 				{$forum},
 				{$topic},
 				" . time() . ",
@@ -460,9 +460,9 @@ class UserHandler
 				}
 			}
 
-			if(preg_match('#' . implode('|', $bot_agents) . '#i', $this->_user_agent, $agent))
+			if(preg_match('#' . strtolower ( implode('|', $bot_agents) ) . '#i', $this->_user_agent, $agent))
 			{
-				$this->_session = trim($agent[0]);
+				$this->_session = strtolower(trim($agent[0]));
 
 				$this->_user_fields['members_id']		   = 1;
 				$this->_user_fields['class_id']			 = 1;

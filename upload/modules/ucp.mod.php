@@ -442,7 +442,6 @@ class ModuleObject extends MasterObject
 		$options = F_BREAKS | F_SMILIES | F_CODE;
 		$sig     = isset($this->post['body']) ? $this->post['body'] : $this->UserHandler->getField('members_sig');
 		$parsed  = $this->ParseHandler->parseText($sig, $options);
-		$sig     = $this->ParseHandler->doFormatEditImage($sig);
 
 		$error_list = '';
 
@@ -513,7 +512,6 @@ class ModuleObject extends MasterObject
 		}
 
 		$body = $this->ParseHandler->parseText($body, F_CURSE);
-		$body = $this->ParseHandler->prePostImage($body);
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX ."members 
@@ -664,7 +662,6 @@ class ModuleObject extends MasterObject
 		}
 
 		$checked = array();
-		$checked['email']   = $this->UserHandler->getField('members_show_email')  ? " checked=\"checked\"" : '';
 		$checked['notes']   = $this->UserHandler->getField('members_noteNotify')  ? " checked=\"checked\"" : '';
 		$checked['sigs']	= $this->UserHandler->getField('members_see_sigs')	? " checked=\"checked\"" : '';
 		$checked['avatars'] = $this->UserHandler->getField('members_see_avatars') ? " checked=\"checked\"" : '';
@@ -727,7 +724,6 @@ class ModuleObject extends MasterObject
 			members_language	= '{$lang}',
 			members_skin		=  " . (int) $skin . ",
 			members_timeZone	= '{$zone}',
-			members_show_email  = {$email},
 			members_noteNotify  = {$notes},
 			members_see_sigs	= {$sigs},
 			members_see_avatars = {$avatars}

@@ -314,7 +314,7 @@ class ModuleObject extends MasterObject
 			'{$auto}',
 			'{$email}', 
 			'" . $this->UserHandler->getField('members_ip') . "', 
-			'{$this->config['skins']}',
+			'{$this->config['skin']}',
 			'{$this->config['language']}',
 			'" . time() . "', 
 			'" . time() . "')", 

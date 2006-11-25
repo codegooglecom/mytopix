@@ -631,7 +631,6 @@ class ModuleObject extends MasterObject
 			m.members_msn,
 			m.members_icq,
 			m.members_email,
-			m.members_show_email,
 			m.members_avatar_location,
 			m.members_avatar_dims,
 			c.class_title, 
@@ -711,14 +710,6 @@ class ModuleObject extends MasterObject
 							'LINK'  => GATEWAY ."?getuser={$row['members_id']}"
 							)
 			);
-
-		if($row['members_show_email'] && 
-		   $this->UserHandler->getField('class_canSendEmail') && 
-		   $this->config['mailer_on'])
-		{
-			$contactLinks['EMAIL']  = array('TITLE' => 'btn_mini_email',
-											'LINK'  => GATEWAY ."?a=email&amp;id={$row['members_id']}");
-		}
 
 		$linkSpan = '';
 		foreach($contactLinks as $key => $val)
@@ -1028,11 +1019,6 @@ class ModuleObject extends MasterObject
 		$title = $this->ParseHandler->parseText($title, F_CURSE);
 		$body  = $this->ParseHandler->parseText($body,  F_CURSE);
 
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
-
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "events(
 			event_user,
@@ -1265,8 +1251,6 @@ class ModuleObject extends MasterObject
 		$code_check = $row['event_code']	  ? " checked=\"checked\"" : '';
 		$emo_check  = $row['event_emoticons'] ? " checked=\"checked\"" : '';
 
-		$row['event_body'] = $this->ParseHandler->doFormatEditImage($row['event_body']);
-
 		$hash	= $this->UserHandler->getUserHash();
 		$content = eval($this->TemplateHandler->fetchTemplate('cal_edit_event_form'));
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
@@ -1421,11 +1405,6 @@ class ModuleObject extends MasterObject
 
 		$title = $this->ParseHandler->parseText($title, F_CURSE);
 		$body  = $this->ParseHandler->parseText($body,  F_CURSE);
-
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "events SET

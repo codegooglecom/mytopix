@@ -612,11 +612,6 @@ class ModuleObject extends MasterObject
 		$title = $this->ParseHandler->parseText($title, F_CURSE);
 		$body  = $this->ParseHandler->parseText($body,  F_CURSE);
 	
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
-
 		$lock	 = isset($lock)	 ? (int) $lock	   : 0;
 		$stick	= isset($stick)	? (int) $stick	  : 0;
 		$announce = isset($announce) ? (int) $announce   : 0;
@@ -887,11 +882,6 @@ class ModuleObject extends MasterObject
 
 		$body  = $this->ParseHandler->parseText($body,  F_CURSE);
 
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
-
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "posts(
 			posts_topic,
@@ -1103,11 +1093,6 @@ class ModuleObject extends MasterObject
 
 		$body  = $this->ParseHandler->parseText($body,  F_CURSE);
 
-		if($cOption)
-		{
-		   $body  = $this->ParseHandler->prePostImage($body);
-		}
-
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "posts SET
 			posts_body	  = '{$body}',
@@ -1117,10 +1102,10 @@ class ModuleObject extends MasterObject
 		__FILE__, __LINE__);
 
 
-		$topic['topics_state']	= isset($lock)	 ? (int) $lock	 : 0;
-		$topic['topics_pinned']   = isset($stick)	? (int) $stick	: 0;
-		$topic['topics_announce'] = isset($announce) ? (int) $announce : 0;
-		$poll					 = isset($poll)	 ? (int) $poll	 : 0;
+		$topic[ 'topics_state' ]    = isset ( $lock)     ? (int) $lock     : 0;
+		$topic[ 'topics_pinned' ]   = isset ( $stick)    ? (int) $stick    : 0;
+		$topic[ 'topics_announce' ] = isset ( $announce) ? (int) $announce : 0;
+		$poll                       = isset ( $poll)     ? (int) $poll     : 0;
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "topics SET

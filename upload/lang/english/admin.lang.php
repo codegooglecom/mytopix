@@ -1,4 +1,5 @@
 <?php
+$lang['layout_title'] = 'Control Panel';
 $lang['layout_welcome'] = 'Welcome back, ';
 $lang['layout_link_logoff'] = 'Log Off';
 $lang['layout_link_board'] = 'View Board';

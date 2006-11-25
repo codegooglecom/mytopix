@@ -365,6 +365,7 @@ a:active{
 	padding: 3px;
 	font-size: 10px;
 	color: #AAA;
+	text-align: left;
 	}
 
 	.bar span {
@@ -1023,6 +1024,8 @@ select{
  * =================================
  */
 
+#print { text-align: left !important; }
+
 	#print h2 {
 		text-align: left;
 		font-size: 15px;
@@ -1048,6 +1051,7 @@ select{
 		margin: 0;
 		padding: 5px;
 		background: #E9E9E9;
+		font-size: 1em;
 	}
 
 .resultrow ul {
@@ -1082,37 +1086,35 @@ select{
 
 /* Code / Markup Box: */
 
-.code_block {
-	clear: both;
-	background: #F9F7F2;
-	border: 2px solid #F8F2DC;
-	margin: 0 1em 1em 1em;
-	padding: 5px;
+code {
+	display: block;
+	margin: 1.0em;
+	padding: 1em;
+	border-left: 2px solid #F8F2DC;
+	background-color: #F9F7F2;
 	overflow: auto;
-	color: #53371C;
-	font-family: Courier, Serif;
+	color: #53371B;
 }
 
-.php_block {
-	background: #FAFAFA;
-	border: 2px solid #AAA;
-	margin: 0 1em 1em 1em;
-	padding: 5px;
-	overflow: auto;
-	color: #53371C;
-	font-family: Courier, Serif;
+blockquote {
+	margin: .5em 1em;
+	color: #999;
+	font-size: 11px;
+	padding: 10px;
+	background-color: #F9F9F9;
+	border-left: 1px solid #CCC;
 }
 
-.quote { 
-	clear: both;
-	margin: 0 1em 1em 1em;
-	white-space: normal; 
-	font-family: Verdana, Arial; 
-	font-size: 11px; 
-	overflow: auto;
-	background: #F5F5F5 none; 
-	border: 3px solid #EEE; 
-	padding: 4px }
+	blockquote p {
+		background-color: #F9F9F9 !important;
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+blockquote span.name {
+	display: block;
+	font-weight: bold;
+	}
 
 .block_header {
 	text-align: left;

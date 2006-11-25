@@ -150,6 +150,8 @@ class ModuleObject extends MasterObject
 				FROM " . DB_PREFIX . "moderators
 				WHERE mod_forum = {$forums[$i][ 'forum_id' ]}" );
 
+				$forums[ $i ][ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forums[ $i ][ 'forum_name' ] );
+
 				if ( false == $sql->getNumRows() )
 				{
 					$mods = "<em>{$this->LanguageHandler->mod_no_mods}</em>";
