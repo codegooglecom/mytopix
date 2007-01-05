@@ -549,7 +549,7 @@ class ModuleObject extends MasterObject
 			$this->_errors[] = 'err_image_max';
 		}
 
-		if(false == $this->ParseHandler->countSmilies($body))
+		if(false == $this->ParseHandler->countEmoticons($body))
 		{
 			$this->_errors[] = 'err_smilie_max';
 		}

@@ -3,254 +3,265 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***/
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> You cannot access this file directly!' );
 
 /**
-* Topic Viewing Module
-*
-* Used to display topic / posting content.
-*
-* @license http://www.jaia-interactive.com/licenses/mytopix/
-* @version $Id: read.mod.php murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-* @company Jaia Interactive http://www.jaia-interactive.com/
-* @package MyTopix | Personal Message Board
-*/
+ * ModuleObject ( for reading topics )
+ *
+ * Displays a topic and it's corresponding posts.
+ *
+ * @version $Id: read.mod.php murdochd Exp $
+ * @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
+ * @company Jaia Interactive <admin@jaia-interactive.com>
+ * @package MyTopix
+ */
 class ModuleObject extends MasterObject
 {
-
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+	/***
+	 * Topic id
+	 * @type Integer
+	 ***/
 	var $_id;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+
+	/***
+	 * Subroutine id
+	 * @type Integer
+	 ***/
 	var $_code;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+
+	/***
+	 * Post id
+	 * @type Integer
+	 ***/
 	var $_post;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+
+	/***
+	 * Search result highlight
+	 * @type String
+	 ***/
 	var $_hlight;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+
+	/***
+	 * Forum id
+	 * @type Integer
+	 ***/
 	var $_forum;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
+
+	/***
+	 * User hash
+	 * @type String
+	 ***/
 	var $_hash;
 
-   /**
-	* Handles advanced page splitting
-	* @access Private
-	* @var Object
-	*/
-	var $_PageHandler;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_PipHandler;
+	/***
+	 * Page Handling Class
+	 * @type Object
+	 ***/
+	var $PageHandler;
 
-   /**
-	* Variable Description
-	* @access Private
-	* @var Integer
-	*/
-	var $_AvatarHandler;
 
-   // ! Constructor Method
+	/***
+	 * Pip Handling Class
+	 * @type Object
+	 ***/
+	var $PipHandler;
 
-   /**
-	* Instansiates class and defines instance variables.
-	*
-	* @param String $module Current module title
-	* @param Array  $config System configuration array
-	* @param Array  $cache  Loaded cache listing
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Private
-	* @return Void
-	*/
-	function ModuleObject(& $module, & $config, $cache)
+
+	/***
+	 * Avatar Handling Class
+	 * @type Object
+	 ***/
+	var $AvatarHandler;
+
+
+	// ! Constructor
+
+	/***
+	 * Insantiates object.
+	 * @param $module The name of the current module.
+	 * @param $config Current system configuration.
+	 * @param $cache  A list of cache groups to load for this module.
+	 ***/
+	function ModuleObject ( $module, & $config, $cache )
 	{
-		$this->MasterObject($module, $config, $cache);
+		$this->MasterObject ( $module, $config, $cache );
 
-		$this->_forum  = isset($this->get['forum']) ? (int) $this->get['forum'] : 0;
-		$this->_id	 = isset($this->get['t'])	 ? (int) $this->get['t']	 : 0;
-		$this->_post   = isset($this->get['p'])	 ? (int) $this->get['p']	 : 0;
-		$this->_code   = isset($this->get['CODE'])  ?	   $this->get['CODE']  : 00;
-		$this->_hlight = isset($this->get['hl'])	?	   $this->get['hl']	: '';
-		$this->_hash   = isset($this->post['hash']) ?	   $this->post['hash'] : null;
+		$this->_forum  = isset ( $this->get[ 'forum' ] ) ? (int) $this->get[ 'forum' ] : 0;
+		$this->_id     = isset ( $this->get[ 't' ] )     ? (int) $this->get[ 't' ]     : 0;
+		$this->_post   = isset ( $this->get[ 'p' ] )     ? (int) $this->get[ 'p' ]     : 0;
+		$this->_code   = isset ( $this->get[ 'CODE' ] )  ?       $this->get[ 'CODE' ]  : 00;
+		$this->_hlight = isset ( $this->get[ 'hl' ] )    ?       $this->get[ 'hl' ]    : '';
+		$this->_hash   = isset ( $this->post[ 'hash' ] ) ?       $this->post[ 'hash' ] : null;
 
 		require_once SYSTEM_PATH . 'lib/file.han.php';
 		require_once SYSTEM_PATH . 'lib/page.han.php';
-		$this->_PageHandler  = new PageHandler(isset($this->get['p']) ? $this->get['p'] : 1,
-												$this->config['page_sep'],
-												$this->config['per_page'],
-												$this->DatabaseHandler,
-												$this->config);
-
-		require_once SYSTEM_PATH . 'lib/pips.han.php';
-		$this->_PipHandler = new PipHandler($this->CacheHandler->getCacheByKey('titles'));
-
 		require_once SYSTEM_PATH . 'lib/avatar.han.php';
-		$this->_AvatarHandler = new AvatarHandler($this->DatabaseHandler, $this->config);
+		require_once SYSTEM_PATH . 'lib/pips.han.php';
+
+		$this->PageHandler  = new PageHandler ( isset ( $this->get[ 'p' ] ) ? $this->get[ 'p' ] : 1,
+												$this->config[ 'page_sep' ],
+												$this->config[ 'per_page' ],
+												$this->DatabaseHandler,
+												$this->config );
+
+		$this->PipHandler = new PipHandler ( $this->CacheHandler->getCacheByKey ( 'titles' ) );
+
+		$this->AvatarHandler = new AvatarHandler ( $this->DatabaseHandler, $this->config );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Generates a listing of currently active users.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
 	function execute()
 	{
-		switch($this->_code)
+		switch ( $this->_code )
 		{
 			case '00':
-				return $this->_topic();
+
+				return $this->_viewTopic();
 				break;
 
 			case '01':
-				return $this->_subscribe();
+
+				return $this->_subscribeToTopic();
 				break;
 
 			case '02':
+
 				return $this->_postJump();
 				break;
 
 			case '03':
+
 				return $this->_getPreviousTopic();
 				break;
 
 			case '04':
+
 				return $this->_getNextTopic();
 				break;
 
 			case '05':
+
 				return $this->_addVote();
 				break;
 
 			default:
-				header("LOCATION: " . GATEWAY . '?a=main');
+
+				return die ( header ( "LOCATION: " . GATEWAY . '?a=main' ) );
 				break;
 		}
 	}
 
 
-   // ! Action Method
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Generates a listing of currently active users.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
-	function _topic()
+	function _viewTopic()
 	{
-		if(false == $this->UserHandler->getField('class_canReadTopics'))
+		if ( false == $this->UserHandler->getField ( 'class_canReadTopics' ) )
 		{
-			return $this->messenger(array('MSG' => 'err_no_perm'));
+			return $this->messenger ( array ( 'MSG' => 'err_no_perm' ) );
 		}
 
-		$sql = $this->DatabaseHandler->query("
-		SELECT *
-		FROM " . DB_PREFIX . "topics
-		WHERE topics_id = {$this->_id}",
-		__FILE__, __LINE__);
+		$sql = $this->DatabaseHandler->query ( "SELECT * FROM " . DB_PREFIX . "topics WHERE topics_id = {$this->_id}", __FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
 		$topic = $sql->getRow();
 
-		if(false == $this->ForumHandler->checkAccess('can_view', $topic['topics_forum']) ||
-		   false == $this->ForumHandler->checkAccess('can_read', $topic['topics_forum']))
+		if ( false == $this->ForumHandler->checkAccess ( 'can_view', $topic[ 'topics_forum' ] ) ||
+			 false == $this->ForumHandler->checkAccess ( 'can_read', $topic[ 'topics_forum' ] ) )
 		{
-			return $this->messenger(array('MSG' => 'err_no_access'));
+			return $this->messenger ( array ( 'MSG' => 'err_no_access' ) );
 		}
 
-		if($topic['topics_moved'])
+
+		/***
+		 * Is this a moved topic?
+		 ***/
+
+		if ( $topic[ 'topics_moved' ] )
 		{
-			header("LOCATION: " . GATEWAY . "?gettopic={$topic['topics_mtopic']}");
+			return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$topic['topics_mtopic']}" ) );
 		}
+
+
+		/***
+		 * Are we highlighting words?
+		 ***/
 
 		$hlLink = '';
 
-		if($this->_hlight)
+		if ( $this->_hlight )
 		{
-			$hlLink = '&hl=' . str_replace(' ', '+', $this->_hlight);
+			$hlLink = '&hl=' . str_replace ( ' ', '+', $this->_hlight );
 		}
 
-		$this->_PageHandler->setRows($topic['topics_posts'], true);
-		$this->_PageHandler->doPages(GATEWAY ."?gettopic={$this->_id}{$hlLink}");
-		$pages = $this->_PageHandler->getSpan();
 
-		if(false == $sql->getNumRows())
+		/***
+		 * Do some page splitting magic:
+		 ***/
+
+		$this->PageHandler->setRows ( $topic[ 'topics_posts' ], true );
+		$this->PageHandler->doPages ( GATEWAY ."?gettopic={$this->_id}{$hlLink}" );
+
+		$pages = $this->PageHandler->getSpan();
+
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
-		if(isset($this->get['view']) == 'lastpost')
+
+		/***
+		 * Try to fetch the last unread post:
+		 ***/
+
+		if ( isset ( $this->get[ 'view' ] ) == 'lastpost' )
 		{
-			return $this->_getLastPost($topic['topics_posts']);
+			return $this->_getLastPost ( $topic[ 'topics_posts' ] );
 		}
 
-		$topic['topics_title'] = $this->ParseHandler->parseText($topic['topics_title'], F_CURSE);
+		$topic[ 'topics_title' ] = $this->ParseHandler->parseText ( $topic[ 'topics_title' ], F_CURSE );
 
-		$sql = $this->_PageHandler->getData("
+		$sql = $this->PageHandler->getData ( "
 		SELECT
 			p.posts_id,
 			p.posts_author,
@@ -260,6 +271,7 @@ class ModuleObject extends MasterObject
 			p.posts_emoticons,
 			p.posts_author_name,
 			m.members_id,
+			m.members_class,
 			m.members_name,
 			m.members_posts,
 			m.members_homepage,
@@ -271,9 +283,6 @@ class ModuleObject extends MasterObject
 			m.members_email,
 			m.members_avatar_location,
 			m.members_avatar_dims,
-			c.class_title,
-			c.class_prefix,
-			c.class_suffix,
 			a.active_user,
 			u.upload_id,
 			u.upload_name,
@@ -282,362 +291,454 @@ class ModuleObject extends MasterObject
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "active  a ON a.active_user  = m.members_id
 			LEFT JOIN " . DB_PREFIX . "posts   p ON p.posts_author = m.members_id
-			LEFT JOIN " . DB_PREFIX . "class   c ON c.class_id	 = m.members_class
 			LEFT JOIN " . DB_PREFIX . "uploads u ON u.upload_post  = p.posts_id
-		WHERE
-			p.posts_topic = {$this->_id}
-		ORDER BY
-			p.posts_date");
+		WHERE    p.posts_topic = {$this->_id}
+		ORDER BY p.posts_date" );
 
-		$this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "topics
-		SET topics_views = (topics_views + 1)
-		WHERE topics_id = {$this->_id}",
-		__FILE__, __LINE__);
+		$this->DatabaseHandler->query ( "UPDATE " . DB_PREFIX . "topics SET topics_views = topics_views + 1 WHERE topics_id = {$this->_id}", __FILE__, __LINE__ );
 
-		if($this->config['topic_readers'])
+
+		/***
+		 * Fetch users reading this topic:
+		 ***/
+
+		if ( $this->config[ 'topic_readers' ] )
 		{
-			$readers = $this->_getActive($this->_id);
+			$readers = $this->_getActiveReaders();
 		}
 		else {
 			$readers = '';
 		}
 
+
+		/***
+		 * Create a list of posts:
+		 ***/
+
 		$list = '';
-		while($row = $sql->getRow())
+
+		while ( $row = $sql->getRow() )
 		{
-			$active = $row['active_user'] ? '<macro:btn_mini_online>' : '<macro:btn_mini_offline>';
+			$active = $row[ 'active_user' ] ? '<macro:btn_mini_online>' : '<macro:btn_mini_offline>';
 
-			$linkEdit = '';
-			if($this->ForumHandler->getModAccess($topic['topics_forum'], 'edit_other_posts') ||
-			  (USER_ID == $row['posts_author']) &&
-			   $this->UserHandler->getField('class_canEditOwnPosts'))
+
+			/***
+			 * Edit button:
+			 ***/
+
+			if ( $this->ForumHandler->getModAccess ( $topic[ 'topics_forum' ], 'edit_other_posts' ) ||
+				 ( USER_ID == $row[ 'posts_author' ] ) &&
+				 $this->UserHandler->getField ( 'class_canEditOwnPosts' ) )
 			{
-				$linkEdit = "<a href=\"" . GATEWAY . "?a=post&amp;CODE=05&amp;pid={$row['posts_id']}\">" .
-							"<macro:btn_post_edit></a> ";
+				$linkEdit = "<a href=\"" . GATEWAY . "?a=post&amp;CODE=05&amp;pid={$row['posts_id']}\"><macro:btn_post_edit></a> ";
+			}
+			else {
+				$linkEdit = '';
 			}
 
-			$linkQuote = '';
-			if($this->ForumHandler->checkAccess('can_reply', $topic['topics_forum']))
+
+			/***
+			 * Quote button:
+			 ***/
+
+			if ( $this->ForumHandler->checkAccess ( 'can_reply', $topic[ 'topics_forum' ] ) )
 			{
-				$linkQuote = "<a href='" . GATEWAY . "?a=post&amp;CODE=06&amp;pid={$row['posts_id']}'>" .
-							 "<macro:btn_post_quote></a> ";
+				$linkQuote = "<a href='" . GATEWAY . "?a=post&amp;CODE=06&amp;pid={$row['posts_id']}'><macro:btn_post_quote></a> ";
+			}
+			else {
+				$linkQuote = '';
 			}
 
-			$linkDelete = '';
-			if(USER_ID == $row['posts_author'] &&
-			   $this->UserHandler->getField('class_canDeleteOwnPosts') ||
-			   $this->ForumHandler->getModAccess($topic['topics_forum'], 'delete_other_posts'))
+
+			/***
+			 * Delete button:
+			 ***/
+
+			if ( USER_ID == $row[ 'posts_author' ] &&
+				 $this->UserHandler->getField ( 'class_canDeleteOwnPosts' ) ||
+				 $this->ForumHandler->getModAccess ( $topic[ 'topics_forum' ], 'delete_other_posts' ) )
 			{
-				$linkDelete = "<a href='" . GATEWAY . "?a=mod&amp;CODE=01&amp;pid={$row['posts_id']}' onclick=\"javascript: return confirm('{$this->LanguageHandler->button_delete_confirm}');\">" .
-							  "<macro:btn_post_delete></a> ";
+				$linkDelete = "<a href='" . GATEWAY . "?a=mod&amp;CODE=01&amp;pid={$row['posts_id']}' onclick=\"javascript: return confirm('{$this->LanguageHandler->button_delete_confirm}');\"><macro:btn_post_delete></a> ";
+			}
+			else {
+				$linkDelete = '';
 			}
 
-			$options  = F_BREAKS;
-			$options |= $row['posts_code']	  ? F_CODE	: '';
-			$options |= $row['posts_emoticons'] ? F_SMILIES : '';
 
-			if($this->_hlight)
+			/***
+			 * Start highlight words:
+			 ***/
+
+
+			if ( $this->_hlight )
 			{
-				foreach(explode(' ', $this->_hlight) as $word)
+				foreach ( explode ( ' ', $this->_hlight ) as $word )
 				{
-					$word = preg_quote($word, '/');
-					
-					while(preg_match("/(^|\s|,!|;)(" . $word . ")(\s|,|!|&|$)/i", $row['posts_body']))
+					$word = preg_quote ( $word, '/' );
+
+					while ( preg_match ( "/(^|\s|,!|;)(" . $word . ")(\s|,|!|&|$)/i", $row[ 'posts_body' ] ) )
 					{
-						$row['posts_body'] = preg_replace("/(^|\s|,!|;)(" . $word . ")(\s|,|!|&|$)/i",
-														  "\\1<span class='highlight'>\\2</span>\\3",
-														  $row['posts_body']);
+						$row[ 'posts_body' ] = preg_replace ( "/(^|\s|,!|;)(" . $word . ")(\s|,|!|&|$)/i", "\\1<span class='highlight'>\\2</span>\\3", $row[ 'posts_body' ] );
 					}
 				}
 			}
 
-			$row['posts_body'] = $this->ParseHandler->parseText($row['posts_body'], $options);
-			$row['posts_date'] = $this->TimeHandler->doDateFormat($this->config['date_short'],
-																  $row['posts_date']);
 
-			if($row['upload_id'])
+			/***
+			 * Parse the post body:
+			 ***/
+
+			$options  = F_BREAKS;
+			$options |= $row[ 'posts_code' ]      ? F_CODE    : '';
+			$options |= $row[ 'posts_emoticons' ] ? F_SMILIES : '';
+
+			$row[ 'posts_body' ] = $this->ParseHandler->parseText ( $row['posts_body'], $options );
+
+
+			$row[ 'posts_date' ] = $this->TimeHandler->doDateFormat ( $this->config[ 'date_short' ], $row[ 'posts_date' ] );
+
+
+			/***
+			 * Do we have an attachment in this post?
+			 ***/
+
+			if ( $row[ 'upload_id' ] )
 			{
-				$row['upload_size'] = FileHandler::getFileSize($row['upload_size']);
-				$row['upload_hits'] = number_format($row['upload_hits'], 0, '', $this->config['number_format']);
+				$row[ 'upload_size' ] = FileHandler::getFileSize ( $row[ 'upload_size' ] );
+				$row[ 'upload_hits' ] = number_format ( $row[ 'upload_hits' ], 0, '', $this->config[ 'number_format' ] );
 
-				$attach = eval($this->TemplateHandler->fetchTemplate('read_attach'));
+				$attach = eval ( $this->TemplateHandler->fetchTemplate ( 'read_attach' ) );
 			}
 			else {
 				$attach = '';
 			}
 
-			if($row['posts_author'] == 1)
-			{
-				$list .= eval($this->TemplateHandler->fetchTemplate('post_row_guest'));
 
-				continue;
+			/***
+			 * Is the author a guest?
+			 ***/
+
+			if ( $row[ 'posts_author' ] == 1 )
+			{
+				$list .= eval ( $this->TemplateHandler->fetchTemplate ( 'post_row_guest' ) );
 			}
+			else {
+				$this->PipHandler->getPips ( $row[ 'members_posts' ] );
 
-			$this->_PipHandler->getPips($row['members_posts']);
+				$row[ 'members_pips' ]  = $this->PipHandler->pips;
+				$row[ 'members_title' ] = $this->PipHandler->title;
 
-			$row['members_pips']  = $this->_PipHandler->pips;
-			$row['members_title'] = $this->_PipHandler->title;
+				$row[ 'members_posts' ] = number_format ( $row[ 'members_posts' ], 0, '', $this->config[ 'number_format' ] );
 
-			$row['members_posts'] = number_format($row['members_posts'], 0, '', $this->config['number_format']);
 
-			$contactLinks = array(
-				'NOTE'	  => array(
-								'TITLE' => 'btn_mini_note',
-								'LINK'  => GATEWAY .'?a=notes&amp;CODE=07&amp;send=' . $row['members_id']
-								),
-				'HOMEPAGE' => array(
-								'TITLE' => 'btn_mini_homepage',
-								'LINK'  => false == $row['members_homepage'] ? null : $row['members_homepage']
-								),
-				'AIM'	  => array(
-								'TITLE' => 'btn_mini_aim',
-								'LINK'  => false == $row['members_aim'] ? null : 'aim:goim?screenname=' .
-											implode('+', explode(' ', $row['members_aim']))
-								),
-				'YIM'	  => array(
-								'TITLE' => 'btn_mini_yim',
-								'LINK'  => false == $row['members_yim'] ? null : "http://edit.yahoo.com/config/send_webmesg?.target={$row['members_yim']}&amp;.src=pg"
-								),
-				'MSN'	  => array(
-								'TITLE' => 'btn_mini_msn',
-								'LINK'  => false == $row['members_msn'] ? null : "http://members.msn.com/{$row['members_msn']}"
-								),
-				'ICQ'	  => array(
-								'TITLE' => 'btn_mini_icq',
-								'LINK'  => false == $row['members_icq'] ? null : "http://wwp.icq.com/scripts/search.dll?to={$row['members_icq']}"
-								),
-				'PROFILE'  => array(
-								'TITLE' => 'btn_mini_profile',
-								'LINK'  => GATEWAY ."?getuser={$row['members_id']}"
-								)
-				);
+				/***
+				 * Do the profile buttons:
+				 ***/
 
-			$linkSpan = '';
-			foreach($contactLinks as $key => $val)
-			{
-				if($val['LINK'])
+				$contactLinks = array ( 'NOTE'     => array ( 'TITLE' => 'btn_mini_note',
+															  'LINK'  => GATEWAY .'?a=notes&amp;CODE=07&amp;send=' . $row[ 'members_id' ] ),
+										'HOMEPAGE' => array ( 'TITLE' => 'btn_mini_homepage',
+															  'LINK'  => false == $row[ 'members_homepage' ] ? null : $row[ 'members_homepage' ] ),
+										'AIM'      => array ( 'TITLE' => 'btn_mini_aim',
+															  'LINK'  => false == $row['members_aim'] ? null : 'aim:goim?screenname=' . implode ( '+', explode ( ' ', $row[ 'members_aim' ] ) ) ),
+										'YIM'      => array ( 'TITLE' => 'btn_mini_yim',
+															  'LINK'  => false == $row['members_yim'] ? null : "http://edit.yahoo.com/config/send_webmesg?.target={$row['members_yim']}&amp;.src=pg" ),
+										'MSN'      => array ( 'TITLE' => 'btn_mini_msn',
+															  'LINK'  => false == $row['members_msn'] ? null : "http://members.msn.com/{$row['members_msn']}" ),
+										'ICQ'      => array ( 'TITLE' => 'btn_mini_icq',
+															  'LINK'  => false == $row[ 'members_icq' ] ? null : "http://wwp.icq.com/scripts/search.dll?to={$row['members_icq']}" ),
+										'PROFILE'  => array ( 'TITLE' => 'btn_mini_profile',
+															  'LINK'  => GATEWAY ."?getuser={$row['members_id']}" ) );
+
+				$linkSpan = '';
+
+				foreach ( $contactLinks as $key => $val )
 				{
-					$linkSpan .= "<li><a href=\"{$val['LINK']}\" title=\"\"><macro:{$val['TITLE']}></a></li>\n";
+					if ( $val[ 'LINK' ] )
+					{
+						$linkSpan .= "<li><a href=\"{$val['LINK']}\" title=\"\"><macro:{$val['TITLE']}></a></li>\n";
+					}
 				}
-			}
 
-			$sig = '';
-			if($this->UserHandler->getField('members_see_sigs'))
-			{
-				if($row['members_sig'])
+
+				/***
+				 * Format the post author's signature:
+				 ***/
+
+				if ( $this->UserHandler->getField ( 'members_see_sigs' ) )
 				{
-					$options = F_BREAKS | F_SMILIES | F_CODE;
-					$row['members_sig'] = $this->ParseHandler->parseText($row['members_sig'], $options);
+					if ( $row[ 'members_sig' ] )
+					{
+						$row[ 'members_sig' ] = $this->ParseHandler->parseText ( $row['members_sig'], F_BREAKS | F_SMILIES | F_CODE );
 
-					$sig = eval($this->TemplateHandler->fetchTemplate('sig'));
+						$sig = eval ( $this->TemplateHandler->fetchTemplate ( 'sig' ) );
+					}
 				}
+				else {
+					$sig = '';
+				}
+
+
+				/***
+				 * Generate the avatar:
+				 ***/
+
+				if ( $this->config[ 'avatar_on' ] )
+				{
+					$avatar = $this->AvatarHandler->fetchUserAvatar ( $row[ 'members_avatar_location' ],
+																	  $row[ 'members_avatar_dims' ],
+																	  $this->UserHandler->getField ( 'members_see_avatars' ) );
+				}
+				else {
+					$avatar = '';
+				}
+
+				$row[ 'class_title' ]  = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_title'  );
+				$row[ 'class_prefix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
+				$row[ 'class_suffix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
+
+				$list .= eval($this->TemplateHandler->fetchTemplate('post_row'));
 			}
-
-			$avatar = '';
-
-			if($this->config['avatar_on'])
-			{
-				$avatar = $this->_AvatarHandler->fetchUserAvatar($row['members_avatar_location'],
-																 $row['members_avatar_dims'],
-																 $this->UserHandler->getField('members_see_avatars'));
-			}
-
-			$list .= eval($this->TemplateHandler->fetchTemplate('post_row'));
 		}
 
-		$poll_data = '';
 
-		if($topic['topics_is_poll'])
+		/***
+		 * Fetch poll data if there is any:
+		 ***/
+
+		if ( $topic[ 'topics_is_poll' ] )
 		{
 			$poll_data = $this->_getPollData();
+		}
+		else {
+			$poll_data = '';
 		}
 
 		$content = eval($this->TemplateHandler->fetchTemplate('post_table'));
 
-		if($this->CookieHandler->getVar('topicsRead'))
+
+		/***
+		 * Update the read topics cookie:
+		 ***/
+
+		if ( $this->CookieHandler->getVar ( 'topicsRead' ) )
 		{
-			$topics_read = unserialize(stripslashes($this->CookieHandler->getVar('topicsRead')));
+			$topics_read = unserialize ( stripslashes ( $this->CookieHandler->getVar ( 'topicsRead' ) ) );
 		}
 
-		$topics_read[$this->_id] = time();
-		$this->CookieHandler->setVar('topicsRead', addslashes(serialize($topics_read)), (86400 * 5));
+		$topics_read[ $this->_id ] = time();
+
+		$this->CookieHandler->setVar ( 'topicsRead', addslashes ( serialize ( $topics_read ) ), ( 86400 * 5 ) );
+
+
+		/***
+		 * Generate the button list:
+		 ***/
 
 		$replier = '';
 		$buttons = '';
-		$hash	= $this->UserHandler->getUserHash();
+		$hash    = $this->UserHandler->getUserHash();
 
 		$button_topic = '';
 		$button_reply = '';
 		$button_qwik  = '';
 		$button_poll  = '';
 
-		$forum_data = $this->CacheHandler->getCacheByVal('forums', $topic['topics_forum']);
+		$forum_data = $this->CacheHandler->getCacheByVal ( 'forums', $topic[ 'topics_forum' ] );
 
-		if(false == $forum_data['forum_closed'])
+		if ( false == $forum_data[ 'forum_closed' ] )
 		{
-			if($this->config['polls_on'] && 
-			   false == $topic['topics_is_poll']  &&
-			   USER_ID != 1 &&
-			   ($topic['topics_author'] == USER_ID || USER_ADMIN || USER_MOD))
+			/***
+			 * Create the poll button:
+			 ***/
+
+			if ( $this->config[ 'polls_on' ] &&
+				 false == $topic[ 'topics_is_poll' ]  &&
+				 USER_ID != 1 &&
+				 ( $topic[ 'topics_author' ] == USER_ID || USER_ADMIN || USER_MOD ) )
 			{
 				$button_poll = "<a href=\"" . GATEWAY . "?a=post&CODE=07&amp;t={$this->_id}\" title=\"\"><macro:btn_main_poll></a>";
 			}
 
-			if($this->ForumHandler->checkAccess('can_start', $topic['topics_forum']) &&
-			   $this->UserHandler->getField('class_canStartTopics'))
+
+			/***
+			 * Start topic button:
+			 ***/
+
+			if ( $this->ForumHandler->checkAccess ( 'can_start', $topic[ 'topics_forum' ] ) &&
+				 $this->UserHandler->getField ( 'class_canStartTopics' ) )
 			{
 				$button_topic = "<a href=\"" . GATEWAY . "?a=post&CODE=03&amp;forum={$topic['topics_forum']}\" title=\"\"><macro:btn_main_new></a>";
 			}
 
-			if($this->ForumHandler->checkAccess('can_reply', $topic['topics_forum']) &&
-			   $this->UserHandler->getField('class_canPost'))
+
+			/***
+			 * Create the Qwik reply:
+			 ***/
+
+			if ( $this->ForumHandler->checkAccess ( 'can_reply', $topic[ 'topics_forum' ] ) &&
+				 $this->UserHandler->getField ( 'class_canPost' ) )
 			{
 				$button_reply = "<a href=\"" . GATEWAY . "?a=post&amp;CODE=04&amp;t={$topic['topics_id']}\" title=\"\"><macro:btn_main_reply></a>";
 				$button_qwik  = "<a href=\"#qwik\" onclick=\"javascript:return toggleBox('qwikwrap');\" title=\"\"><macro:btn_main_qreply></a>";
-				$replier	  = eval($this->TemplateHandler->fetchTemplate('reply_bit'));
+
+				$replier      = eval ( $this->TemplateHandler->fetchTemplate ( 'reply_bit' ) );
 			}
 
-			if($topic['topics_state'] &&
-			   false == $this->UserHandler->getField('class_canPostLocked') &&
-			   USER_ID != 1)
+
+			/***
+			 * If the topic is locked:
+			 ***/
+
+			if ( $topic[ 'topics_state' ] &&
+				 false == $this->UserHandler->getField ( 'class_canPostLocked' ) &&
+				 USER_ID != 1 )
 			{
 				$button_reply = "<macro:btn_main_locked>";
 				$button_qwik  = '';
-				$replier	  = '';
-				$hash		 = '';
+				$replier      = '';
+				$hash         = '';
 			}
 
-			$buttons = eval($this->TemplateHandler->fetchTemplate('read_buttons'));
+			$buttons = eval ( $this->TemplateHandler->fetchTemplate ( 'read_buttons' ) );
 		}
 
-		$bread_crumb = $this->ForumHandler->fetchCrumbs($topic['topics_forum'], false);
 
-		$jump = '';
-		if($this->config['jump_on'])
+		/***
+		 * Create the breadcrumb navigation:
+		 ***/
+
+		$bread_crumb = $this->ForumHandler->fetchCrumbs ( $topic[ 'topics_forum' ], false );
+
+
+		/***
+		 * Generates the forum jump list:
+		 ***/
+
+		if ( $this->config[ 'jump_on' ] )
 		{
-			$jump_list = $this->ForumHandler->makeAllowableList($topic['topics_forum']);
-			$jump = eval($this->TemplateHandler->fetchTemplate('read_jump_list'));
+			$jump_list = $this->ForumHandler->makeAllowableList ( $topic[ 'topics_forum' ] );
+			$jump      = eval ( $this->TemplateHandler->fetchTemplate ( 'read_jump_list' ) );
+		}
+		else {
+			$jump = '';
 		}
 
-		$mod = '';
-		if($this->ForumHandler->checkIfMod($topic['topics_forum']))
+
+		/***
+		 * Generates the moderator command list:
+		 ***/
+
+		if ( $this->ForumHandler->checkIfMod ( $topic[ 'topics_forum' ] ) )
 		{
-			$hash	 = $this->UserHandler->getUserHash();
-			$mod_list = $this->ForumHandler->getModSelect($topic['topics_forum'], $topic);
-			$mod	  = eval($this->TemplateHandler->fetchTemplate('read_mod_list'));
+			$hash     = $this->UserHandler->getUserHash();
+			$mod_list = $this->ForumHandler->getModSelect ( $topic[ 'topics_forum' ], $topic );
+			$mod      = eval ( $this->TemplateHandler->fetchTemplate ( 'read_mod_list' ) );
+		}
+		else {
+			$mod = '';
 		}
 
-		$this->config[ 'forum_title' ] = $topic['topics_title']; // A little hack-ish, I know, but it does the trick just fine!
+		$this->config[ 'forum_title' ] = $topic['topics_title'];
 
-		$content = eval($this->TemplateHandler->fetchTemplate('container_read'));
-		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		$content = eval ( $this->TemplateHandler->fetchTemplate ( 'container_read' ) );
+		return     eval ( $this->TemplateHandler->fetchTemplate ( 'global_wrapper' ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Generates a listing of currently active users
+	* within the current topic.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
-	function _getActive($id)
+	function _getActiveReaders()
 	{
-		$sql = $this->DatabaseHandler->query("
-		SELECT
-			a.*,
-			c.class_prefix,
-			c.class_suffix
-		FROM " . DB_PREFIX . "active a
-			LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = a.active_user
-			LEFT JOIN " . DB_PREFIX . "class   c ON c.class_id   = m.members_class
-		WHERE
-			active_topic = {$id}
-		ORDER BY active_time DESC", __FILE__, __LINE__);
+		$sql = $this->DatabaseHandler->query ( "
+		SELECT *
+		FROM " . DB_PREFIX . "active
+		WHERE active_topic = {$this->_id}
+		ORDER BY active_time",
+		__FILE__, __LINE__ );
 
-		$list	= array();
-		$bots	= array();
+		$list    = array();
+		$bots    = array();
 		$guests  = 0;
 		$members = 0;
 
-		while($row = $sql->getRow())
+		while ( $row = $sql->getRow() )
 		{
-			if($row['active_is_bot'])
+			if ( $row[ 'active_is_bot' ] )
 			{
 				$guests++;
 
-				$bots[] = $row['active_user_name'];
+				$bots[] = $row[ 'active_user_name' ];
 			}
 			else {
-				if($row['active_user'] == 1)
+				if ( $row[ 'active_user' ] == 1 )
 				{
 					$guests++;
 				}
 				else {
-					$list[] = "<a href='" . GATEWAY . "?getuser={$row['active_user']}'>"	  .
-							  "{$row['class_prefix']}{$row['active_user_name']}{$row['class_suffix']}</a>";
+					$prefix = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'active_user_group' ], 'class_prefix' );
+					$suffix = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'active_user_group' ], 'class_suffix' );
+
+					$list[] = "<a href='" . GATEWAY . "?getuser={$row['active_user']}'>{$prefix}{$row['active_user_name']}{$suffix}</a>";
 
 					$members++;
 				}
 			}
 		}
 
-		$list = array_merge($list, array_unique($bots));
+		$list = array_merge ( $list, array_unique ( $bots ) );
 
 		$list = false == $list
 			  ? $this->LanguageHandler->err_no_readers
-			  : implode('<macro:txt_online_sep>', $list);
+			  : implode ( '<macro:txt_online_sep>', $list );
 
-		$this->LanguageHandler->readers_user_summary = sprintf($this->LanguageHandler->readers_user_summary,
-													   number_format($members, 0, '', $this->config['number_format']),
-													   number_format($guests,  0, '', $this->config['number_format']));
+		$this->LanguageHandler->readers_user_summary = sprintf ( $this->LanguageHandler->readers_user_summary,
+													   number_format ( $members, 0, '', $this->config[ 'number_format' ] ),
+													   number_format ( $guests,  0, '', $this->config[ 'number_format' ] ) );
 
-		return eval($this->TemplateHandler->fetchTemplate('read_active'));
-
+		return eval ( $this->TemplateHandler->fetchTemplate ( 'read_active' ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Subscribes a user to a topic.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
-	function _subscribe()
+	function _subscribeToTopic()
 	{
-		if(false == $this->UserHandler->getField('class_canSubscribe') ||
-		   USER_ID == 1)
+		if ( false == $this->UserHandler->getField ( 'class_canSubscribe' ) || USER_ID == 1 )
 		{
-			return $this->messenger(array('MSG' => 'err_no_perm'));
+			return $this->messenger ( array ( 'MSG' => 'err_no_perm' ) );
 		}
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT track_id
 		FROM " . DB_PREFIX . "tracker
 		WHERE
 			track_topic = {$this->_id} AND
-			track_user  = " . USER_ID, __FILE__, __LINE__);
+			track_user  = " . USER_ID,
+		__FILE__, __LINE__ );
 
-		if($sql->getNumRows())
+		if ( $sql->getNumRows() )
 		{
-			return $this->messenger(array('MSG' => 'err_sub_exists'));
+			return $this->messenger ( array ( 'MSG' => 'err_sub_exists' ) );
 		}
 
-		$topic = $sql->getRow();
+		$topic  = $sql->getRow();
+		$expire = ( (  ( 60 * 60 ) * 24 ) * $this->config[ 'subscribe_expire' ] ) + time();
 
-		$expire = (((60 * 60) * 24) * $this->config['subscribe_expire']) + time();
-
-		$this->DatabaseHandler->query("
+		$this->DatabaseHandler->query ( "
 		INSERT INTO " . DB_PREFIX ."tracker(
 			track_user,
 			track_topic,
@@ -647,371 +748,370 @@ class ModuleObject extends MasterObject
 			" . USER_ID . ",
 			{$this->_id},
 			" . time() . ",
-			{$expire})", __FILE__, __LINE__);
+			{$expire})",
+		__FILE__, __LINE__ );
 
-		return $this->messenger(array('MSG' => 'err_sub_done', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1));
+		return $this->messenger ( array ( 'MSG' => 'err_sub_done', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1 ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Jumps to a specified post within a topic.
 	*
-	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @param $id Id of post to jump to.
+	* @return String
 	*/
-	function _postJump($id = false)
+	function _postJump ( $id = false )
 	{
-		if($id)
+		if ( $id )
 		{
 			$this->_post = $id;
 		}
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT posts_topic
 		FROM " . DB_PREFIX . "posts
 		WHERE posts_id = {$this->_post}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
 		$post = $sql->getRow();
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT COUNT(*) AS Posts
 		FROM " . DB_PREFIX . "posts
 		WHERE
 			posts_topic  =  {$post['posts_topic']} AND
 			posts_id   <= {$this->_post}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
 		$count = $sql->getRow();
-		$page  = ceil($count['Posts'] / $this->config['per_page']);
+		$page  = ceil ( $count[ 'Posts' ] / $this->config[ 'per_page' ] );
 
-		header("LOCATION: " . GATEWAY . "?gettopic={$post['posts_topic']}&p={$page}#{$this->_post}");
+		return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$post['posts_topic']}&p={$page}#{$this->_post}" ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Fetches the last unread post within a topic. If one
+	* cannot be found, it just takes the user to the very
+	* last post in the topic.
 	*
-	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @param $posts Number of posts within the current topic.
+	* @return String
 	*/
-	function _getLastPost($posts)
+	function _getLastPost ( $posts )
 	{
 		$last_read_date = isset ( $this->read_topics[ $this->_id ] )
-						? $this->read_topics[ $this->_id ] 
+						? $this->read_topics[ $this->_id ]
 						: $this->UserHandler->getField('members_lastvisit');
 
-		$sql = $this->DatabaseHandler->query("
-		SELECT posts_id
+		$sql = $this->DatabaseHandler->query ( "
+		SELECT
+			posts_id,
+			posts_date
 		FROM " . DB_PREFIX . "posts
-		WHERE 
+		WHERE
 			posts_topic = {$this->_id} AND
 			posts_date  > {$last_read_date}
 		ORDER BY posts_date LIMIT 0, 1",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		$row = $sql->getRow();
-
-		if ( false == $sql->getNumRows() )
+		if ( $row = $sql->getRow() )
 		{
-			$sql = $this->DatabaseHandler->query("
+			$post_id = $row[ 'posts_id' ];
+
+			$sql = $this->DatabaseHandler->query ( "
+			SELECT COUNT(*) as Count
+			FROM " . DB_PREFIX . "posts
+			WHERE
+				posts_topic =  {$this->_id} AND
+				posts_id    <= {$post_id}",
+			__FILE__, __LINE__ );
+
+			$row   = $sql->getRow();
+			$posts = $row[ 'Count' ];
+		}
+		else {
+			$sql = $this->DatabaseHandler->query ( "
 			SELECT posts_id
 			FROM " . DB_PREFIX . "posts
 			WHERE posts_topic = {$this->_id}
 			ORDER BY posts_id DESC LIMIT 0, 1",
-			__FILE__, __LINE__);
+			__FILE__, __LINE__ );
 
-			$row = $sql->getRow();
+			$row     = $sql->getRow();
+			$post_id = $row[ 'posts_id' ];
 		}
 
-		$page = ceil(($posts + 1 )/ $this->config['per_page']);
+		$page = ceil ( ( $posts + 1 ) / $this->config[ 'per_page' ] );
 		$page = $page < 1 ? 1 : $page;
 
-		header("LOCATION: " . GATEWAY . "?gettopic={$this->_id}&p={$page}#{$row['posts_id']}");
+		return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$this->_id}&p={$page}#{$post_id}" ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Fetches the previous topic within the current
+	* topic's forum.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
 	function _getPreviousTopic()
 	{
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT topics_last_post_time
 		FROM " . DB_PREFIX . "topics
 		WHERE topics_id = {$this->_id}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
 		$topic = $sql->getRow();
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT
 			topics_id
 		FROM " . DB_PREFIX . "topics
 		WHERE
-			topics_forum = {$this->_forum} AND
-			topics_moved = 0 AND
+			topics_forum          = {$this->_forum} AND
+			topics_moved          = 0               AND
 			topics_last_post_time < {$topic['topics_last_post_time']}
 		ORDER BY topics_last_post_time DESC LIMIT 0, 1",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
-			header("LOCATION: " . GATEWAY . "?gettopic={$this->_id}");
-			exit();
+			return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$this->_id}" ) );
 		}
 
 		$previous = $sql->getRow();
 
-		header("LOCATION: " . GATEWAY . "?gettopic={$previous['topics_id']}");
+		return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$previous['topics_id']}" ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Fetches the next topic within the current
+	* topic's forum.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
 	function _getNextTopic()
 	{
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT topics_last_post_time
 		FROM " . DB_PREFIX . "topics
 		WHERE topics_id = {$this->_id}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
 		$topic = $sql->getRow();
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT
 			topics_id
 		FROM " . DB_PREFIX . "topics
 		WHERE
-			topics_forum = {$this->_forum} AND
-			topics_moved = 0 AND
+			topics_forum          = {$this->_forum} AND
+			topics_moved          = 0               AND
 			topics_last_post_time > {$topic['topics_last_post_time']}
 		ORDER BY topics_last_post_time ASC LIMIT 0, 1",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
-			header("LOCATION: " . GATEWAY . "?gettopic={$this->_id}");
-			exit();
+			return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$this->_id}" ) );
 		}
 
 		$next = $sql->getRow();
 
-		header("LOCATION: " . GATEWAY . "?gettopic={$next['topics_id']}");
+		return die ( header ( "LOCATION: " . GATEWAY . "?gettopic={$next['topics_id']}" ) );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Fetches data for an attached poll.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
 	function _getPollData()
 	{
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT *
 		FROM " . DB_PREFIX . "polls p
 		WHERE p.poll_topic = {$this->_id}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return '';
 		}
 
-		$poll		 = $sql->getRow();
-		$poll_choices = unserialize(stripslashes($poll['poll_choices']));
-		$poll_list	= '';
+		$poll         = $sql->getRow();
+		$poll_choices = unserialize ( stripslashes ( $poll[ 'poll_choices' ] ) );
+		$poll_list    = '';
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT vote_id
 		FROM " . DB_PREFIX . "voters
 		WHERE
 			vote_user  = " . USER_ID ." AND
 			vote_topic = {$this->_id}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
 		$is_locked = false;
 
-		if($poll['poll_end_date'] && $poll['poll_end_date'] < time())
+		if ( $poll[ 'poll_end_date' ] && $poll[ 'poll_end_date' ] < time() )
 		{
 			$is_locked = true;
 		}
 
-		if($poll['poll_vote_lock'] && $poll['poll_vote_lock'] <= $poll['poll_vote_count'])
+		if ( $poll[ 'poll_vote_lock' ] && $poll[ 'poll_vote_lock' ] <= $poll[ 'poll_vote_count' ] )
 		{
 			$is_locked = true;
 		}
 
-		if(false == $is_locked &&
-		   false == $sql->getNumRows() &&
-		   $this->UserHandler->getField('class_can_vote_polls') &&
-		   USER_ID != 1)
+		if ( false == $is_locked &&
+			 false == $sql->getNumRows() &&
+			 $this->UserHandler->getField ( 'class_can_vote_polls' ) &&
+			 USER_ID != 1 )
 		{
-			foreach($poll_choices as $key => $val)
+			foreach ( $poll_choices as $key => $val )
 			{
-				$poll_list .= eval($this->TemplateHandler->fetchTemplate('read_poll_choice_row'));
+				$poll_list .= eval ( $this->TemplateHandler->fetchTemplate ( 'read_poll_choice_row' ) );
 			}
 
-			$hash  = $this->UserHandler->getUserHash();
-			return eval($this->TemplateHandler->fetchTemplate('read_choice_wrapper'));
+			$hash = $this->UserHandler->getUserHash();
+
+			return eval ( $this->TemplateHandler->fetchTemplate ( 'read_choice_wrapper' ) );
 		}
 		else {
-			foreach($poll_choices as $key => $val)
+			foreach ( $poll_choices as $key => $val )
 			{
-				$percent	   = $val['votes'] == 0 ? 0 : (int) (($val['votes'] / $poll['poll_vote_count']) * 100);
-				$percent	   = sprintf('%.2f', $percent);
-				$width		 = $percent * .95 . '%';
-				$val['choice'] = wordwrap($val['choice'], 75, '<br />', true);
+				$percent = $val[ 'votes' ] == 0 ? 0 : (int) ( ( $val[ 'votes' ] / $poll[ 'poll_vote_count' ] ) * 100 );
+				$percent = sprintf ( '%.2f', $percent );
+				$width   = $percent * .95 . '%';
 
-				$poll_list .= eval($this->TemplateHandler->fetchTemplate('read_poll_result_row'));
+				$val[ 'choice' ] = $this->ParseHandler->doWrapString ( $val[ 'choice' ] );
+
+				$poll_list .= eval ( $this->TemplateHandler->fetchTemplate ( 'read_poll_result_row' ) );
 			}
 
-			$hash  = $this->UserHandler->getUserHash();
-			return eval($this->TemplateHandler->fetchTemplate('read_result_wrapper'));
+			$hash = $this->UserHandler->getUserHash();
+
+			return eval ( $this->TemplateHandler->fetchTemplate ( 'read_result_wrapper' ) );
 		}
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* An auto-loaded method that displays certain data
-	* based on user request.
+	* Adds a vote to a poll.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
-	* @since v1.0
-	* @access Public
-	* @return HTML Output
+	* @return String
 	*/
 	function _addVote()
 	{
-		if($this->_hash != $this->UserHandler->getUserhash())
+		if ( $this->_hash != $this->UserHandler->getUserhash() )
 		{
 			return $this->messenger();
 		}
 
-		if(false == $this->UserHandler->getField('class_can_vote_polls') ||
-		   USER_ID == 1)
+		if ( false == $this->UserHandler->getField ( 'class_can_vote_polls' ) ||
+			 USER_ID == 1 )
 		{
-			return $this->messenger(array('MSG' => 'poll_err_no_vote'));
+			return $this->messenger ( array ( 'MSG' => 'poll_err_no_vote' ) );
 		}
 
-		extract($this->post);
+		extract ( $this->post );
 
-		if(false == isset($vote))
+		if ( false == isset ( $vote ) )
 		{
-			return $this->messenger(array('MSG' => 'poll_err_no_choice'));
+			return $this->messenger ( array ( 'MSG' => 'poll_err_no_choice' ) );
 		}
 
-		$sql = $this->DatabaseHandler->query("
-		SELECT *
-		FROM " . DB_PREFIX . "polls p
-		WHERE p.poll_topic = {$this->_id}",
-		__FILE__, __LINE__);
+		$sql = $this->DatabaseHandler->query ( "SELECT * FROM " . DB_PREFIX . "polls p WHERE p.poll_topic = {$this->_id}", __FILE__, __LINE__ );
 
-		if(false == $sql->getNumRows())
+		if ( false == $sql->getNumRows() )
 		{
 			return $this->messenger();
 		}
 
-		$poll		 = $sql->getRow();
-		$poll_choices = unserialize(stripslashes($poll['poll_choices']));
+		$poll         = $sql->getRow();
+		$poll_choices = unserialize ( stripslashes ( $poll[ 'poll_choices' ] ) );
 
-		$sql = $this->DatabaseHandler->query("
+		$sql = $this->DatabaseHandler->query ( "
 		SELECT vote_id
 		FROM " . DB_PREFIX . "voters
 		WHERE
 			vote_user  = " . USER_ID ." AND
 			vote_topic = {$this->_id}",
-		__FILE__, __LINE__);
+		__FILE__, __LINE__ );
 
-		if($sql->getNumRows())
+		if ( $sql->getNumRows() )
 		{
-			return $this->messenger(array('MSG' => 'poll_err_already_voted'));
+			return $this->messenger ( array ( 'MSG' => 'poll_err_already_voted' ) );
 		}
 
 		$is_locked = false;
 
-		if($poll['poll_end_date'] && $poll['poll_end_date'] < time())
+		if ( $poll[ 'poll_end_date' ] && $poll[ 'poll_end_date' ] < time() )
 		{
 			$is_locked = true;
 		}
 
-		if($poll['poll_vote_lock'] && $poll['poll_vote_lock'] <= $poll['poll_vote_count'])
+		if ( $poll[ 'poll_vote_lock' ] && $poll[ 'poll_vote_lock' ] <= $poll[ 'poll_vote_count' ] )
 		{
 			$is_locked = true;
 		}
 
-		if($is_locked)
+		if ( $is_locked )
 		{
-			return $this->messenger(array('MSG' => 'poll_err_locked'));
+			return $this->messenger ( array ( 'MSG' => 'poll_err_locked' ) );
 		}
 
 		$choice_found = false;
 
-		foreach($poll_choices as $key => $val)
+		foreach ( $poll_choices as $key => $val )
 		{
-			if($val['id'] == $vote)
+			if ( $val[ 'id' ] == $vote )
 			{
-				$val['votes']++;
+				$val[ 'votes' ]++;
 
 				$choice_found = true;
 			}
 
-			$new_choices[] = array('votes' => $val['votes'], 'id' => $val['id'], 'choice' => $val['choice']);
+			$new_choices[] = array ( 'votes' => $val[ 'votes' ], 'id' => $val[ 'id' ], 'choice' => $val[ 'choice' ] );
 		}
 
-		$this->DatabaseHandler->query("
+		$this->DatabaseHandler->query ( "
 		INSERT INTO " . DB_PREFIX . "voters(
 			vote_topic,
 			vote_user,
@@ -1020,20 +1120,20 @@ class ModuleObject extends MasterObject
 		VALUES(
 			{$this->_id},
 			" . USER_ID . ",
-			" . time() . ",
-			'" . $this->UserHandler->getField('members_ip') . "')",
-		__FILE__, __LINE__);
+			" . time()  . ",
+			'" . $this->UserHandler->getField ( 'members_ip' ) . "')",
+		__FILE__, __LINE__ );
 
-		$new_choices = addslashes(serialize($new_choices));
+		$new_choices = addslashes ( serialize ( $new_choices ) );
 
-		$this->DatabaseHandler->query("
+		$this->DatabaseHandler->query ( "
 		UPDATE " . DB_PREFIX . "polls SET
 			poll_vote_count = (poll_vote_count + 1),
-			poll_choices	= '{$new_choices}'
-		WHERE poll_topic	= {$this->_id}",
-		__FILE__, __LINE__);
+			poll_choices    = '{$new_choices}'
+		WHERE poll_topic    = {$this->_id}",
+		__FILE__, __LINE__ );
 
-		return $this->messenger(array('MSG' => 'poll_err_vote_done', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1));
+		return $this->messenger ( array ( 'MSG' => 'poll_err_vote_done', 'LINK' => "?gettopic={$this->_id}", 'LEVEL' => 1 ) );
 	}
 }
 

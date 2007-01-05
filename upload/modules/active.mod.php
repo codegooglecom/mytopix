@@ -22,16 +22,16 @@
 if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> You cannot access this file directly!' );
 
 /**
-* ModuleObject ( for active users )
-*
-* Displays a list of currently active users and guests that
-* are browsing the system.
-*
-* @version $Id: active.mod.php murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix
-*/
+ * ModuleObject ( for active users )
+ *
+ * Displays a list of currently active users and guests that
+ * are browsing the system.
+ *
+ * @version $Id: active.mod.php murdochd Exp $
+ * @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
+ * @company Jaia Interactive <admin@jaia-interactive.com>
+ * @package MyTopix
+ */
 class ModuleObject extends MasterObject
 {
 	/***
