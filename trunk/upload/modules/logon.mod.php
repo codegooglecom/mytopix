@@ -72,10 +72,9 @@ class ModuleObject extends MasterObject
 	{
 		$this->MasterObject($module, $config, $cache);
 
-		$this->_hash     = isset($this->post['hash'])    ? $this->post['hash']    : null;
-		$this->_code     = isset($this->get['CODE'])     ? $this->get['CODE']     : 00;
-		$this->_key      = isset($this->get['key'])      ? $this->get['key']      : '';
-		$this->_redirect = isset($this->post['referer']) ? $this->post['referer'] : '?a=main';
+		$this->_hash = isset($this->post['hash']) ? $this->post['hash'] : null;
+		$this->_code = isset($this->get['CODE'])  ? $this->get['CODE']  : 00;
+		$this->_key  = isset($this->get['key'])   ? $this->get['key']   : '';
 
 		require SYSTEM_PATH . 'lib/mail.han.php';
 		$this->_MailHandler = new MailHandler($this->config['email_incoming'], 
@@ -218,12 +217,7 @@ class ModuleObject extends MasterObject
 
 		$this->LanguageHandler->err_welcome_back = sprintf($this->LanguageHandler->err_welcome_back, $row['members_name']);
 
-		if ( strpos ( 'a=logon', $this->_redirect ) )
-		{
-			$this->_redirect = 'index.php?a=main';
-		}
-
-		return $this->messenger(array('MSG' => 'err_welcome_back', 'LEVEL' => 1, 'LINK' => $this->_redirect));
+		return $this->messenger(array('MSG' => 'err_welcome_back', 'LEVEL' => 1, 'LINK' => '?a=main'));
 	}
 
    // ! Action Method

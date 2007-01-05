@@ -3,388 +3,289 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***/
 
-/**
-* Text Parsing Handler
-*
-* The purpose of this class is to give the parent system the ability
-* to parse and/or modify a given string.
-*
-* @version $Id: parse.han.php murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
+ /**
+ * Text Parsing Class
+ *
+ * Used to parse bbcode and modify strings.
+ *
+ * @version $Id: parse.han.php murdochd Exp $
+ * @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
+ * @company Jaia Interactive <admin@jaia-interactive.com>
+ * @package MyTopix
+ */
 class ParseHandler
 {
-   /**
-	* Increments by 1 every time the parser
-	* finds an image tag.
-	* @access Private
-	* @var Integer
-	*/
-	var $_imageCount;
+	/***
+	 * Number of images counted within a string.
+	 * @type Integer
+	 ***/
+	var $_count_image;
 
-   /**
-	* Increments by 1 every time the parser
-	* finds an emoticon tag.
-	* @access Private
-	* @var Integer
-	*/
-	var $_smilieCount;
 
-   /**
-	* Contains words and replacements for
-	* the system's word filter.
-	* @access Private
-	* @var Array
-	*/
-	var $_filter;
+	/***
+	 * Number of emoticons counted within a string.
+	 * @type Integer
+	 ***/
+	var $_count_emoticons;
 
-   /**
-	* Contains code and image replacements
-	* for emoticon parsing.
-	* @access Public
-	* @var Array
-	*/
+
+	/***
+	 * Number of open quotes counted within a string.
+	 * @type Integer
+	 ***/
+	var $_count_quotes_open;
+
+
+	/***
+	 * Number of closed quotes counted within a string.
+	 * @type Integer
+	 ***/
+	var $_count_quotes_closed;
+
+
+	/***
+	 * Emoticons for current skin.
+	 * @type Array
+	 ***/
 	var $emoticons;
 
-   /**
-	* System Object passed by reference for
-	* use within this class.
-	* @access Private
-	* @var Object
-	*/
-	var $_config;
+
+	/***
+	 * System configuration
+	 * @type Array
+	 ***/
+	var $config;
 
 
-   // ! Constructor Method
+	// ! Constructor
 
-   /**
-	* Loads class and defines instance variables.
-	*
-	* @param Object $SystemObject System Object passed by reference
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return Void
-	*/
+	/***
+	 * Instantiates object.
+	 * @param $emoticons Emoticons for current skin
+	 * @param $filter    Word filter
+	 * @param $config    System configuration
+	 ***/
 	function ParseHandler ( & $emoticons, & $filter, $config )
 	{
-		$this->_config          =  $config;
-		$this->_imageCount      =  0;
-		$this->_smilieCount     =  0;
-		$this->_cache_filter    =& $filter;
-		$this->_cache_emoticons =& $emoticons;
+		$this->_count_image         = 0;
+		$this->_count_emoticons     = 0;
+		$this->_count_quotes_open   = 0;
+		$this->_count_quotes_closed = 0;
 
-		$this->_filter   = array();
+		$this->_cache_emoticons =& $emoticons;
+		$this->_cache_filter    =& $filter;
+
+		$this->config    = $config;
 		$this->emoticons = array();
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Takes a given string and manipulates it according
-	* to passed options.
+	* Takes a provided string and parses it for bbcode.
 	*
-	* @param String  $string  String to manipulate
-	* @param Integer $options String of options for parsing.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string  String to be parsed
+	* @param $options Options for parsing
 	* @return String
 	*/
-	function parseText($string, $options = 0)
+	function parseText ( $string, $options = 0 )
 	{
-		if(false == $string)
+		if ( false == $string )
 		{
 			return;
 		}
 
-		if(false == $options) 
+		if ( false == $options )
 		{
 			$options = F_BREAKS;
 		}
 
-		if($options & F_CURSE && $this->_config['word_active'])
+		if ( $options & F_CURSE && $this->config[ 'word_active' ] )
 		{
-			$string = $this->_doFilter($string);
+			$string = $this->filterWords ( $string );
 		}
 
-		if($options & F_BBSTRIP)
+		if ( $options & F_BBSTRIP )
 		{
-			$string = $this->doBBCodeStrip($string);
+			$string = $this->doBBCodeStrip ( $string );
+		}
+		else {
+			if ( $options & F_CODE )
+			{
+				$string = $this->parseBlocks ( $string );
+				$string = $this->parseSimple ( $string );
+				$string = $this->parseLinks  ( $string );
+			}
 		}
 
-		if($options & F_CODE)
+		if ( $options & F_BREAKS )
 		{
-			$string = $this->parseBlocks($string);
-			$string = $this->parseSimple($string);
-			$string = $this->parseLinks($string);
+			$string = $this->formatBreaks ( $string );
 		}
 
-		if($options & F_BREAKS)
+		if ( $this->config[ 'wrap_on' ] )
 		{
-			$string = $this->formatBreaks($string);
+			$string = $this->doWrapString ( $string, $this->config[ 'wrap_count' ] );
 		}
 
-		if($this->_config['wrap_on'])
+		if ( $options & F_SMILIES )
 		{
-			$string = $this->doWrapString($string, $this->_config['wrap_count']);
-		}
-
-		if($options & F_SMILIES)
-		{
-			$string = $this->_parseEmoticons($string);
+			$string = $this->parseEmoticons ( $string );
 		}
 
 		return $this->translateUnicode ( $string );
 	}
 
-	function translateUnicode ( $string )
-	{
-		return preg_replace ( "/&amp;#([0-9]+);/si", "&#\\1;", $string );
-	}
 
-   // ! Action Method
+   // ! Mutator
 
    /**
-	* Simply replaces carriage returns and translates
-	* them into simple html <break> tags.
-	*
-	* @param String $string String to evaluate.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return String
-	*/
-	function formatBreaks($string)
-	{
-		return false == $string ? '' : str_replace(array("\n"), "<br />", $string);
-	}
-
-   // ! Action Method
-
-   /**
-	* During the POST routine certain charactors are switched to thier
-	* html entity equivalents. This simply reverses the effect.
-	*
-	* @param String $string String to manipulate.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return String
-	*/
-	function uncleanString($string, $slashes = false)
-	{
-		$string = str_replace("&amp;",  "&",  $string);
-		$string = str_replace("&gt;",   ">",  $string);
-		$string = str_replace("&lt;",   "<",  $string);
-		$string = str_replace("&quot;", "\"", $string);
-		$string = str_replace("&#39;",  "'",  $string);
-
-		if($slashes)
-		{
-			return addslashes(str_replace("&#092;", "\\", $string));
-		}
-
-		return $string;
-	}
-
-   // ! Action Method
-
-   /**
-	* Simply replaces carriage returns and translates
-	* them into simple html <break> tags.
-	*
-	* @param String $string String to evaluate.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return String
-	*/
-	function cleanString($string)
-	{
-		$string = str_replace("<", "&lt;",   $string);
-		$string = str_replace(">", "&gt;",   $string);
-		$string = str_replace('"', "&quot;", $string);
-		$string = str_replace("'", '&#039;', $string);
-		$string = str_replace("&", "&amp;",  $string);
-		
-		return $string;
-	}
-
-   // ! Action Method
-
-   /**
-	* A callback function that increments _imageCount every time
-	* it is called.
+	* Used to tally images.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return Void
-	*/
-	function _handleImages()
-	{
-		$this->_imageCount++;
-	}
-
-   // ! Action Method
-
-   /**
-	* Checks for image tags and determines whether or not
-	* they have exceeded the system's limit per posting.
-	*
-	* @param String $string String to parse for image counting.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
 	* @return Bool
 	*/
-	function countImages($string)
+	function _imageCounter()
 	{
-		$string = preg_replace('#\[img\](http|https|ftp)://(.*?)\[/img\]#ie', 
-							   '$this->_handleImages()', $string);
+		$this->_count_image++;
 
-		return ($this->_imageCount > $this->_config['max_images'] ? false : true);
+		return true;
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* A callback function that increments _smilieCount every time
-	* it is called.
+	* takes a string and counts the images tags within.
+	*
+	* @param $string String to parse
+	* @return Bool
+	*/
+	function countImages ( $string )
+	{
+		$string = preg_replace ( '#\[img\](http|https|ftp)://(.*?)\[/img\]#ie', '$this->_imageCounter()', $string );
+
+		return $this->_count_image > $this->config[ 'max_images' ] ? false : true;
+	}
+
+
+   // ! Mutator
+
+   /**
+	* Used to tally emoticons.
 	*
 	* @param none
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return Void
-	*/
-	function _handleSmilies()
-	{
-		$this->_smilieCount++;
-	}
-
-   // ! Action Method
-
-   /**
-	* Checks for emoticon tags and determines whether or not
-	* they have exceeded the system's limit per posting.
-	*
-	* @param String $string String to parse for emoticon counting.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
 	* @return Bool
 	*/
-	function countSmilies($string)
+	function _emoticonCounter()
 	{
-		if(false == $this->emoticons)
+		$this->_count_emoticons++;
+
+		return true;
+	}
+
+
+   // ! Executor
+
+   /**
+	* Takes a provided string and counts the emoticons within.
+	*
+	* @param $string String to parse
+	* @return Bool
+	*/
+	function countEmoticons ( $string )
+	{
+		if ( false == $this->emoticons )
 		{
 			$this->getEmoticons();
 		}
 
-		foreach($this->emoticons as $emoticon)
+		foreach ( $this->emoticons as $emoticon )
 		{
-			$code = preg_quote($emoticon['CODE'], '/');
+			$code = preg_quote ( $emoticon[ 'CODE' ], '/' );
 
-			preg_replace("#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#ei", "\$this->_handleSmilies()", ' ' . $string . ' ');
+			preg_replace ( "#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#ei", "\$this->_emoticonCounter()", ' ' . $string . ' ' );
 		}
 
-		return $this->_smilieCount > $this->_config['max_smilies'] ? false : true;
+		return $this->_count_emoticons > $this->config[ 'max_smilies' ] ? false : true;
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to strip post content of all bbcode tags.
+	* Takes a provided string and translates the emoticons within.
 	*
-	* @param String $string String to strip.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function doBBCodeStrip($string)
+	function parseEmoticons ( $string )
 	{
-		$string = preg_replace('/:([a-zA-Z0-9]*):/i', '', $string);
-		$string = preg_replace('#\[(\/?)(flash|quote|code|b|u|i|s|email|img|color|font|size)(.*?)]#i', '', $string);
-		$string = preg_replace("#(^|\s)((http|https|news|ftp)://\w+[^\s\[\]]+)#ie", '', $string);
-
-		return $string;
-	}
-
-   // ! Action Method
-
-   /**
-	* Simple emoticon replacement method.
-	*
-	* @param String $string String to parse for emoticons
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return String
-	*/
-	function _parseEmoticons($string)
-	{
-		if(false == $this->emoticons)
+		if ( false == $this->emoticons )
 		{
 			$this->getEmoticons();
 		}
 
-		foreach($this->emoticons as $emoticon)
+		foreach ( $this->emoticons as $emoticon )
 		{
-			$code = preg_quote($emoticon['CODE'], '/');
-			$name = $emoticon['NAME'];
+			$code = preg_quote ( $emoticon[ 'CODE' ], '/' );
+			$name = $emoticon[ 'NAME' ];
 
-			$string = preg_replace("#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#i", $name, ' ' . $string . ' ');
+			$string = preg_replace ( "#(?<=.\W|\W.|^\W)$code(?=.\W|\W.|\W$)#i", $name, ' ' . $string . ' ' );
 		}
 
-		return trim($string);
+		return trim ( $string );
 	}
 
-   // ! Accessor Method
+
+   // ! Executor
 
    /**
-	* Fetches emoticons from the database and prepares them
-	* for parsing.
+	* Fetches a list of emoticons and stores them in a stack.
 	*
-	* @param Bool $clicky Used to determine whether or not to 
-	* fetch clickable emoticons only.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $clickable Returns only clicky emoticons.
 	* @return Bool
 	*/
-	function getEmoticons($clickable = false)
+	function getEmoticons ( $clickable = false )
 	{
 		if ( $clickable )
 		{
-			foreach($this->_cache_emoticons as $emoticon)
+			foreach ( $this->_cache_emoticons as $emoticon )
 			{
-				if($emoticon['emo_skin'] == SKIN_ID)
+				if ( $emoticon[ 'emo_skin' ] == SKIN_ID )
 				{
-					if($clickable && $emoticon['emo_click'])
+					if ( $clickable && $emoticon[ 'emo_click' ] )
 					{
-						$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
-												   'CODE' => $emoticon['emo_code']);
+						$this->emoticons[] = array ( 'NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
+													 'CODE' => $emoticon[ 'emo_code' ] );
 					}
 				}
 			}
 		}
 		else {
-			foreach($this->_cache_emoticons as $emoticon)
+			foreach ( $this->_cache_emoticons as $emoticon )
 			{
-				if($emoticon['emo_skin'] == SKIN_ID)
+				if ( $emoticon[ 'emo_skin' ] == SKIN_ID )
 				{
-					$this->emoticons[] = array('NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
-											   'CODE' => $emoticon['emo_code']);
+					$this->emoticons[] = array ( 'NAME' => "<img src=\"" . SKIN_PATH . "/emoticons/{$emoticon['emo_name']}\" style=\"vertical-align: middle;\" alt=\"\" />",
+												 'CODE' => $emoticon[ 'emo_code' ] );
 				}
 			}
 		}
@@ -392,35 +293,29 @@ class ParseHandler
 		return true;
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to check a string to see if it contains a 
-	* filtered word.
+	* Detects a filtered string within the provided string.
+	* Will return True or False on exist.
 	*
-	* @param String $string String to evaluate.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return True on yes / False on no
+	* @param $string String to parse
+	* @return Bool
 	*/
-	function checkFilter($string)
+	function checkFilter ( $string )
 	{
-		if(false == $this->_filter)
+		foreach ( $this->_cache_filter as $filter )
 		{
-			$this->_getFilterWords();
-		}
-
-		foreach($this->_filter as $key => $val)
-		{
-			if($val['match'])
-			{   
-				if(preg_match("/(^|\b)" . $key . "(\b|!|\?|\.|,|$)/i", $string))
+			if ( $filter[ 'replace_search' ] )
+			{
+				if ( preg_match ( "#(^|\b)" . $filter[ 'replace_search' ] . "(\b|!|\?|\.|,|$)#i", $string ) )
 				{
 					return false;
 				}
 			}
 			else {
-				if(preg_match('/' . $key . '/i', $string))
+				if ( preg_match ( '#' . $filter[ 'replace_search' ] . '#i', $string ) )
 				{
 					return false;
 				}
@@ -430,76 +325,42 @@ class ParseHandler
 		return true;
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to parse posting content for filtered words
-	* and replaces them accordingly.
+	* Takes a provided string and translates filtered words.
 	*
-	* @param String $string String to parse for filtered words.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function _doFilter($string)
+	function filterWords ( $string )
 	{
-		if(false == $this->_filter)
+		foreach ( $this->_cache_filter as $filter )
 		{
-			$this->_getFilterWords();
-		}
-
-		foreach($this->_filter as $key => $val)
-		{
-			if($val['match'])
-			{   
-				$string = preg_replace("/(^|\b)" . $key . "(\b|!|\?|\.|,|$)/i", $val['replace'], $string);
+			if ( $filter[ 'replace_match' ] )
+			{
+				$string = preg_replace ( "#(^|\b)" . $filter[ 'replace_search' ] . "(\b|!|\?|\.|,|$)#i", $filter[ 'replace_replace' ], $string );
 			}
 			else {
-				$string = preg_replace('/' . $key . '/i', $val['replace'], $string);
+				$string = preg_replace ( '#' . $filter[ 'replace_search' ] . '#i', $filter[ 'replace_replace' ], $string );
 			}
 		}
 
 		return $string;
 	}
 
-   // ! Accessor Method
+
+   // ! Executor
 
    /**
-	* Fetches word filters from the database.
+	* Parses uncomplex bbcode.
 	*
-	* @param none
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return Bool
-	*/
-	function _getFilterWords()
-	{
-		foreach($this->_cache_filter as $filter)
-		{
-			$this->_filter[$filter['replace_search']] = array('replace' => $filter['replace_replace'],
-															  'match'   => $filter['replace_match']);
-		}
-
-		return true;
-	}
-
-   // ! Action Method
-
-   /**
-	* Parses given text and replaces valid bbcode tags with
-	* thier html equivalents.
-	*
-	* @param String $string String to parse for bbcode tags.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function parseSimple($string)
+	function parseSimple ( $string )
 	{
-		$string = str_replace(array('(tm)',	'(c)',	'(r)'), 
-							  array('&trade;', '&copy;', '&reg;'), 
-							  $string);
-
 		$s[] = "#(\[flash=)(\S+?)(\,)(\S+?)(\])(\S+?)(\[\/flash\])#ie";
 		$s[] = "#\n?\[list\](.+?)\[/list\]\n?#ies";
 		$s[] = '#\[b\](.+?)\[/b\]#is';
@@ -514,40 +375,38 @@ class ParseHandler
 		$r[] = "<em>$1</em>";
 		$r[] = "<span style=\"text-decoration: underline;\">$1</span>";
 		$r[] = "<strike>$1</strike>";
-		$r[] = '$this->_processImage(\'$1\')';
+		$r[] = '$this->_parseImage(\'$1\')';
 
-		while(preg_match("#\[color=([^\]]+)\](.+?)\[/color\]#ies", $string))
+		while ( preg_match ( "#\[color=([^\]]+)\](.+?)\[/color\]#ies", $string ) )
 		{
-			$string = preg_replace("#\[color=(.*?)\](.*?)\[/color\]#ies", "\$this->_checkFontTags('color', '$1', ' $2 ')", $string);
+			$string = preg_replace ( "#\[color=(.*?)\](.*?)\[/color\]#ies", "\$this->_parseStyleTags('color', '$1', ' $2 ')", $string );
 		}
 
-		while(preg_match("#\[font=(.*?)\](.*?)\[/font\]#si", $string))
+		while ( preg_match ( "#\[font=(.*?)\](.*?)\[/font\]#si", $string ) )
 		{
-			$string = preg_replace("#\[font=(.*?)\](.*?)\[/font\]#ies", "\$this->_checkFontTags('font', '$1', ' $2 ')", $string);
+			$string = preg_replace ( "#\[font=(.*?)\](.*?)\[/font\]#ies", "\$this->_parseStyleTags('font', '$1', ' $2 ')", $string );
 		}
 
-		while(preg_match("#\[size=([^\]]+)\](.+?)\[/size\]#ies", $string))
+		while ( preg_match ( "#\[size=([^\]]+)\](.+?)\[/size\]#ies", $string ) )
 		{
-			$string = preg_replace("#\[size=(.*?)\](.*?)\[/size\]#ies", "\$this->_checkFontTags('size', '$1', ' $2 ')", $string);
+			$string = preg_replace ( "#\[size=(.*?)\](.*?)\[/size\]#ies", "\$this->_parseStyleTags('size', '$1', ' $2 ')", $string );
 		}
 
-		return preg_replace($s, $r, $string);
+		return preg_replace ( $s, $r, $string );
 	}
 
 
-   // ! Action Method
+   // ! Executor
 
    /**
-	* Validates the data used within font-related tags.
+	* Parses font styling tags.
 	*
-	* @param Integer $type      Defines the type of font tag being used.
-	* @param Integer $attribute The value of the font tag.
-	* @param String  $string    The string used within the font tag.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.3.0
+	* @param $type      The font tag to parse
+	* @param $attribute The value of used font tag
+	* @param $string    The string to parse
 	* @return String
 	*/
-	function _checkFontTags ( $type, $attribute, $string )
+	function _parseStyleTags ( $type, $attribute, $string )
 	{
 		$original = "[{$type}={$attribute}]{$string}[/$type]";
 
@@ -594,128 +453,119 @@ class ParseHandler
 	}
 
 
-   // ! Action Method
+   // ! Executor
 
    /**
-	* Used to determine whether the flash object provided
-	* is valid and can be properly displayed.
+	* Parses the flash tag.
 	*
-	* @param Integer $width  User defined set width of object.
-	* @param Integer $height User defined set height of object.
-	* @param String  $url	Path to flash object.	
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $width  Chosen width of flash
+	* @param $height Chosen height of flash
+	* @param $url    URL of flash file
 	* @return String
 	*/
-	function _parseFlash($width, $height, $url)
+	function _parseFlash ( $width, $height, $url )
 	{
-		$original = "\[flash={$width},{$height}\]{$url}\[/flash\]";
-	
-		if(false == $this->_config['flash_on'])
+		$original = "[flash={$width},{$height}]{$url}[/flash]";
+
+		if ( false == $this->config[ 'flash_on' ] )
 		{
 			return $original;
 		}
 
-		if(false == preg_match( "/^http:\/\/(\S+)\.swf$/i", $url))
+		if ( false == preg_match ( "/^http:\/\/(\S+)\.swf$/i", $url ) )
 		{
 			return $original;
 		}
 
-		if($width  > $this->_config['flash_max_width'] ||
-		   $height > $this->_config['flash_max_height'])
+		if ( $width  > $this->config[ 'flash_max_width' ] ||
+			 $height > $this->config[ 'flash_max_height' ] )
 		{
-			$width  = $this->_config['flash_max_width'];
-			$height = $this->_config['flash_max_height'];
+			$width  = $this->config[ 'flash_max_width' ];
+			$height = $this->config[ 'flash_max_height' ];
 		}
 
-		return "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' width={$width} " . 
+		return "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' width={$width} " .
 			   "height={$height}><param name=movie value={$url}><param name=play value=true>" .
 			   "<param name=loop value=true><param name=quality value=high><embed src={$url}" .
 			   "width=$width height={$height} play=true loop=true quality=high></embed></object>";
 	}
 
 
-   // ! Action Method
+   // ! Executor
 
    /**
-	* Parses a bbcode image tag and determines whether the given image
-	* is valid and can be properly displayed.
+	* Parses and validates an image tag.
 	*
-	* @param String $image User posted url to image.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $image String to parse
 	* @return String
 	*/
-	function _processImage($image)
+	function _parseImage ( $image )
 	{
 		$default = "[img]{$image}[/img]";
 
-		if(false == preg_match("/^(\S+)\.({$this->_config['good_image_types']})$/i", $image))
+		if ( false == preg_match ( "/^(\S+)\.({$this->config['good_image_types']})$/i", $image ) )
 		{
 			return $default;
 		}
 
 		$image = trim($image);
 
-		if(false == preg_match("/^(http|https|ftp):\/\//i", $image))
+		if ( false == preg_match ( "/^(http|https|ftp):\/\//i", $image ) )
 		{
 			return $default;
 		}
 
-		if(preg_match("/[?&;]/", $image))
+		if ( preg_match ( "/[?&;]/", $image ) )
 		{
 			return $default;
 		}
 
-		$image = str_replace(' ', '%20', $image);
+		$image = str_replace ( ' ', '%20', $image );
 
 		return "<img src='" . $image . "' alt='" . $image . "' />";
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Displays an unordered list of bbcode.
+	* Parses a list tag
 	*
-	* @param String $string list bbcode contents.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function _doList($string)
+	function _doList ( $string )
 	{
-		return "</p><ul>" . $this->_doListItem($string) . "</ul><p>";
+		return "</p><ul>" . $this->_doListItem ( $string ) . "</ul><p>";
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* A simple function that properly formats a list for display.
+	* Parses a list item tag
 	*
-	* @param String $item List item content.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $item String to parse
 	* @return String
 	*/
-	function _doListItem($item)
+	function _doListItem ( $item )
 	{
-		$item = preg_replace("#\[\*\]#",  "</li><li>", trim($item));
-		$item = preg_replace("#^</?li>#", '',		  trim($item));
-		
-		return str_replace("</li>", "</li>", stripslashes($item) . "</li>");
+		$item = preg_replace ( "#\[\*\]#",  "</li><li>", trim ( $item ) );
+		$item = preg_replace ( "#^</?li>#", '',          trim ( $item ) );
+
+		return str_replace ( "</li>", "</li>", stripslashes ( $item ) . "</li>" );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* This method is used for URI parsing.
+	* Take a provided string and parses it for links.
 	*
-	* @param String $string String to parse for URI bbcode tags
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function parseLinks($string)
+	function parseLinks ( $string )
 	{
 		$s[] = "#(^|\s)(http|https|ftp)(://[^\s\[]+)#sie";
 		$s[] = "#\[email=(.*?)\](.*?)\[/email\]#sie";
@@ -729,217 +579,283 @@ class ParseHandler
 		$r[] = '$this->_stripLinksOfCode(\'url\', \'$1\')';
 		$r[] = '$this->_stripLinksOfCode(\'url\', \'$1\', \'$2\')';
 
-		return preg_replace($s, $r, $string);
+		return preg_replace ( $s, $r, $string );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* This method is used for URI parsing.
+	* You know what? I'm not really sure what this does anymore.
 	*
-	* @param String $string String to parse for URI bbcode tags
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $type  Type of link to parse
+	* @param $url   Well, it's the URL
+	* @param $title The magic title that the users will see!!!
 	* @return String
 	*/
-	function _stripLinksOfCode($type, $url, $title = null)
+	function _stripLinksOfCode ( $type, $url, $title = null )
 	{
 		$pre   = $type == 'email' ? 'mailto:' : '';
 		$title = $title           ? $title    : $url;
 
-		$out   = preg_replace('#javascript:#i', '', $pre . $url);
+		$out   = preg_replace ( '#javascript:#i', '', $pre . $url  );
 
 		return '<a href="' . $out . '" title="">' . $title . '</a>';
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Simply shortens a very long URI for display.
+	* Auto parses link and shortens them if necessary.
 	*
-	* @param String $url Url to shorten
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $space Preserves the space before the link
+	* @param $url   IT'S THE URL LOLOLZLZ!!!
 	* @return String
 	*/
-	function _parseLongUrl($space, $url)
+	function _parseLongUrl ( $space, $url )
 	{
-		$url = preg_replace('#javascript:#i', '', $url);
+		$url   = preg_replace ( '#javascript:#i', '', $url );
+		$title = strlen ( $url ) > 40 ? substr ( $url, 0, 15 ) . '...' . substr ( $url, -15 ) : $url;
 
-		return "{$space}[url={$url}]" . (strlen($url) > 40 
-				? substr($url, 0, 15) . '...' . substr($url, -15) 
-				: $url) . '[/url]';
+		return $space . '<a href="' . $url . '" title="' . $url . '">' . $title . '</a>';
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to parse the bigger, more complex blocks of bbcode.
+	* Parsed block-level bbcode... kind of.
 	*
-	* @param String $string String to parse for block bbcode.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function parseBlocks($string)
+	function parseBlocks ( $string )
 	{
 		$s[] = "#\[code\](.+?)\[/code]#ise";
 		$s[] = "#(\[quote(=.+?)?\].*\[/quote\])#ise";
 
-		$r[] = "\$this->parseCode('\\1')";
-		$r[] = "\$this->parseQuotes('\\1', '\\2')";
+		$r[] = "\$this->parseCode('$1')";
+		$r[] = "\$this->parseQuotes('$1', '$2')";
 
-		return preg_replace($s, $r, $string);
+		return preg_replace ( $s, $r, $string );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to parse quote tags and display them all neat
-	* and pretty-like.
+	* Does all the magic behind the quotes
 	*
-	* @param String $string String to quote.
-	* @param String $name   Name of user who is being quoted.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
+	* @param $name   Optional name of the user being quoted
 	* @return String
 	*/
-	function parseQuotes($string, $name = null)
+	function parseQuotes ( $string, $name = null )
 	{
-		if(false == $string || false == $this->_blockCount($string))
+		if ( false == $string )
 		{
 			return $string;
 		}
 
-		$string = preg_replace("#quote#is", "quote", $string);
+		$string = preg_replace ( "#quote#is", "quote", $string );
 
-		if((substr_count($string, '[quote]')  + 
-			substr_count($string, '[quote=')) == 
-			substr_count($string, '[/quote]'))
+		$this->_count_quotes_open   = substr_count ( $string, '[quote]'  ) + substr_count ( $string, '[quote='  );
+		$this->_count_quotes_closed = substr_count ( $string, '[/quote]' );
+
+		if ( $this->_count_quotes_open == $this->_count_quotes_closed )
 		{
-			$s[] = '~\[quote=(.+?)]~i';
-			$s[] = '~\[quote]~i';
-			$s[] = '~\[/quote]~i';
+			$s[] = '#\[quote=(.+?)]#i';
+			$s[] = '#\[quote]#i';
+			$s[] = '#\[/quote]#i';
 
-			$r[] = "<blockquote><span class=\"name\">$1:</span>";
-			$r[] = " <blockquote>";
-			$r[] = " </blockquote>";
+			$r[] = " </p><blockquote><span class=\"name\">$1:</span><p> ";
+			$r[] = " </p><blockquote><p> ";
+			$r[] = " </p></blockquote><p> ";
 
-			return '</p>' . preg_replace($s, $r, $string) . '<p>';
+			return preg_replace ( $s, $r, $string );
 		}
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Used to translate bbcode code tags into pretty code boxes with optional
-	* line numbering.
+	* Parses a provided string for the code tag.
 	*
-	* @param String $string String to parse for bbcode code tags.
-	* @param String $mark   Line numbering / highlighting options.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
 	* @return String
 	*/
-	function parseCode($string)
+	function parseCode ( $string )
 	{
-		if(false == $string)
+		if ( false == $string )
 		{
-			return;
+			return '';
 		}
 
-		$original = "[code]{$string}[/code]";
+		$string = preg_replace ( "#&lt;#",   "&#60;",  $string );
+		$string = preg_replace ( "#&gt;#",   "&#62;",  $string );
+		$string = preg_replace ( "#&quot;#", "&#34;",  $string );
+		$string = preg_replace ( "#:#",      "&#58;",  $string );
+		$string = preg_replace ( "#\[#",     "&#91;",  $string );
+		$string = preg_replace ( "#\]#",     "&#93;",  $string );
+		$string = preg_replace ( "#\)#",     "&#41;",  $string );
+		$string = preg_replace ( "#\(#",     "&#40;",  $string );
+		$string = preg_replace ( "# #",      "&nbsp;", $string );
 
-		$s = array("#&lt;#", "#&gt;#", "#&quot;#", "#:#",   "#\[#",  "#\]#",  "#\)#",  "#\(#",  "# #");
-		$r = array("&#60;",  "&#62;",  "&#34;",	"&#58;", "&#91;", "&#93;", "&#41;", "&#40;", "&nbsp;");
+		$string = str_replace ( "\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $string );
 
-
-		$string = str_replace ( '<br />', '', $string );
-		$string = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $string);
-
-		return "</p><code>" . preg_replace($s, $r, $string) . "</code><p>";
+		return " </p><code>{$string}</code><p> ";
 	}
 
 
-   // ! Action Method
+   // ! Executor
 
    /**
-	* Counts the number of nested block tags as they can, on occasion,
-	* crash certain browsers.
+	* Cuts off a string at a specified length and adds
+	* an elipsis to the end.
 	*
-	* @param String $string String to evaluate.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
-	* @return Bool
-	*/
-	function _blockCount($string)
-	{
-		if ( preg_match ( "/\[quote(=.+?)?\].+?\[quote(=.+?)?\].+?\[quote(=.+?)?\].+?\[quote(=.+?)?\].+?\[quote(=.+?)?\].+?\[quote(=.+?)?\].+?\[quote(=.+?)?\]/i", $string ) )
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-   // ! Action Method
-
-   /**
-	* A simple word wrapping method.
-	*
-	* @param String  $string String to wrap.
-	* @param Integer $size   How many chars before wrapping.
-	* @param String  $break  Markup used to wrap a string.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
+	* @param $size   Point at which to end the string
 	* @return String
 	*/
-	function doCutOff($string, $size = 30)
+	function doCutOff ( $string, $size = 30 )
 	{
 		if ( strlen ( $string ) > $size)
 		{
-			return preg_replace( "/&(#(\d+;?)?)?\.\.\.$/", '...', substr($string,0, $size - 3) . "..." );
+			return preg_replace ( "/&(#(\d+;?)?)?\.\.\.$/", '...', substr ( $string,0, $size - 3 ) . "..." );
 		}
 
-		return $string = preg_replace( "/&(#(\d+?)?)?$/", '', $string );
+		return $string = preg_replace ( "/&(#(\d+?)?)?$/", '', $string );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* A simple word wrapping method.
+	* A user defined word wrapping method.
 	*
-	* @param String  $string String to wrap.
-	* @param Integer $size   How many chars before wrapping.
-	* @param String  $break  Markup used to wrap a string.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string The string to parse
+	* @param $size   The point at which to wrap the string
+	* @param $break  How to break the string into seperate lines
 	* @return String
 	*/
-	function doWrapString($string, $size = 75, $break = "\n")
+	function doWrapString ( $string, $size = 75, $break = "\n" )
 	{
-		if(false == $string || $size < 1)
+		if ( false == $string || $size < 1 )
 		{
 			return $string;
 		}
 
-		return preg_replace("#([^\s<>'\"/\.\\-\?&\n\r\%]{" . $size . "})#i", " \\1"  . $break, $string);
+		return preg_replace ( "#([^\s<>'\"/\.\\-\?&\n\r\%]{" . $size . "})#i", " $1"  . $break, $string );
 	}
 
-   // ! Action Method
+
+   // ! Executor
 
    /**
-	* Gets rid of all those extra line returns that some OSs produce.
+	* Allows for the support of Unicode. Yay!
 	*
-	* @param String  $string String to format.
-	* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-	* @since v1.0
+	* @param $string String to parse
+	* @return String
+	*/
+	function translateUnicode ( $string )
+	{
+		return preg_replace ( "/&amp;#([0-9]+);/si", "&#\\1;", $string );
+	}
+
+
+   // ! Executor
+
+   /**
+	* Takes a provided string and translates newlines
+	* into XHTML-compliant breaks.
+	*
+	* @param $string String to parse
+	* @return String
+	*/
+	function formatBreaks ( $string )
+	{
+		return false == $string ? '' : str_replace ( array ( "\n" ), "<br />", $string );
+	}
+
+
+   // ! Executor
+
+   /**
+	* Replaces all returns and newlines with just newlines. lol
+	*
+	* @param $string String to parse
 	* @return String
 	*/
 	function formatReturns ( $string )
 	{
 		$string = str_replace ( "\r\n", "\n", $string );
 		$string = str_replace ( "\r",   "\n", $string );
+
+		return $string;
+	}
+
+
+   // ! Executor
+
+   /**
+	* Takes a provided, cleaned, string and replaces all
+	* switched entities with their 'dangerous' equivalents.
+	*
+	* @param $string String to parse
+	* @return String
+	*/
+	function uncleanString ( $string, $slashes = false )
+	{
+		$string = str_replace ( "&amp;",  "&",  $string );
+		$string = str_replace ( "&gt;",   ">",  $string );
+		$string = str_replace ( "&lt;",   "<",  $string );
+		$string = str_replace ( "&quot;", "\"", $string );
+		$string = str_replace ( "&#39;",  "'",  $string );
+
+		if ( $slashes )
+		{
+			return addslashes ( str_replace ( "&#092;", "\\", $string ) );
+		}
+
+		return $string;
+	}
+
+
+   // ! Executor
+
+   /**
+	* Takes a provided string and makes it safe for viewing.
+	*
+	* @param $string String to parse
+	* @return String
+	*/
+	function cleanString ( $string )
+	{
+		$string = str_replace ( "<", "&lt;",   $string );
+		$string = str_replace ( ">", "&gt;",   $string );
+		$string = str_replace ( '"', "&quot;", $string );
+		$string = str_replace ( "'", '&#039;', $string );
+		$string = str_replace ( "&", "&amp;",  $string );
+
+		return $string;
+	}
+
+
+   // ! Executor
+
+   /**
+	* Takes a provided string and strips out all bbcode.
+	*
+	* @param $string String to parse
+	* @return String
+	*/
+	function doBBCodeStrip ( $string )
+	{
+		$string = preg_replace ( '#:([a-zA-Z0-9]*):#i', '', $string );
+		$string = preg_replace ( '#\[(\/?)(flash|quote|code|b|u|i|s|email|img|color|font|size)(.*?)]#i', '', $string );
+		$string = preg_replace ( "#(^|\s)((http|https|news|ftp)://\w+[^\s\[\]]+)#ie", '', $string );
 
 		return $string;
 	}

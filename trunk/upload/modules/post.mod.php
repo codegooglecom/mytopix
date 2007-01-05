@@ -3,34 +3,34 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  ***/
 
-if(!defined('SYSTEM_ACTIVE')) die('<b>ERROR:</b> Hack attempt detected!');
+if ( false == defined ( 'SYSTEM_ACTIVE' ) ) die ( '<strong>ERROR:</strong> You cannot access this file directly!' );
 
 /**
-* Class Name
-*
-* Description
-*
-* @version $Id: filename murdochd Exp $
-* @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
-* @company Jaia Interactive <admin@jaia-interactive.com>
-* @package MyTopix Personal Message Board
-*/
+ * ModuleObject ( for the user control panel )
+ *
+ * Allows a user to modify their personal settings.
+ *
+ * @version $Id: ucp.mod.php murdochd Exp $
+ * @author Daniel Wilhelm II Murdoch <wilhelm@jaia-interactive.com>
+ * @company Jaia Interactive <admin@jaia-interactive.com>
+ * @package MyTopix
+ */
 class ModuleObject extends MasterObject
 {
    /**
@@ -550,7 +550,7 @@ class ModuleObject extends MasterObject
 			$this->_errors[] = $this->LanguageHandler->err_max_images;
 		}
 
-		if($eOption && false == $this->ParseHandler->countSmilies($body))
+		if($eOption && false == $this->ParseHandler->countEmoticons($body))
 		{
 			$this->_errors[] = $this->LanguageHandler->err_max_smilies;
 		}
@@ -832,7 +832,7 @@ class ModuleObject extends MasterObject
 		}
 
 		if($eOption &&
-		   false == $this->ParseHandler->countSmilies($body))
+		   false == $this->ParseHandler->countEmoticons($body))
 		{
 			$this->_errors[] = $this->LanguageHandler->err_max_smilies;
 		}
@@ -1073,7 +1073,7 @@ class ModuleObject extends MasterObject
 			$this->_errors[] = $this->LanguageHandler->err_max_images;
 		}
 
-		if($eOption && false == $this->ParseHandler->countSmilies($body))
+		if($eOption && false == $this->ParseHandler->countEmoticons($body))
 		{
 			$this->_errors[] = $this->LanguageHandler->err_max_smilies;
 		}
@@ -1714,3 +1714,5 @@ class ModuleObject extends MasterObject
 		return false;
 	}
 }
+
+?>

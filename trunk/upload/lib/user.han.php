@@ -189,7 +189,8 @@ class UserHandler
 				active_topic, 
 				active_time,
 				active_is_bot,
-				active_agent
+				active_agent,
+				active_user_group
 			)
 			VALUES(
 				'{$this->_session}',
@@ -201,7 +202,8 @@ class UserHandler
 				{$topic},
 				" . time() . ",
 				{$this->_user_is_bot},
-				'{$this->_user_agent}')",
+				'{$this->_user_agent}',
+				{$this->_user_fields['members_class']})",
 		__FILE__, __LINE__);
 
 		$this->_user_fields['banned']	 = $this->_isBanned();
