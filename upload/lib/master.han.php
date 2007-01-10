@@ -266,13 +266,6 @@ class MasterObject
 
 		$this->LanguageHandler->loadPack($this->module, $this->UserHandler->getField('members_language'));
 
-		// Load the template handler and cache the skin / template set:
-
-		$this->TemplateHandler =  new TemplateHandler($this->module, 
-													  $this->config, 
-													  $this);
-
-		$this->TemplateHandler->fetchTemplateSet();
 
 		// Load the system time handler:
 
@@ -286,6 +279,16 @@ class MasterObject
 											   $this->CacheHandler->getCacheByKey('forums'),
 											   $this->CacheHandler->getCacheByKey('moderators'),
 											   $this->config);
+
+
+		// Load the template handler and cache the skin / template set:
+
+		$this->TemplateHandler =  new TemplateHandler($this->module, 
+													  $this->config, 
+													  $this);
+
+		$this->TemplateHandler->fetchTemplateSet();
+
 
 		// Fetch the user welcome bar:
 
@@ -430,6 +433,36 @@ class MasterObject
 	function doCapProtection ( $title )
 	{
 		return $this->config['cap_protect'] ? ucwords(strtolower($title)) : $title;
+	}
+
+
+   // ! Action Method
+
+   /**
+	* Sets and fetches a forum-specific skin, if there is one.
+	*
+	* @param Integer $forum Forum id to search for
+	* @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
+	* @since v 1.3.0
+	* @access Public
+	* @return Boolean
+	*/
+	function fetchForumSkin ( $forum )
+	{
+		if ( $this->ForumHandler->forumExists ( $forum ) )
+		{
+			if ( $skin = $this->ForumHandler->getForumField ( $forum, 'forum_skin' ) )
+			{
+				$this->TemplateHandler->skinId   = $skin;
+				$this->TemplateHandler->skinPath = SYSTEM_PATH . "skins/{$skin}";
+
+				$this->TemplateHandler->fetchTemplateSet();
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

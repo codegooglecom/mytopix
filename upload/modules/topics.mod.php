@@ -122,6 +122,8 @@ class ModuleObject extends MasterObject
 	*/
 	function execute()
 	{
+		$this->fetchForumSkin($this->_forum);
+
 		switch($this->_code)
 		{
 			case '00':
