@@ -242,6 +242,21 @@ class ModuleObject extends MasterObject
 											   $this->LanguageHandler->forum_new_red_url_title,
 											   $this->LanguageHandler->forum_new_red_url_desc ) );
 
+
+			$skins = array();
+			$sql   = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins");
+
+			$skins[0] = 'Use Member Default';
+
+			while($row = $sql->getRow())
+			{
+				$skins[$row['skins_id']] = $row['skins_name'];
+			}
+
+			$this->MyPanel->form->addWrapSelect('forum_skin',  $skins, false, false,
+											 array(1, $this->LanguageHandler->forum_new_skin_title,
+													  $this->LanguageHandler->forum_new_skin_desc));
+
 			$this->MyPanel->form->addWrapSelect ( 'forum_perm_base', false, false, false, array ( 1,
 												  $this->LanguageHandler->forum_new_base_perm_title,
 												  $this->LanguageHandler->forum_new_base_perm_desc ), false,
@@ -295,7 +310,8 @@ class ModuleObject extends MasterObject
 			forum_red_on,
 			forum_access_matrix,
 			forum_allow_content,
-			forum_enable_post_counts)
+			forum_enable_post_counts,
+			forum_skin)
 		VALUES (
 			" . (int) $forum_parent . ",
 			'{$forum_name}',
@@ -305,7 +321,8 @@ class ModuleObject extends MasterObject
 			" . (int) $red_on . ",
 			'{$matrix}',
 			" . (int) $allow_content . ",
-			" . (int) $post_count . ")" );
+			" . (int) $post_count . ",
+			" . (int) $forum_skin . ")" );
 
 		$id = $this->DatabaseHandler->insertId();
 
@@ -539,6 +556,20 @@ class ModuleObject extends MasterObject
 											   $this->LanguageHandler->forum_new_red_url_title,
 											   $this->LanguageHandler->forum_new_red_url_desc ) );
 
+			$skins = array();
+			$sql   = $this->DatabaseHandler->query("SELECT * FROM " . DB_PREFIX . "skins");
+
+			$skins[0] = 'Use Member Default';
+
+			while($row = $sql->getRow())
+			{
+				$skins[$row['skins_id']] = $row['skins_name'];
+			}
+
+			$this->MyPanel->form->addWrapSelect('forum_skin',  $skins, $forum['forum_skin'], false,
+											 array(1, $this->LanguageHandler->forum_new_skin_title,
+													  $this->LanguageHandler->forum_new_skin_desc));
+
 			$this->MyPanel->form->addHidden ( 'hash', $this->UserHandler->getUserHash() );
 
 			$this->MyPanel->form->appendBuffer ( "</div>" );
@@ -684,7 +715,8 @@ class ModuleObject extends MasterObject
 			forum_red_on             = " . (int) $red_on . ",
 			forum_access_matrix      = '{$matrix}',
 			forum_allow_content      = " . (int) $allow_content . ",
-			forum_enable_post_counts = " . (int) $post_count . "
+			forum_enable_post_counts = " . (int) $post_count . ",
+			forum_skin               = " . (int) $forum_skin . "
 		WHERE forum_id = {$this->_forum}" );
 
 		$this->CacheHandler->updateCache ( 'forums' );

@@ -309,6 +309,8 @@ class ModuleObject extends MasterObject
 
 		$row = $sql->getRow();
 
+		$this->fetchForumSkin($row['topics_forum']);
+
 		if($row['posts_author'] != USER_ID && 
 		   false == $this->ForumHandler->getModAccess($row['topics_forum'], 'delete_other_posts'))
 		{
@@ -459,6 +461,8 @@ class ModuleObject extends MasterObject
 
 		$topic = $sql->getRow();
 
+		$this->fetchForumSkin($topic['topics_forum']);
+
 		if(false == $this->ForumHandler->getModAccess($topic['topics_forum'], 'edit_topics'))
 		{		
 			return $this->messenger(array('MSG' => 'file_err_no_perm'));
@@ -545,6 +549,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$topic = $sql->getRow();
+
+		$this->fetchForumSkin($topic['topics_forum']);
 
 		if(false == $this->ForumHandler->getModAccess($topic['topics_forum'], 'edit_topics'))
 		{
@@ -722,6 +728,8 @@ class ModuleObject extends MasterObject
 
 		$row = $sql->getRow();
 
+		$this->fetchForumSkin($row['topics_forum']);
+
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'move_topics'))
 		{
 			return $this->messenger(array('MSG' => 'err_no_perm'));
@@ -766,6 +774,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$row = $sql->getRow();
+
+		$this->fetchForumSkin($row['topics_forum']);
 
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'move_topics'))
 		{
@@ -869,6 +879,8 @@ class ModuleObject extends MasterObject
 
 		$row = $sql->getRow();
 
+		$this->fetchForumSkin($row['topics_forum']);
+
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'lock_topics'))
 		{
 			return $this->messenger(array('MSG' => 'err_no_perm'));
@@ -916,6 +928,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$row = $sql->getRow();
+
+		$this->fetchForumSkin($row['topics_forum']);
 
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'lock_topics'))
 		{
@@ -966,6 +980,8 @@ class ModuleObject extends MasterObject
 
 		$row = $sql->getRow();
 
+		$this->fetchForumSkin($row['topics_forum']);
+
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'pin_topics'))
 		{
 			return $this->messenger(array('MSG' => 'err_no_perm'));
@@ -1014,6 +1030,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$row = $sql->getRow();
+
+		$this->fetchForumSkin($row['topics_forum']);
 
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'pin_topics'))
 		{
@@ -1065,6 +1083,8 @@ class ModuleObject extends MasterObject
 
 		$row = $sql->getRow();
 
+		$this->fetchForumSkin($row['topics_forum']);
+
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'announce'))
 		{
 			return $this->messenger(array('MSG' => 'err_no_perm'));
@@ -1115,6 +1135,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$row = $sql->getRow();
+
+		$this->fetchForumSkin($row['topics_forum']);
 
 		if(false == $this->ForumHandler->getModAccess($row['topics_forum'], 'announce'))
 		{

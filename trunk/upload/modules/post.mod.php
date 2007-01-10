@@ -222,6 +222,8 @@ class ModuleObject extends MasterObject
 			// Build the new topic post bit:
 			case 'topic':
 
+				$this->fetchForumSkin($this->_forum);
+
 				if(false == $this->UserHandler->getField('class_canStartTopics'))
 				{
 					return $this->messenger(array('MSG' => 'err_no_perm'));
@@ -282,6 +284,8 @@ class ModuleObject extends MasterObject
 				}
 
 				$topic = $sql->getRow();
+
+				$this->fetchForumSkin($topic['topics_forum']);
 
 				if(false == $forum = $this->ForumHandler->forumExists($topic['topics_forum'], true))
 				{
@@ -357,6 +361,8 @@ class ModuleObject extends MasterObject
 				}
 
 				$topic = $sql->getRow();
+
+				$this->fetchForumSkin($topic['topics_forum']);
 
 				if(false == $forum = $this->ForumHandler->forumExists($topic['topics_forum'], true))
 				{
@@ -438,6 +444,8 @@ class ModuleObject extends MasterObject
 				}
 
 				$topic = $sql->getRow();
+
+				$this->fetchForumSkin($topic['topics_forum']);
 
 				if(false == $forum = $this->ForumHandler->forumExists($topic['topics_forum'], true))
 				{
@@ -1181,6 +1189,8 @@ class ModuleObject extends MasterObject
 		$topic	  = $sql->getRow();
 		$can_attach = false;
 
+		$this->fetchForumSkin($topic['topics_forum']);
+
 		if(USER_ADMIN || USER_MOD || $topic['topics_author'] == USER_ID)
 		{
 			$can_attach = true;
@@ -1251,6 +1261,8 @@ class ModuleObject extends MasterObject
 
 		$topic	  = $sql->getRow();
 		$can_attach = false;
+
+		$this->fetchForumSkin($topic['topics_forum']);
 
 		if(USER_ADMIN || USER_MOD || $topic['topics_author'] == USER_ID)
 		{

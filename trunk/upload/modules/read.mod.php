@@ -206,6 +206,8 @@ class ModuleObject extends MasterObject
 
 		$topic = $sql->getRow();
 
+		$this->fetchForumSkin($topic['topics_forum']);
+
 		if ( false == $this->ForumHandler->checkAccess ( 'can_view', $topic[ 'topics_forum' ] ) ||
 			 false == $this->ForumHandler->checkAccess ( 'can_read', $topic[ 'topics_forum' ] ) )
 		{

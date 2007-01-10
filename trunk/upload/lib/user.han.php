@@ -215,7 +215,7 @@ class UserHandler
 		define('USER_ADMIN', $this->_user_fields['members_is_admin']);
 		define('USER_MOD',   $this->_user_fields['members_is_super_mod']);
 		define('USER_IP',    $this->_user_ip);
-		
+
 		return true;
 	}
 
