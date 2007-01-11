@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,7 +30,7 @@ class MyPanel
 	function MyPanel ( & $System, $path = false )
 	{
 		$this->System =& $System;
-		
+
 		if ( $path )
 		{
 			define ( SYSTEM_PATH, $path );
@@ -139,10 +139,27 @@ class MyPanel
 		return true;
 	}
 
+    function warning($msg, $flush = true, $list = '')
+    {
+        $this->buffer = '';
+
+        $this->buffer .= "<div id=\"warning\">";
+        $this->buffer .= "<h3>{$this->_System->LanguageHandler->error_header}</h3>";
+		$this->buffer .= "<p>{$msg}</p>";
+        $this->buffer .= $list;
+        $this->buffer .= "</div>";
+
+        if($flush)
+        {
+    		$this->flushBuffer();
+	    	exit();
+        }
+    }
+
 	function messenger ( $msg, $url = '', $redirect = true, $flush = true )
 	{
 		$this->clearBuffer();
-		
+
 		$trail = '';
 
 		if ( $redirect )
@@ -151,7 +168,7 @@ class MyPanel
 
 			$trail = "<a href='{$url}'>{$this->System->LanguageHandler->error_continue}</a>";
 		}
-		
+
 		$this->buffer .= "<div id=\"message\">";
 		$this->buffer .= "<h3>{$this->System->LanguageHandler->error_message}</h3>";
 		$this->buffer .= "<p>{$msg}<span>( {$trail} )</span></p>";
