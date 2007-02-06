@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -176,7 +176,8 @@ class ModuleObject extends MasterObject
 			if(false == $category['forum_parent'] &&
 			   $this->ForumHandler->checkAccess('can_view', $category['forum_id']))
 			{
-				$forum_list = '';
+				$forum_list    = '';
+				$forum_counter = 0;
 
 				$category[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $category[ 'forum_name'] );
 
@@ -205,7 +206,7 @@ class ModuleObject extends MasterObject
 
 							$mods = '';
 
-							if($this->config['show_moderators'] && 
+							if($this->config['show_moderators'] &&
 							   $mods = $this->ForumHandler->getForumMods($forum['forum_id']))
 							{
 								$mod_list = implode(', ', $mods);
@@ -264,10 +265,14 @@ class ModuleObject extends MasterObject
 							$forum['forum_topics']  = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
 							$forum[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forum[ 'forum_name'] );
 
+							$row_color = $forum_counter % 2 ? 'alternate_even' : 'alternate_odd';
+
 							$last_post   = eval($this->TemplateHandler->fetchTemplate('main_last_post'));
 							$forum_list .= eval($this->TemplateHandler->fetchTemplate('main_cat_row'));
 						}
 					}
+
+					$forum_counter++;
 				}
 
 				if($has_children)

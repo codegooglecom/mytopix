@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -74,10 +74,12 @@ class MySql41Handler extends DatabaseHandler
         }
 
         $this->setConnectionId(mysqli_connect($this->_server_host,
-                                              $username, 
+                                              $username,
                                               $password,
-                                              $database, 
+                                              $database,
                                               $this->_server_port));
+
+		$this->query('SELECT * FROM my_members');
 
         mysqli_autocommit($this->getConnectionId(), true);
 	}
@@ -145,7 +147,7 @@ class MySql41Handler extends DatabaseHandler
    /**
     * Fetches the last database error encountered. Depending on
     * where this library is used it will either return a nicely
-    * formatted representation of the issue or just spit out a 
+    * formatted representation of the issue or just spit out a
     * plain error report.
     *
     * @param String  $sql  The last query to be executed
@@ -349,7 +351,7 @@ class MySql41Iterator
 
    /**
     * Iterates through the result set and returns an array of
-    * data determined by the 'result_type' parameter. 
+    * data determined by the 'result_type' parameter.
     *
     * @param String $result_type Determines what kind of array to return
     * @author Daniel Wilhelm II Murdoch <jaiainteractive@gmail.com>
