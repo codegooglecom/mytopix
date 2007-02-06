@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -97,9 +97,9 @@ class ModuleObject extends MasterObject
 		}
 
 		require_once SYSTEM_PATH . 'lib/page.han.php';
-		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1, 
-											 $this->config['page_sep'], 
-											 $this->config['per_page'], 
+		$this->_PageHandler = new PageHandler(isset($this->get['p']) ? (int) $this->get['p'] : 1,
+											 $this->config['page_sep'],
+											 $this->config['per_page'],
 											 $this->DatabaseHandler,
 											 $this->config);
 
@@ -162,7 +162,7 @@ class ModuleObject extends MasterObject
 			return $this->messenger();
 		}
 
-		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
+		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) ||
 		   false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
 		{
 			return $this->messenger(array('MSG' => 'err_forum_no_access'));
@@ -172,9 +172,9 @@ class ModuleObject extends MasterObject
 		if($forum_data['forum_red_on'] && $forum_data['forum_red_url'])
 		{
 			$this->DatabaseHandler->query("
-			UPDATE " . DB_PREFIX . "forums 
+			UPDATE " . DB_PREFIX . "forums
 			SET forum_red_clicks = forum_red_clicks + 1
-			WHERE forum_id = {$this->_forum}", 
+			WHERE forum_id = {$this->_forum}",
 			__FILE__, __LINE__);
 
 			$this->CacheHandler->updateCache('forums');
@@ -189,16 +189,17 @@ class ModuleObject extends MasterObject
 			{
 				$has_children  = false;
 
-				if($category['forum_id'] == $this->_forum && 
+				if($category['forum_id'] == $this->_forum &&
 				   $this->ForumHandler->checkAccess('can_view', $category['forum_id']))
 				{
-					$forum_list = '';
+					$forum_list    = '';
+					$forum_counter = 0;
 
 					$category[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $category[ 'forum_name'] );
 
 					foreach($this->ForumHandler->_forum_list as $forum)
 					{
-						if($forum['forum_parent'] == $category['forum_id'] && 
+						if($forum['forum_parent'] == $category['forum_id'] &&
 						   $this->ForumHandler->checkAccess('can_view', $forum['forum_id']))
 						{
 							$has_children = true;
@@ -210,7 +211,7 @@ class ModuleObject extends MasterObject
 								$forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_redirect'));
 							}
 							else {
-								$forum_time = isset($this->read_forums[$forum['forum_id']]) 
+								$forum_time = isset($this->read_forums[$forum['forum_id']])
 											? $this->read_forums[$forum['forum_id']]
 											: 1;
 
@@ -221,7 +222,7 @@ class ModuleObject extends MasterObject
 
 								$mods = '';
 
-								if($this->config['show_moderators'] && 
+								if($this->config['show_moderators'] &&
 								   $mods = $this->ForumHandler->getForumMods($forum['forum_id']))
 								{
 									$mod_list = implode(', ', $mods);
@@ -239,7 +240,7 @@ class ModuleObject extends MasterObject
 
 								if($forum['forum_last_post_time'])
 								{
-									$last_date = $this->TimeHandler->doDateFormat($this->config['date_long'], 
+									$last_date = $this->TimeHandler->doDateFormat($this->config['date_long'],
 																				  $forum['forum_last_post_time']);
 								}
 
@@ -263,7 +264,7 @@ class ModuleObject extends MasterObject
 
 								if($forum['forum_last_post_user_name'] && $forum['forum_last_post_user_id'] != 1)
 								{
-									$forum['forum_last_post_user_name'] = "<a href=\"" . GATEWAY . "?getuser=" . 
+									$forum['forum_last_post_user_name'] = "<a href=\"" . GATEWAY . "?getuser=" .
 									"{$forum['forum_last_post_user_id']}\" title=\"\">{$forum['forum_last_post_user_name']}</a>";
 								}
 								else if($forum['forum_last_post_user_id'] == 1)
@@ -280,10 +281,14 @@ class ModuleObject extends MasterObject
 								$forum['forum_topics'] = number_format($forum['forum_topics'], 0, '', $this->config['number_format']);
 								$forum[ 'forum_name' ] = $this->ParseHandler->translateUnicode ( $forum[ 'forum_name'] );
 
+								$row_color = $forum_counter % 2 ? 'alternate_even' : 'alternate_odd';
+
 								$last_post   = eval($this->TemplateHandler->fetchTemplate('topic_last_post'));
 								$forum_list .= eval($this->TemplateHandler->fetchTemplate('topic_cat_row'));
 							}
 						}
+
+						$forum_counter++;
 					}
 
 					if($has_children)
@@ -303,10 +308,10 @@ class ModuleObject extends MasterObject
 		if($forum_data['forum_allow_content'])
 		{
 			$sql = $this->DatabaseHandler->query("
-			SELECT 
-				COUNT(*) as Count 
-			FROM " . DB_PREFIX . "topics 
-			WHERE 
+			SELECT
+				COUNT(*) as Count
+			FROM " . DB_PREFIX . "topics
+			WHERE
 				topics_forum = {$this->_forum}",
 			__FILE__, __LINE__);
 
@@ -317,8 +322,8 @@ class ModuleObject extends MasterObject
 			$pages = $this->_PageHandler->getSpan();
 
 			$sql = $this->_PageHandler->getData("
-			SELECT 
-				t.*, 
+			SELECT
+				t.*,
 				m.members_name
 			FROM " . DB_PREFIX . "topics t
 				LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
@@ -326,7 +331,7 @@ class ModuleObject extends MasterObject
 				t.topics_forum = {$this->_forum}
 			ORDER BY
 				t.topics_announce DESC,
-				t.topics_pinned DESC, 
+				t.topics_pinned DESC,
 				t.topics_last_post_time DESC");
 
 			$post	 = '';
@@ -349,7 +354,8 @@ class ModuleObject extends MasterObject
 			}
 			else {
 
-				$list = '';
+				$list          = '';
+				$topic_counter = 0;
 
 				while($row = $sql->getRow())
 				{
@@ -360,12 +366,12 @@ class ModuleObject extends MasterObject
 						$inlineNav = eval($this->TemplateHandler->fetchTemplate('page_wrapper'));
 					}
 
-					$read_time = isset($this->read_topics[$row['topics_id']]) && 
-								 $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit') 
-							   ? $this->read_topics[$row['topics_id']] 
+					$read_time = isset($this->read_topics[$row['topics_id']]) &&
+								 $this->read_topics[$row['topics_id']] > $this->UserHandler->getField('members_lastvisit')
+							   ? $this->read_topics[$row['topics_id']]
 							   : $this->UserHandler->getField('members_lastvisit');
 
-					if(isset($this->read_forums[$this->_forum]) && 
+					if(isset($this->read_forums[$this->_forum]) &&
 					  $this->read_forums[$this->_forum] > $read_time)
 					{
 						$read_time = $this->read_forums[$this->_forum];
@@ -401,13 +407,13 @@ class ModuleObject extends MasterObject
 						$row['topics_prefix'] .= '<macro:img_clip>';
 					}
 
-					$row['topics_author'] = $row['topics_author'] != 1 
-										  ? "<a href='" . GATEWAY . "?getuser=" . 
+					$row['topics_author'] = $row['topics_author'] != 1
+										  ? "<a href='" . GATEWAY . "?getuser=" .
 											"{$row['topics_author']}'>{$row['members_name']}</a>"
 										  : "{$row['topics_author_name']}";
 
-					$row['topics_poster'] = $row['topics_last_poster'] != 1 
-										  ? "<a href='" . GATEWAY . "?getuser=" . 
+					$row['topics_poster'] = $row['topics_last_poster'] != 1
+										  ? "<a href='" . GATEWAY . "?getuser=" .
 											"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
 										  : "{$row['topics_last_poster_name']}";
 
@@ -417,7 +423,11 @@ class ModuleObject extends MasterObject
 					$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
 																			$row['topics_last_post_time']);
 
+					$row_color = $topic_counter % 2 ? 'alternate_even' : 'alternate_odd';
+
 					$list .= eval($this->TemplateHandler->fetchTemplate('topic_row')) . "\n";
+
+					$topic_counter++;
 				}
 			}
 
@@ -454,17 +464,17 @@ class ModuleObject extends MasterObject
 		$board_stats = '';
 		if($this->ForumHandler->getForumCount() == 1 && $this->config['stats_on'])
 		{
-			$this->LanguageHandler->stat_totals  = sprintf($this->LanguageHandler->stat_totals, 
-												   number_format($this->config['total_members'], 0, '', $this->config['number_format']), 
+			$this->LanguageHandler->stat_totals  = sprintf($this->LanguageHandler->stat_totals,
+												   number_format($this->config['total_members'], 0, '', $this->config['number_format']),
 												   number_format($this->config['topics'] + $this->config['posts']));
 
 			$this->LanguageHandler->stat_online = sprintf($this->LanguageHandler->stat_online,
-												  number_format($this->config['most_online_count'], 0, '', $this->config['number_format']), 
+												  number_format($this->config['most_online_count'], 0, '', $this->config['number_format']),
 												  date($this->config['date_long'], $this->config['most_online_date']));
 
-			$this->LanguageHandler->stat_newest  = sprintf($this->LanguageHandler->stat_newest, 
+			$this->LanguageHandler->stat_newest  = sprintf($this->LanguageHandler->stat_newest,
 												   "<a href='" . GATEWAY . "?getuser=" . "{$this->config['latest_member_id']}'>"	   . "{$this->config['latest_member_name']}</a>");
-			
+
 			$board_stats =  eval($this->TemplateHandler->fetchTemplate('topic_stats'));
 		}
 
@@ -546,8 +556,8 @@ class ModuleObject extends MasterObject
 
 		$list = array_merge($list, array_unique($bots));
 
-		$list = false == $list 
-			  ? $this->LanguageHandler->err_no_viewers 
+		$list = false == $list
+			  ? $this->LanguageHandler->err_no_viewers
 			  : implode('<macro:txt_online_sep>', $list);
 
 		$this->LanguageHandler->viewers_user_summary = sprintf($this->LanguageHandler->viewers_user_summary,
@@ -573,25 +583,25 @@ class ModuleObject extends MasterObject
 		{
 			return $this->messenger();
 		}
-		
+
 		if(false == $this->UserHandler->getField('class_canSubscribe') ||
 		   USER_ID == 1)
 		{
 			return $this->messenger(array('MSG' => 'err_no_perm'));
 		}
 
-		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) || 
+		if(false == $this->ForumHandler->checkAccess('can_view', $this->_forum) ||
 		   false == $this->ForumHandler->checkAccess('can_read', $this->_forum))
 		{
 			return $this->messenger(array('MSG' => 'err_forum_no_access'));
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT track_id 
-		FROM " . DB_PREFIX . "tracker 
-		WHERE 
-			track_forum = {$this->_forum} AND 
-			track_user  = " . USER_ID, 
+		SELECT track_id
+		FROM " . DB_PREFIX . "tracker
+		WHERE
+			track_forum = {$this->_forum} AND
+			track_user  = " . USER_ID,
 		__FILE__, __LINE__);
 
 		if($sql->getNumRows())
@@ -603,15 +613,15 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX ."tracker(
-			track_user, 
-			track_forum, 
-			track_date, 
-			track_expire) 
+			track_user,
+			track_forum,
+			track_date,
+			track_expire)
 		VALUES(
-			" . USER_ID . ", 
-			{$this->_forum}, 
-			" . time() . ", 
-			{$expire})", 
+			" . USER_ID . ",
+			{$this->_forum},
+			" . time() . ",
+			{$expire})",
 		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'sub_err_done', 'LINK' => "?getforum={$this->_forum}", 'LEVEL' => 1));

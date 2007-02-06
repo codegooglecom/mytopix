@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -89,7 +89,7 @@ class ModuleObject extends MasterObject
 	*/
 	var $_IconHandler;
 
-	
+
    // ! Action Method
 
    /**
@@ -148,7 +148,7 @@ class ModuleObject extends MasterObject
 		$this->_IconHandler = new IconHandler($this->config, $this->UserHandler->getField('members_lastvisit'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -208,7 +208,7 @@ class ModuleObject extends MasterObject
 		}
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -227,7 +227,7 @@ class ModuleObject extends MasterObject
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -274,7 +274,7 @@ class ModuleObject extends MasterObject
 					$forums[] = $this->post['forum'];
 				}
 
-				if(false == isset($forums) || 
+				if(false == isset($forums) ||
 				   false == $forums = $this->ForumHandler->getAllowableForums($forums))
 				{
 					return $this->messenger(array('MSG' => 'search_err_no_forums'));
@@ -325,7 +325,7 @@ class ModuleObject extends MasterObject
 				$order_by  = "topics_score DESC";
 				$in_forums = "AND t.topics_forum IN ('" . implode("','", $forums) . "')";
 				$message   = 'search_err_none';
-				
+
 				break;
 		}
 
@@ -341,7 +341,7 @@ class ModuleObject extends MasterObject
 			LEFT JOIN " . DB_PREFIX . "topics  t ON t.topics_id  = p.posts_topic
 			LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = t.topics_author
 			LEFT JOIN " . DB_PREFIX . "forums  f ON f.forum_id   = t.topics_forum
-		WHERE 
+		WHERE
 			{$string}
 			{$in_forums}
 		GROUP BY t.topics_id
@@ -367,8 +367,9 @@ class ModuleObject extends MasterObject
 			$read = unserialize(stripslashes($this->CookieHandler->getVar('topicsRead')));
 		}
 
-		$new_posts = false;
-		$list	  = '';
+		$new_posts     = false;
+		$list          = '';
+		$topic_counter = 0;
 
 		while($row = $sql->getRow())
 		{
@@ -392,7 +393,7 @@ class ModuleObject extends MasterObject
 			$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
 
 			$row['topics_prefix'] = '';
-			
+
 			if($this->_IconHandler->is_new)
 			{
 				$new_posts = true;
@@ -405,13 +406,13 @@ class ModuleObject extends MasterObject
 				$row['topics_prefix'] .= '<macro:img_clip>';
 			}
 
-			$row['topics_author'] = $row['topics_author'] != 1 
-								  ? "<a href='" . GATEWAY . "?getuser=" . 
+			$row['topics_author'] = $row['topics_author'] != 1
+								  ? "<a href='" . GATEWAY . "?getuser=" .
 									"{$row['topics_author']}'>{$row['members_name']}</a>"
 								  : "{$row['topics_author_name']}";
 
-			$row['topics_poster'] = $row['topics_last_poster'] != 1 
-								  ? "<a href='" . GATEWAY . "?getuser=" . 
+			$row['topics_poster'] = $row['topics_last_poster'] != 1
+								  ? "<a href='" . GATEWAY . "?getuser=" .
 									"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
 								  : "{$row['topics_last_poster_name']}";
 
@@ -421,14 +422,18 @@ class ModuleObject extends MasterObject
 			$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
 																	$row['topics_last_post_time']);
 
+			$row_color = $topic_counter % 2 ? 'alternate_even' : 'alternate_odd';
+
 			$list .=  eval($this->TemplateHandler->fetchTemplate('search_match_result_row'));
+
+			$topic_counter++;
 		}
 
 		$content = eval($this->TemplateHandler->fetchTemplate('search_match_result_table'));
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -447,7 +452,7 @@ class ModuleObject extends MasterObject
 				 ? $boolean = ' IN BOOLEAN MODE'
 				 : '';
 
-		if(false == isset($forums) || 
+		if(false == isset($forums) ||
 		   false == $forums = $this->ForumHandler->getAllowableForums($forums))
 		{
 			return $this->messenger(array('MSG' => 'search_err_no_forums'));
@@ -487,8 +492,9 @@ class ModuleObject extends MasterObject
 			$read = unserialize(stripslashes($this->CookieHandler->getVar('topicsRead')));
 		}
 
-		$new_posts = false;
-		$list	  = '';
+		$new_posts     = false;
+		$list          = '';
+		$topic_counter = 0;
 
 		foreach($topics as $row)
 		{
@@ -523,7 +529,7 @@ class ModuleObject extends MasterObject
 			$row['topics_posts']  = number_format($row['topics_posts'], 0, '', $this->config['number_format']);
 
 			$row['topics_prefix'] = '';
-			
+
 			if($this->_IconHandler->is_new)
 			{
 				$new_posts = true;
@@ -536,13 +542,13 @@ class ModuleObject extends MasterObject
 				$row['topics_prefix'] .= '<macro:img_clip>';
 			}
 
-			$row['topics_author'] = $row['topics_author'] != 1 
-								  ? "<a href='" . GATEWAY . "?getuser=" . 
+			$row['topics_author'] = $row['topics_author'] != 1
+								  ? "<a href='" . GATEWAY . "?getuser=" .
 									"{$row['topics_author']}'>{$row['members_name']}</a>"
 								  : "{$row['topics_author_name']}";
 
-			$row['topics_poster'] = $row['topics_last_poster'] != 1 
-								  ? "<a href='" . GATEWAY . "?getuser=" . 
+			$row['topics_poster'] = $row['topics_last_poster'] != 1
+								  ? "<a href='" . GATEWAY . "?getuser=" .
 									"{$row['topics_last_poster']}'>{$row['topics_last_poster_name']}</a>"
 								  : "{$row['topics_last_poster_name']}";
 
@@ -552,14 +558,18 @@ class ModuleObject extends MasterObject
 			$row['topics_last']   = $this->TimeHandler->doDateFormat($this->config['date_short'],
 																	$row['topics_last_post_time']);
 
+			$row_color = $topic_counter % 2 ? 'alternate_even' : 'alternate_odd';
+
 			$list .=  eval($this->TemplateHandler->fetchTemplate('search_full_result_row'));
+
+			$topic_counter++;
 		}
 
 		$content = eval($this->TemplateHandler->fetchTemplate('search_full_result_table'));
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -576,14 +586,14 @@ class ModuleObject extends MasterObject
 		$in_forums	 = implode("','", $search_forums);
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			COUNT(*) AS Count, 
+		SELECT
+			COUNT(*) AS Count,
 			m.members_name
 		FROM " . DB_PREFIX . "posts p
 			LEFT JOIN " . DB_PREFIX . "topics  t ON t.topics_id  = p.posts_topic
 			LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = p.posts_author
-		WHERE 
-			p.posts_author = {$this->_id} AND 
+		WHERE
+			p.posts_author = {$this->_id} AND
 			p.posts_author <> 1		   AND
 			t.topics_forum IN ('{$in_forums}')
 		GROUP BY p.posts_author", __FILE__, __LINE__);
@@ -645,7 +655,7 @@ class ModuleObject extends MasterObject
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**

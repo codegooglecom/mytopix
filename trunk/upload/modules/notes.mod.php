@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -133,8 +133,8 @@ class ModuleObject extends MasterObject
 		}
 
 		require_once SYSTEM_PATH . 'lib/mail.han.php';
-		$this->_MailHandler = new MailHandler($this->config['email_incoming'], 
-											  $this->config['email_outgoing'], 
+		$this->_MailHandler = new MailHandler($this->config['email_incoming'],
+											  $this->config['email_outgoing'],
 											  $this->config['email_name']);
 
 		require_once SYSTEM_PATH . 'lib/pips.han.php';
@@ -228,8 +228,8 @@ class ModuleObject extends MasterObject
 	function _doList()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT COUNT(*) AS Count 
-		FROM " . DB_PREFIX . "notes 
+		SELECT COUNT(*) AS Count
+		FROM " . DB_PREFIX . "notes
 		WHERE notes_recipient = " . USER_ID,
 		__FILE__, __LINE__);
 
@@ -242,42 +242,47 @@ class ModuleObject extends MasterObject
 
 		$sql = $this->_PageHandler->getData("
 		SELECT
-			n.notes_id, 
-			n.notes_title, 
-			n.notes_date, 
-			n.notes_isRead, 
-			n.notes_sender, 
-			m.members_id, 
+			n.notes_id,
+			n.notes_title,
+			n.notes_date,
+			n.notes_isRead,
+			n.notes_sender,
+			m.members_id,
 			m.members_name
 		FROM " . DB_PREFIX . "notes n
 			LEFT JOIN " . DB_PREFIX . "members m ON n.notes_sender = m.members_id
 		WHERE
 			n.notes_recipient = " . USER_ID . "
-		ORDER BY 
-			n.notes_isRead ASC, 
-			n.notes_date   DESC", 
+		ORDER BY
+			n.notes_isRead ASC,
+			n.notes_date   DESC",
 		__FILE__, __LINE__);
 
 		$this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "members 
-		SET members_newNotes = 0 
-		WHERE members_id	 = " . USER_ID, 
+		UPDATE " . DB_PREFIX . "members
+		SET members_newNotes = 0
+		WHERE members_id	 = " . USER_ID,
 		__FILE__, __LINE__);
 
-		$list  = '';
+		$list       = '';
+		$note_count = 0;
 
 		while($row = $sql->getRow())
 		{
 			$row['notes_date']   = $this->TimeHandler->doDateFormat($this->config['date_short'], $row['notes_date']);
-			$row['notes_marker'] = $row['notes_isRead'] 
-								 ? "<img src='{$this->TemplateHandler->skinPath}/note_read.gif' title='' alt='' />" 
+			$row['notes_marker'] = $row['notes_isRead']
+								 ? "<img src='{$this->TemplateHandler->skinPath}/note_read.gif' title='' alt='' />"
 								 : "<img src='{$this->TemplateHandler->skinPath}/note_unread.gif' title='' alt='' />";
 
 			$row['notes_title'] = $this->ParseHandler->parseText($row['notes_title'], F_CURSE);
 
+			$row_color = $note_count % 2 ? 'alternate_even' : 'alternate_odd';
+
 			$list .=  eval($this->TemplateHandler->fetchTemplate('note_row'));
+
+			$note_count++;
 		}
-		
+
 		$filled = round($count / $this->UserHandler->getField('class_maxNotes') * 100) ;
 
 		if(false == $sql->getNumRows())
@@ -357,11 +362,11 @@ class ModuleObject extends MasterObject
 	function _doRead()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			n.notes_id, 
-			n.notes_body, 
-			n.notes_title, 
-			n.notes_date, 
+		SELECT
+			n.notes_id,
+			n.notes_body,
+			n.notes_title,
+			n.notes_date,
 			n.notes_code,
 			n.notes_emoticons,
 			n.notes_recipient,
@@ -378,8 +383,8 @@ class ModuleObject extends MasterObject
 			m.members_avatar_location,
 			m.members_see_avatars,
 			m.members_avatar_dims,
-			c.class_title, 
-			c.class_prefix, 
+			c.class_title,
+			c.class_prefix,
 			c.class_suffix
 		FROM " . DB_PREFIX . "notes n
 			LEFT JOIN " . DB_PREFIX . "members m ON n.notes_sender = m.members_id
@@ -573,11 +578,11 @@ class ModuleObject extends MasterObject
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_noteNotify, 
-			m.members_email, 
-			m.members_name, 
+		SELECT
+			m.members_id,
+			m.members_noteNotify,
+			m.members_email,
+			m.members_name,
 			c.class_canGetNotes
 		FROM " . DB_PREFIX . "members  m
 			LEFT JOIN " . DB_PREFIX . "class c ON m.members_class = c.class_id
@@ -598,30 +603,30 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "notes(
-			notes_id, 
-			notes_sender, 
-			notes_recipient, 
-			notes_date, 
-			notes_title, 
-			notes_body, 
+			notes_id,
+			notes_sender,
+			notes_recipient,
+			notes_date,
+			notes_title,
+			notes_body,
 			notes_isRead,
 			notes_code,
-			notes_emoticons) 
+			notes_emoticons)
 		VALUES(
-			null, 
-			" . USER_ID . ", 
-			{$row['members_id']}, 
-			'" . time() . "', 
-			'" . $this->doCapProtection($title) . "', 
-			'{$body}', 
+			null,
+			" . USER_ID . ",
+			{$row['members_id']},
+			'" . time() . "',
+			'" . $this->doCapProtection($title) . "',
+			'{$body}',
 			0,
 			{$cOption},
 			{$eOption})",
 		__FILE__, __LINE__);
 
 		$this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "members SET 
-			members_newNotes = (members_newNotes + 1) 
+		UPDATE " . DB_PREFIX . "members SET
+			members_newNotes = (members_newNotes + 1)
 		WHERE members_id = {$row['members_id']}",
 		__FILE__, __LINE__);
 
@@ -670,15 +675,15 @@ class ModuleObject extends MasterObject
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_name, 
-			n.notes_recipient, 
-			n.notes_body, 
+		SELECT
+			m.members_id,
+			m.members_name,
+			n.notes_recipient,
+			n.notes_body,
 			n.notes_title
 		FROM " . DB_PREFIX . "notes n
 			LEFT JOIN " . DB_PREFIX . "members m ON m.members_id = n.notes_sender
-		WHERE n.notes_recipient = " . USER_ID . " AND n.notes_id = {$this->_id}", 
+		WHERE n.notes_recipient = " . USER_ID . " AND n.notes_id = {$this->_id}",
 		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
@@ -703,7 +708,7 @@ class ModuleObject extends MasterObject
 		$bread_title = $note['notes_title'];
 
 		if(false == preg_match("#^Re: #i", $note['notes_title']))
-		{ 
+		{
 			$note['notes_title'] = "Re: " . $note['notes_title'];
 		}
 
@@ -735,15 +740,15 @@ class ModuleObject extends MasterObject
 	function _doRemove()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			notes_id, 
-			notes_recipient 
-		FROM " . DB_PREFIX . "notes 
-		WHERE notes_id = {$this->_id}", 
+		SELECT
+			notes_id,
+			notes_recipient
+		FROM " . DB_PREFIX . "notes
+		WHERE notes_id = {$this->_id}",
 		__FILE__, __LINE__);
 
 		$row = $sql->getRow();
-		
+
 		if(false == $row['notes_id'])
 		{
 			return $this->messenger();
@@ -755,8 +760,8 @@ class ModuleObject extends MasterObject
 		}
 
 		$this->DatabaseHandler->query("
-		DELETE FROM " . DB_PREFIX . "notes 
-		WHERE notes_id = {$this->_id}", 
+		DELETE FROM " . DB_PREFIX . "notes
+		WHERE notes_id = {$this->_id}",
 		__FILE__, __LINE__);
 
 		header("LOCATION: " . GATEWAY . '?a=notes');
@@ -775,8 +780,8 @@ class ModuleObject extends MasterObject
 	function _doEmpty()
 	{
 		$this->DatabaseHandler->query("
-		DELETE FROM " . DB_PREFIX . "notes 
-		WHERE notes_recipient = " . USER_ID, 
+		DELETE FROM " . DB_PREFIX . "notes
+		WHERE notes_recipient = " . USER_ID,
 		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'err_inbox_empty', 'LINK' => '?a=notes', 'LEVEL' => 1));
@@ -795,8 +800,8 @@ class ModuleObject extends MasterObject
 	function _checkInbox($name)
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			COUNT(n.notes_id) AS notes_count, 
+		SELECT
+			COUNT(n.notes_id) AS notes_count,
 			c.class_maxNotes
 		FROM " . DB_PREFIX . "notes n
 			LEFT JOIN " . DB_PREFIX . "members m ON n.notes_recipient = m.members_id
@@ -827,9 +832,9 @@ class ModuleObject extends MasterObject
 	function _checkRecipient($name)
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT members_id 
-		FROM " . DB_PREFIX . "members 
-		WHERE members_name = '{$name}'", 
+		SELECT members_id
+		FROM " . DB_PREFIX . "members
+		WHERE members_name = '{$name}'",
 		__FILE__, __LINE__);
 
 		return false == $sql->getNumRows()? false : true;
@@ -848,9 +853,9 @@ class ModuleObject extends MasterObject
 	function _getRecipient($id)
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT members_name 
-		FROM " . DB_PREFIX . "members 
-		WHERE members_id = {$id}", 
+		SELECT members_name
+		FROM " . DB_PREFIX . "members
+		WHERE members_id = {$id}",
 		__FILE__, __LINE__);
 
 		$row = $sql->getRow();
@@ -871,11 +876,11 @@ class ModuleObject extends MasterObject
 	function _markIcon()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			notes_id, 
-			notes_isRead 
-		FROM " . DB_PREFIX . "notes 
-		WHERE notes_id = {$this->_id}", 
+		SELECT
+			notes_id,
+			notes_isRead
+		FROM " . DB_PREFIX . "notes
+		WHERE notes_id = {$this->_id}",
 		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
@@ -888,9 +893,9 @@ class ModuleObject extends MasterObject
 		if($note['notes_isRead'])
 		{
 			$this->DatabaseHandler->query("
-			UPDATE " . DB_PREFIX . "notes 
-			SET notes_isRead = 0 
-			WHERE notes_id   = {$this->_id}", 
+			UPDATE " . DB_PREFIX . "notes
+			SET notes_isRead = 0
+			WHERE notes_id   = {$this->_id}",
 			__FILE__, __LINE__);
 
 			header("LOCATION: " . GATEWAY . "?a=notes");
