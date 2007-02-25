@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,7 @@
 /**
 * Event Handling Class
 *
-* Determines whether a requested module is valid or not 
+* Determines whether a requested module is valid or not
 * and then decides whether or not to display it based on
 * the current user's group access settings.
 *
@@ -48,6 +48,7 @@ class EventHandler
     */
     var $_config;
 
+
    /**
     * Direct file path to MyTopix root directory.
     * @access Public
@@ -67,13 +68,13 @@ class EventHandler
     * @access Private
     * @return Void
     */
-	function EventHandler($module, & $config)
+	function EventHandler($module, & $config, $min_boot)
 	{
         $this->_config =& $config;
 
         include_once SYSTEM_PATH . 'config/pub_modules.php';
 
-		if(false == file_exists(SYSTEM_PATH . "modules/{$module}.mod.php") || 
+		if(false == file_exists(SYSTEM_PATH . "modules/{$module}.mod.php") ||
            false == isset($modules[$module]))
         {
             $this->_module = 'main';
@@ -82,14 +83,20 @@ class EventHandler
             $this->_module =& $module;
         }
 
-        require SYSTEM_PATH . "modules/{$this->_module}.mod.php";
-        $this->ModuleObject = new ModuleObject($this->_module, $this->_config, $modules[$this->_module]);
+		if($min_boot)
+		{
+			$this->ModuleObject = new MasterObject($this->_module, $this->_config, $modules[$this->_module]);
+		}
+		else {
+			require SYSTEM_PATH . "modules/{$this->_module}.mod.php";
+			$this->ModuleObject = new ModuleObject($this->_module, $this->_config, $modules[$this->_module]);
+		}
 	}
 
    // ! Action Method
 
    /**
-    * Executes the code within the requested module and 
+    * Executes the code within the requested module and
     * flushes the results to the browser.
     *
     * @param none
@@ -111,7 +118,7 @@ class EventHandler
             $hash    = $this->ModuleObject->UserHandler->getUserHash();
 			$content = eval($this->ModuleObject->TemplateHandler->fetchTemplate('global_board_closed'));
 			$content = eval($this->ModuleObject->TemplateHandler->fetchTemplate('global_wrapper'));
-            
+
             return eval($this->ModuleObject->TemplateHandler->fetchTemplate('global_body'));
 		}
 
