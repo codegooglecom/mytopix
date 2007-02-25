@@ -45,6 +45,15 @@ class MyTopix
 	*/
 	var $_path;
 
+
+   /**
+	* An optional switch used to boot only the system core library.
+	* @access Private
+	* @var String
+	*/
+	var $_min_boot;
+
+
    /**
 	* The event handler object.
 	* @access Public
@@ -63,9 +72,10 @@ class MyTopix
 	* @access Private
 	* @return Void
 	*/
-	function MyTopix($path = './')
+	function MyTopix($path = './', $min_boot = false)
 	{
-		$this->_path = $path;
+		$this->_path     = $path;
+		$this->_min_boot = $min_boot;
 
 		$this->EventHandler = null;
 	}
@@ -127,9 +137,14 @@ class MyTopix
 			define('DEBUG', false);
 		}
 
-		$this->EventHandler = new EventHandler($this->_setEvent(), $config);
+		$this->EventHandler = new EventHandler($this->_setEvent(), $config, $this->_min_boot);
 
-		return $this->EventHandler->doEvent();
+		if(false == $this->_min_boot)
+		{
+			return $this->EventHandler->doEvent();
+		}
+
+		return '';
 	}
 
    // ! Mutator Method
