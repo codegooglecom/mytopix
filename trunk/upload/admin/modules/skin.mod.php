@@ -606,6 +606,7 @@ class ModuleObject extends MasterObject
 		$UploadHandler = new UploadHandler($this->files, $dir, 'upload');
 
 		$UploadHandler->setExtTypes(array('gz'));
+		$UploadHandler->setExtTypes(array('gz'));
 		$UploadHandler->setMaxSize(false);
 
 		$this->CacheHandler->updateCache('skins');
