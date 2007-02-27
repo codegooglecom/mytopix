@@ -612,6 +612,8 @@ class ModuleObject extends MasterObject
 		$count = $row['Count'];
 		$user  = $row['members_name'];
 
+		$count = number_format($count, 0, '', $this->config['number_format']);
+
 		$sql = $this->_PageHandler->getData("
 		SELECT
 			t.topics_id,

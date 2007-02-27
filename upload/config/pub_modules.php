@@ -12,7 +12,6 @@ $modules['misc']     = array('emoticons',  'forums');
 $modules['mod']      = array('moderators', 'filter',    'forums');
 $modules['notes']    = array('titles',     'filter',    'emoticons');
 $modules['post']     = array('moderators', 'forums',    'filter',    'emoticons');
-$modules['print']    = array('titles',     'filter',    'emoticons', 'forums');
 $modules['profile']  = array('forums',     'emoticons', 'filter');
 $modules['read']     = array('moderators', 'titles',    'filter',    'emoticons', 'forums');
 $modules['register'] = array();

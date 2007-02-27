@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -248,7 +248,7 @@ class MasterObject
 		// Loading the string manipulation object:
 
 		$this->ParseHandler = new ParseHandler($this->CacheHandler->getCacheByKey('emoticons'),
-											   $this->CacheHandler->getCacheByKey('filter'), 
+											   $this->CacheHandler->getCacheByKey('filter'),
 											   $this->config);
 
 		// Attempting to create a user account based on cookie data:
@@ -260,7 +260,7 @@ class MasterObject
 
 		// Load the currently chosen language:
 
-		$this->LanguageHandler = new LanguageHandler(SYSTEM_PATH . 'lang/', 
+		$this->LanguageHandler = new LanguageHandler(SYSTEM_PATH . 'lang/',
 													$this->CacheHandler->getCacheByKey('languages'),
 													$this->DatabaseHandler);
 
@@ -283,8 +283,8 @@ class MasterObject
 
 		// Load the template handler and cache the skin / template set:
 
-		$this->TemplateHandler =  new TemplateHandler($this->module, 
-													  $this->config, 
+		$this->TemplateHandler =  new TemplateHandler($this->module,
+													  $this->config,
 													  $this);
 
 		$this->TemplateHandler->fetchTemplateSet();
@@ -308,9 +308,9 @@ class MasterObject
 	*/
 	function getWelcomeBar()
 	{
-		$types = array(1 => 'guest', 
-					   2 => 'member', 
-					   3 => 'admin', 
+		$types = array(1 => 'guest',
+					   2 => 'member',
+					   3 => 'admin',
 					   4 => 'disabled');
 
 		if(array_key_exists($this->UserHandler->getField('members_class'), $types))
@@ -335,7 +335,7 @@ class MasterObject
    // ! Action Method
 
    /**
-	* This is the system messenger which is responsible for 
+	* This is the system messenger which is responsible for
 	* displaying warning, critical error and normal transfer
 	* screens.
 	*

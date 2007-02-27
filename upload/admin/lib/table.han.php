@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -58,10 +58,10 @@ class HtmlTableHandler
 
 			if ( $i % 2 == 0 )
 			{
-				$color ='#FFF';
+				$color ='#ECECEC';
 			}
 			else {
-				$color = '#FAFAFA';
+				$color = '#F1F1F1';
 			}
 
 			$this->buffer .= "\t\t<td class='{$class}'{$extra} style=\"background-color: {$color};\">{$val}</td>\n";
@@ -83,14 +83,14 @@ class HtmlTableHandler
 			$title = "<tr><td colspan=\"{$colspan}\" class=\"header\">{$title}</td></tr>";
 		}
 
-		$this->buffer .= "<div class=\"tablewrap\"><table cellspacing='1' cellpadding='0' class='table'{$extra}>{$title}";
+		$this->buffer .= "<div class=\"tablewrap\"><table cellspacing='0' cellpadding='0' class='table'{$extra}>{$title}";
 
 		if ( $colspan )
 		{
 			$this->buffer .= "\t<tr>\n";
 
 			foreach ( $this->columns as $col ) $this->buffer .= $col;
-			
+
 			$this->buffer .= "\t</tr>\n";
 		}
 

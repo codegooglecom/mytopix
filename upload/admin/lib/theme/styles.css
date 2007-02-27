@@ -1,5 +1,5 @@
 body {
-	margin: 15px 0 25px 0;
+	margin: 0 0 25px 0;
 	font: normal normal 11px/150% 'Verdana', sans-serif;
 	color: #4E4E4E;
 	padding: 0;
@@ -39,38 +39,6 @@ a:active{
 #header {
 	background: #FFF none;
 }
-
-#logo_bg {
-	background: none;
-	height: 65px;
-}
-
-	#logo_right {
-		margin: 0;
-		padding: 0;
-		background: transparent url(logo.gif) no-repeat;
-		text-align: left;
-		height: 65px;
-		}
-
-	#logo_right {
-		margin: 0;
-		padding: 0;
-		background: transparent url(logo_right.gif) right no-repeat;
-		height: 65px;
-	}
-
-	#logo_right h1 {
-		margin: 0;
-		padding: 0;
-		background: transparent url(logo.gif) no-repeat;
-		height: 65px;
-	}
-
-	#logo_right h1 a {
-		height: 65px;
-		width: 100%;
-	}
 
 #first_lvl_nav {}
 
@@ -250,11 +218,11 @@ a:active{
 }
 
 	#container h3 {
-		padding: 0 0 5px 0;
-		font: normal normal 14px/150% Arial, sans-serif;
-		color: #B85F5B;
-		border-bottom: 1px solid #EEE;
-		margin: 0;
+		color:#70922D;
+		font-size:2.4em;
+		margin:10px 0pt;
+		padding:8px;
+		background:#F8F7D2 none repeat scroll 0%;
 	}
 
 #content {
@@ -463,7 +431,6 @@ select{
 	color: #222;
 	margin: 5px 0;
 	padding: 0;
-	border: 2px solid #3D5863;
 }
 
 .table {
@@ -472,18 +439,16 @@ select{
 	}
 
 	.table td.header {
-		background: #3175AB;
+		background: #91b44c;
 		font: normal bold 14px/150% 'Verdana', sans-serif;
 		color: #FFF;
-		padding: 2px 10px;
+		padding: 5px 10px;
 	}
 
 	.table th{
-		background: #EEE none;
-		border-top: 4px solid #707070;
-		color: #777;
-		font-size: 11px;
-		font-weight: bold;
+		background: #000 none;
+		font-weight: normal;
+		color: #fff;
 		padding: 3px 5px 2px 5px;
 		margin: 0;
 	}
@@ -493,6 +458,7 @@ select{
 		font: normal normal 11px/150% Verdana;
 		letter-spacing: 1px;
 		color: #777;
+		border-bottom: 1px solid #fff;
 	}
 
 	.table td.none{
