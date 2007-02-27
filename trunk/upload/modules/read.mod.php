@@ -467,6 +467,8 @@ class ModuleObject extends MasterObject
 				 * Format the post author's signature:
 				 ***/
 
+				$sig = '';
+
 				if ( $this->UserHandler->getField ( 'members_see_sigs' ) )
 				{
 					if ( $row[ 'members_sig' ] )
@@ -475,9 +477,6 @@ class ModuleObject extends MasterObject
 
 						$sig = eval ( $this->TemplateHandler->fetchTemplate ( 'sig' ) );
 					}
-				}
-				else {
-					$sig = '';
 				}
 
 

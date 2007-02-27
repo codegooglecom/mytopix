@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -77,8 +77,8 @@ class ModuleObject extends MasterObject
 		$this->_key  = isset($this->get['key'])   ? $this->get['key']   : '';
 
 		require SYSTEM_PATH . 'lib/mail.han.php';
-		$this->_MailHandler = new MailHandler($this->config['email_incoming'], 
-											  $this->config['email_outgoing'], 
+		$this->_MailHandler = new MailHandler($this->config['email_incoming'],
+											  $this->config['email_outgoing'],
 											  $this->config['email_name']);
 	}
 
@@ -176,33 +176,33 @@ class ModuleObject extends MasterObject
 
 		if(false == $password || false == $username)
 		{
-			return $this->messenger(array('MSG' => 'err_blank_fields', 'LINK' => $this->_redirect));
+			return $this->messenger(array('MSG' => 'err_blank_fields', 'LINK' => '?a=logon'));
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
+		SELECT
+			m.members_id,
 			m.members_pass,
 			m.members_pass_salt,
 			m.members_pass_auto,
 			m.members_name,
 			c.class_canViewClosedBoard
-		FROM 
+		FROM
 			" . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "class c ON c.class_id = m.members_class
-		WHERE 
+		WHERE
 			members_name = '{$username}'", __FILE__, __LINE__);
 
 		$row = $sql->getRow();
 
 		if(false == $row['members_id'])
 		{
-			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => $this->_redirect));
+			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => '?a=logon'));
 		}
 
 		if(md5(md5($row['members_pass_salt']) . md5($password)) != $row['members_pass'])
 		{
-			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => $this->_redirect));
+			return $this->messenger(array('MSG' => 'err_no_match', 'LINK' => '?a=logon'));
 		}
 
 		if($this->config['closed'] && false == $row['class_canViewClosedBoard'])
@@ -248,7 +248,7 @@ class ModuleObject extends MasterObject
 		UPDATE " . DB_PREFIX . "members
 		SET members_lastaction = " . time() . ",
 			members_lastvisit  = " . time() . "
-		WHERE members_id = " . USER_ID, 
+		WHERE members_id = " . USER_ID,
 		__FILE__, __LINE__);
 
 
@@ -305,15 +305,15 @@ class ModuleObject extends MasterObject
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX ."vkeys WHERE key_date < {$expire} AND key_type = 'PASS'", __FILE__, __LINE__);
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_name, 
+		SELECT
+			m.members_id,
+			m.members_name,
 			m.members_email,
 			v.key_hash,
 			v.key_date
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
-		WHERE 
+		WHERE
 			m.members_email = '{$email}' AND
 			v.key_type	  = 'PASS'", __FILE__, __LINE__);
 
@@ -349,10 +349,10 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "vkeys(
-			key_user, 
-			key_hash, 
-			key_date, 
-			key_type) 
+			key_user,
+			key_hash,
+			key_date,
+			key_type)
 		VALUES(
 			{$row['members_id']},
 			'{$key}',
@@ -381,7 +381,7 @@ class ModuleObject extends MasterObject
    // ! Action Method
 
    /**
-	* Last step of confirmation process. It validates the 
+	* Last step of confirmation process. It validates the
 	* user-provided key and sends an email message containing
 	* their new password.
 	*
@@ -394,14 +394,14 @@ class ModuleObject extends MasterObject
 	function _lostPassConfirm()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_name, 
+		SELECT
+			m.members_id,
+			m.members_name,
 			m.members_email,
 			v.key_hash
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
-		WHERE 
+		WHERE
 			v.key_hash = '{$this->_key}' AND
 			v.key_type = 'PASS'", __FILE__, __LINE__);
 
@@ -429,7 +429,7 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "members SET
-			members_pass = '" . md5($pass) . "' 
+			members_pass = '" . md5($pass) . "'
 		WHERE members_id = {$row['members_id']}", __FILE__, __LINE__);
 
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "vkeys   WHERE key_hash	 = '{$this->_key}'");
@@ -462,7 +462,7 @@ class ModuleObject extends MasterObject
 		UPDATE " . DB_PREFIX . "members
 		SET members_lastaction = " . time() . ",
 			members_lastvisit  = " . time() . "
-		WHERE members_id = " . USER_ID, 
+		WHERE members_id = " . USER_ID,
 		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'cookie_all_gone', 'LEVEL' => 1));
@@ -490,7 +490,7 @@ class ModuleObject extends MasterObject
 		UPDATE " . DB_PREFIX . "members
 		SET members_lastaction = " . time() . ",
 			members_lastvisit  = " . time() . "
-		WHERE members_id = " . USER_ID, 
+		WHERE members_id = " . USER_ID,
 		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'forums_marked', 'LEVEL' => 1));

@@ -90,7 +90,7 @@ ul#ucp_tabs{
 ul#top_nav{
 	position: absolute;
 	right: 0;
-	top: 45px;
+	top: 38px;
 }
 
 ul#top_nav li{
@@ -100,10 +100,13 @@ ul#top_nav li{
 
 ul#top_nav li a:link,
 ul#top_nav li a:visited{
+	margin-left: 3px;
+	display: block;
+	float: left;
 	background: #719831;
 	border-bottom: 1px solid #698831;
 	color: #FFF;
-	padding: 8px 10px 6px;
+	padding: 8px 10px;
 	text-decoration: none;
 }
 
@@ -511,7 +514,7 @@ p#copyright{
 #left_column{
 	float: left;
 	margin-right: 1px;
-	width: 50%;
+	width: 49.9%;
 }
 
 #right_column{
@@ -601,7 +604,7 @@ p#copyright{
 	margin-bottom: 5px;
 }
 
-.postbutton{ padding: 8px 0; }
+.postbutton{ text-align: right; padding: 8px 0; }
 
 #wrap .highlight {
 	background: #FEF9D5;
@@ -696,6 +699,18 @@ blockquote span.name{
 
 .post{ background: #FFF; }
 
+.post_content { padding: 15px; }
+
+.attach {
+	margin: 0 10px;
+	padding: 5px 0 5px 25px;
+	background: #F9F9F9 url(attach.gif) no-repeat 5px;
+}
+
+	.attach strong {
+		margin-left: 5px;
+	}
+
 .sig {
 	background: #F9F9F9 none;
 	margin: 15px 10px 0 10px;
@@ -708,10 +723,8 @@ blockquote span.name{
 	font-weight: normal;
 	padding: 8px 8px 5px;
 	text-align: right;
-	margin-bottom: 15px;
 }
 
-.foot span{ float: right; }
 
 .post h5 strong{ float: left; padding: 5px 0 0;}
 
@@ -724,12 +737,86 @@ blockquote span.name{
 	padding: 0;
 }
 
+.foot span{ float: right; }
+
 .foot{
 	background: #F9F9F9;
 	border-top: 1px solid #E5E5E5;
 	font-size: 1.2em;
 	padding: 10px 10px 6px;
 }
+
+
+#resultwrap {
+	border-top: 2px solid #CCCCCC;
+	margin: 5px;
+}
+
+	#resultwrap h3 {
+		text-align: left;
+		margin: 0;
+		padding: 5px;
+		background: #F0F0F0;
+		font-size: 1.5em;
+	}
+
+.resultrow ul {
+	list-style: square;
+}
+
+	.resultrow p {
+		margin: 0;
+		padding: 10px;
+		text-align: justify;
+	}
+
+#warning {
+	margin: 10px 0;
+	padding-bottom: 5px;
+	background: #FFDFDF;
+}
+	#warning h3 {
+		padding: 5px;
+		background: #7B0000;
+		font: normal bold 14px/100% Verdana;
+		color: #fff;
+	}
+
+	#warning p {
+		margin: 0;
+		padding: 5px;
+		border: none;
+	}
+
+#messenger{
+	margin: auto;
+	margin-top: 15%;
+	width: 400px;
+	border-top: 1px solid #CCC;
+	color: #222;
+	padding: 0;
+	text-align: left;
+	font-size: 1em;
+}
+
+	#messenger h2{
+		background: #EEE none;
+		margin: 0;
+		padding: 5px;
+	}
+
+	#messenger h2 span {
+		float: right;
+		font-size: .8em;
+
+	}
+
+	#messenger p{
+		padding: 10px;
+		text-align: left;
+		margin: 0;
+		border-bottom: 1px solid #CCC;
+	}
 
 /*/============================================================================/
 | -- /END ALL STYLES --
