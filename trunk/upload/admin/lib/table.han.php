@@ -111,7 +111,13 @@ class HtmlTableHandler
 			$form = '&nbsp;';
 		}
 
-		$this->buffer .= "<tr><td colspan=\"{$colspan}\" class=\"footer\">{$form}</td></tr></table></div>\n";
+		if($form)
+		{
+			$this->buffer .= "<tr><td colspan=\"{$colspan}\" class=\"footer\">{$form}</td></tr></table></div>\n";
+		}
+		else {
+			$this->buffer .= "</table></div>\n";
+		}
 
 		return true;
 	}

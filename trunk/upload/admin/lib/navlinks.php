@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -52,7 +52,6 @@ $mid_links = array ( 0   => array ( 'title' => $this->System->LanguageHandler->l
 
 					 17  => array ( 'title' => $this->System->LanguageHandler->links_emoticons,  'parent' => 5, 'link' => '?a=emoticons' ),
 					 18  => array ( 'title' => $this->System->LanguageHandler->links_filter,     'parent' => 5, 'link' => '?a=filter' ),
-					 19  => array ( 'title' => $this->System->LanguageHandler->links_word_packs, 'parent' => 5, 'link' => '?a=words' ),
 
 					 20  => array ( 'title' => $this->System->LanguageHandler->links_macros, 'parent' => 4, 'link' => '?a=macros' ) );
 
@@ -97,12 +96,6 @@ $bot_links = array ( 0  => array ( 'title' => $this->System->LanguageHandler->li
 
 					 32 => array ( 'title' => $this->System->LanguageHandler->links_filter_listing, 'parent' => 18, 'link' => GATEWAY . '?a=filter&amp;code=00' ),
 					 33 => array ( 'title' => $this->System->LanguageHandler->links_filter_add,     'parent' => 18, 'link' => GATEWAY . '?a=filter&amp;code=01' ),
-
-					 34 => array ( 'title' => $this->System->LanguageHandler->links_lang_listing,   'parent' => 19, 'link' => GATEWAY . '?a=words&amp;language=%s&amp;code=00' ),
-					 35 => array ( 'title' => $this->System->LanguageHandler->links_lang_installed, 'parent' => 19, 'link' => GATEWAY . '?a=words&amp;language=%s&amp;code=03' ),
-					 36 => array ( 'title' => $this->System->LanguageHandler->links_lang_add,       'parent' => 19, 'link' => GATEWAY . '?a=words&amp;language=%s&amp;code=05' ),
-					 37 => array ( 'title' => $this->System->LanguageHandler->links_lang_import,    'parent' => 19, 'link' => GATEWAY . '?a=words&amp;language=%s&amp;code=07' ),
-					 38 => array ( 'title' => $this->System->LanguageHandler->links_lang_export,    'parent' => 19, 'link' => GATEWAY . '?a=words&amp;language=%s&amp;code=09' ),
 
 					 39 => array ( 'title' => $this->System->LanguageHandler->links_macro_listing, 'parent' => 20, 'link' => GATEWAY . '?a=macros&amp;skin=%s' ),
 					 40 => array ( 'title' => $this->System->LanguageHandler->links_macro_add,     'parent' => 20, 'link' => GATEWAY . '?a=macros&amp;skin=%s&amp;code=01' ),
