@@ -15,7 +15,6 @@ $modules[] = 'skin';
 $modules[] = 'styles';
 $modules[] = 'template';
 $modules[] = 'titles';
-$modules[] = 'words';
 $modules[] = 'forums';
 $modules[] = 'matrix';
 $modules[] = 'moderators';

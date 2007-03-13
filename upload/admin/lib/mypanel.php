@@ -54,7 +54,7 @@ class MyPanel
 
 	function addHeader ( $title )
 	{
-		$this->buffer .= "<h3>{$title}</h3>\n";
+		$this->buffer .= "<h3><span>{$title}</span></h3>\n";
 
 		return true;
 	}
