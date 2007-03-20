@@ -305,8 +305,21 @@ ul#top_nav{
 .formwrap{
 	background: #F8F7D2;
 	border: 1px solid #272727;
-	margin: 10px 0;
+	margin: 5px 0;
 	padding: 5px;
+}
+
+.formwrap h1 {
+	background: #eeecac none;
+	font-size: 1.3em;
+	margin: 0;
+	padding: 5px 3px;
+}
+
+.formwrap h2 {
+	background: transparent none;
+	font-weight: bold;
+	border-bottom: 1px solid #bcba77;
 }
 
 .formwrap h3,
@@ -364,10 +377,11 @@ p.nobox	{
 }
 
 .checkwrap {
-		margin: 15px 5px;
 		padding: 5px;
-		background: #FFF none;
-		border: 2px solid #CCC;
+	}
+
+	.checkwrap select {
+		border: 1px solid #ccc;
 	}
 
 
@@ -405,16 +419,16 @@ p.nobox	{
 
 form p.submit{
 	clear: both;
-	background-color: #EEE;
-	border-top: 1px solid #DDD;
+	background-color: #272727;
 	text-align: center;
 	padding: 3px 10px;
+	margin: 0;
 	}
 
 textarea,
 input,
 select{
-	border: 2px solid #999;
+	border: none;
 	background: #FFF none;
 	color: #333;
 	font-size: 11px;
@@ -436,20 +450,17 @@ input.small_button {
 
 input.button{
 	background: #FFF none;
-	color: #2D71A8;
+	color: maroon;
 	font-weight: bold;
 	font-size: 11px;
 	margin: 4px 0 4px 4px;
 	width: auto;
-	border: 2px solid #8DA8BF1;
 }
 
 input.reset{
-	background: #FFF none;
-	border: 2px solid #CCC;
-	color: #CCC;
+	background: #444 none;
+	color: #222;
 	margin: 4px 0 4px 4px;
-	font-weight: bold;
 	font-size: 11px;
 	width: auto;
 }
@@ -524,14 +535,14 @@ select{
 
 	.table td.footer {
 		padding: 2px 15px;
-		background: #EEE url(footer_bg.gif);
+		background: #343434 none;
 		border-top: 1px solid #CCC;
-		text-align: right;
+		text-align: center;
 		font-weight: bold;
 	}
 
 		.table td.footer span{
-			float: left;
+
 		}
 
 #bar {
