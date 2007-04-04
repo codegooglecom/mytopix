@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -130,7 +130,7 @@ class TimeHandler
 	*/
 	function doDateFormat($format, $stamp)
 	{
-		return gmdate($format, $stamp + 3600 * ($this->_UserHandler->getField('members_timeZone') + date("I"))); 
+		return gmdate($format, $stamp + 3600 * ($this->_UserHandler->getField('members_timeZone') + date("I")));
 	}
 
    // ! Action Method
@@ -282,7 +282,7 @@ class TimeHandler
 
 		$list   = array();
 		$list[] = '--';
-		for($i = $start; $i < $stop; $i++)
+		for($i = $start - 1; $i < $stop; $i++)
 		{
 			$list[$i + 1] = $i + 1;
 		}
@@ -303,15 +303,15 @@ class TimeHandler
 	function getTransTime($date)
 	{
 		$pattern = "/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(:(\d{2}))?(?:([-+])(\d{2}):?(\d{2})|(Z))?/";
-		
+
 		if(preg_match($pattern, $date, $match))
 		{
-			list($y, $m, $d, $h, $min, $sec) = array($match[1], $match[2], 
-													 $match[3], $match[4], 
+			list($y, $m, $d, $h, $min, $sec) = array($match[1], $match[2],
+													 $match[3], $match[4],
 													 $match[5], $match[6]);
-			
+
 			$epoch = gmmktime($h, $min, $sec, $m, $d, $y);
-			
+
 			$offset = 0;
 			if($match[10] == 'Z')
 			{
@@ -319,18 +319,18 @@ class TimeHandler
 			}
 			else {
 				list($tz_mod, $tz_hour, $tz_min) = array( $match[8], $match[9], $match[10]);
-				
+
 				if(false == $tz_hour) $tz_hour = 0;
 				if(false == $tz_min)  $tz_min  = 0;
-			
+
 				$offset_secs = (($tz_hour * 60) + $tz_min) * 60;
-				
+
 				if($tz_mod == '+')
 				{
 					$offset_secs = $offset_secs * -1;
 				}
-				
-				$offset = $offset_secs;	
+
+				$offset = $offset_secs;
 			}
 			return $epoch + $offset;
 		}
