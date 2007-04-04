@@ -268,9 +268,9 @@ class ModuleObject extends MasterObject
 	*/
 	function _lostPassForm()
 	{
-		$hash	= $this->UserHandler->getUserHash();
+		$hash    = $this->UserHandler->getUserHash();
 		$content = eval($this->TemplateHandler->fetchTemplate('form_pass_retrieve_1'));
-		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+		return     eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
    // ! Action Method
@@ -306,27 +306,35 @@ class ModuleObject extends MasterObject
 
 		$sql = $this->DatabaseHandler->query("
 		SELECT
-			m.members_id,
-			m.members_name,
-			m.members_email,
-			v.key_hash,
-			v.key_date
-		FROM " . DB_PREFIX . "members m
-			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
-		WHERE
-			m.members_email = '{$email}' AND
-			v.key_type	  = 'PASS'", __FILE__, __LINE__);
+			members_id,
+			members_name,
+			members_email
+		FROM " . DB_PREFIX . "members
+		WHERE members_email = '{$email}'",
+		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
 		{
 			return $this->messenger();
 		}
 
-		$row = $sql->getRow();
+		$member = $sql->getRow();
 
-		if($row['key_hash'])
+		$sql = $this->DatabaseHandler->query("
+		SELECT
+			key_hash,
+			key_date
+		FROM " . DB_PREFIX . "vkeys
+		WHERE
+			key_user = {$member['members_id']} AND
+			key_type = 'PASS'",
+		 __FILE__, __LINE__);
+
+		if($sql->getNumRows())
 		{
-			$url = $this->config['site_link'] . GATEWAY . '?a=logon&CODE=05&key=' . $row['key_hash'];
+			$key = $sql->getRow();
+
+			$url = $this->config['site_link'] . GATEWAY . '?a=logon&CODE=05&key=' . $key['key_hash'];
 
 			$this->TemplateHandler->addTemplate(array('mail_header', 'mail_footer' , 'mail_pass_get_1'));
 
@@ -337,7 +345,7 @@ class ModuleObject extends MasterObject
 			$message .= eval($this->TemplateHandler->fetchTemplate('mail_pass_get_1'));
 			$message .= eval($this->TemplateHandler->fetchTemplate('mail_footer'));
 
-			$this->_MailHandler->setRecipient($row['members_email']);
+			$this->_MailHandler->setRecipient($member['members_email']);
 			$this->_MailHandler->setSubject($this->config['title'] . ': ' . $this->LanguageHandler->email_recover_title_key);
 			$this->_MailHandler->setMessage($message);
 			$this->_MailHandler->doSend();
@@ -354,10 +362,11 @@ class ModuleObject extends MasterObject
 			key_date,
 			key_type)
 		VALUES(
-			{$row['members_id']},
+			{$member['members_id']},
 			'{$key}',
 			" . time() . ",
-			'PASS')", __FILE__, __LINE__);
+			'PASS')",
+		__FILE__, __LINE__);
 
 		$url = $this->config['site_link'] . GATEWAY . "?a=logon&CODE=05&key={$key}";
 
@@ -370,7 +379,7 @@ class ModuleObject extends MasterObject
 		$message .= eval($this->TemplateHandler->fetchTemplate('mail_pass_get_1'));
 		$message .= eval($this->TemplateHandler->fetchTemplate('mail_footer'));
 
-		$this->_MailHandler->setRecipient($row['members_email']);
+		$this->_MailHandler->setRecipient($member['members_email']);
 		$this->_MailHandler->setSubject($this->config['title'] . ': ' . $this->LanguageHandler->email_recover_title_key);
 		$this->_MailHandler->setMessage($message);
 		$this->_MailHandler->doSend();
@@ -403,15 +412,21 @@ class ModuleObject extends MasterObject
 			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
 		WHERE
 			v.key_hash = '{$this->_key}' AND
-			v.key_type = 'PASS'", __FILE__, __LINE__);
+			v.key_type = 'PASS'",
+		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
 		{
 			return $this->messenger(array('MSG' => 'err_bad_key'));
 		}
 
-		$row  = $sql->getRow();
-		$pass = $this->UserHandler->makeAutoPass();
+		$row = $sql->getRow();
+
+		$salt = $this->UserHandler->makeSalt();
+		$auto = $this->UserHandler->makeAutoPass();
+		$pass = substr($this->UserHandler->makeAutoPass(), 0, 5);
+
+		$encrypted_pass = md5(md5($salt) . md5($pass));
 
 		$this->TemplateHandler->addTemplate(array('mail_header', 'mail_footer' , 'mail_pass_get_2'));
 
@@ -429,14 +444,18 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "members SET
-			members_pass = '" . md5($pass) . "'
-		WHERE members_id = {$row['members_id']}", __FILE__, __LINE__);
+			members_pass      = '{$encrypted_pass}',
+			members_pass_auto = '{$auto}',
+			members_pass_salt = '{$salt}'
+		WHERE members_id = {$row['members_id']}",
+		__FILE__, __LINE__);
 
-		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "vkeys   WHERE key_hash	 = '{$this->_key}'");
-
+		$this->DatabaseHandler->query("
+		DELETE FROM " . DB_PREFIX . "vkeys
+		WHERE key_hash = '{$this->_key}'",
+		__FILE__, __LINE__);
 
 		return $this->messenger(array('MSG' => 'err_password_reset', 'LEVEL' => 1, 'LINK' => '?a=logon'));
-
 	}
 
    // ! Action Method
@@ -452,9 +471,9 @@ class ModuleObject extends MasterObject
 	*/
 	function _removeCookies()
 	{
-		$this->CookieHandler->setVar('id',		  '0');
-		$this->CookieHandler->setVar('pass',		'0');
-		$this->CookieHandler->setVar('flood',	   '0');
+		$this->CookieHandler->setVar('id',          '0');
+		$this->CookieHandler->setVar('pass',        '0');
+		$this->CookieHandler->setVar('flood',       '0');
 		$this->CookieHandler->setVar('forums_read', '0');
 		$this->CookieHandler->setVar('topicsRead',  '0');
 

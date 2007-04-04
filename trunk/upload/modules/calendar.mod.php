@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -265,12 +265,12 @@ class ModuleObject extends MasterObject
 	function _doMonth()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
+		SELECT
 			members_birth_day,
 			members_birth_month,
 			members_birth_year
-		FROM " . DB_PREFIX . "members 
-		WHERE 
+		FROM " . DB_PREFIX . "members
+		WHERE
 			members_birth_month = {$this->_curr_month}
 		ORDER BY members_birth_day",
 		__FILE__, __LINE__);
@@ -285,7 +285,7 @@ class ModuleObject extends MasterObject
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
+		SELECT
 			event_id,
 			event_title,
 			event_start_day,
@@ -300,13 +300,13 @@ class ModuleObject extends MasterObject
 			event_loop_type,
 			event_groups
 		FROM " . DB_PREFIX ."events
-		WHERE 
+		WHERE
 			event_loop <> 1 AND
 			event_start_month = {$this->_curr_month} AND
 			event_start_year  = {$this->_curr_year}  OR
-			(event_loop	   = 1		  AND 
-			(event_loop_type IN ('w', 'm') OR 
-			(event_loop_type  =  'y'	   AND 
+			(event_loop	   = 1		  AND
+			(event_loop_type IN ('w', 'm') OR
+			(event_loop_type  =  'y'	   AND
 			event_start_month = {$this->_curr_month})))",
 		__FILE__, __LINE__);
 
@@ -355,11 +355,11 @@ class ModuleObject extends MasterObject
 
 					if($birth_count)
 					{
-						$event   = "<a href=\"" . GATEWAY . "?a=members&amp;month={$this->_curr_month}" . 
+						$event   = "<a href=\"" . GATEWAY . "?a=members&amp;month={$this->_curr_month}" .
 								   "&amp;day={$day}\" title=\"\">{$birth_count}</a>{$this->LanguageHandler->date_birthday}";
 						$events .= eval($this->TemplateHandler->fetchTemplate('cal_month_event'));
 					}
-					
+
 					if(isset($event_regular[$day]) && is_array($event_regular[$day]))
 					{
 						foreach($event_regular[$day] as $val)
@@ -382,7 +382,7 @@ class ModuleObject extends MasterObject
 							{
 								$display	= false;
 								$event_bits = getdate($val['event_start_stamp']);
-								
+
 								if(false == $this->_checkStartRange($val) ||
 								   false == $this->_checkStopRange($val))
 								{
@@ -429,7 +429,7 @@ class ModuleObject extends MasterObject
 						}
 					}
 
-					if($day == $this->_today_bits['mday']	  && 
+					if($day == $this->_today_bits['mday']	  &&
 					   $this->_curr_month == date('n', time()) &&
 					   $this->_curr_year  == date('Y', time()))
 					{
@@ -514,7 +514,7 @@ class ModuleObject extends MasterObject
 		{
 			$selected  = $i == $this->_curr_year ? " selected=\"selected\"" : '';
 			$years	.= "<option value=\"{$i}\"{$selected}>{$i}</option>";
-		}		
+		}
 
 		$lit_month = date('F', $this->_today_stamp);
 		$lit_year  = $this->_curr_year;
@@ -609,7 +609,7 @@ class ModuleObject extends MasterObject
 	function _showEvent()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
+		SELECT
 			e.event_id,
 			e.event_title,
 			e.event_body,
@@ -633,8 +633,8 @@ class ModuleObject extends MasterObject
 			m.members_email,
 			m.members_avatar_location,
 			m.members_avatar_dims,
-			c.class_title, 
-			c.class_prefix, 
+			c.class_title,
+			c.class_prefix,
 			c.class_suffix,
 			a.active_user
 		FROM " . DB_PREFIX . "events e
@@ -763,8 +763,8 @@ class ModuleObject extends MasterObject
 
 		if($this->config['avatar_on'])
 		{
-			$avatar = $this->_AvatarHandler->fetchUserAvatar($row['members_avatar_location'], 
-															 $row['members_avatar_dims'], 
+			$avatar = $this->_AvatarHandler->fetchUserAvatar($row['members_avatar_location'],
+															 $row['members_avatar_dims'],
 															 $this->UserHandler->getField('members_see_avatars'));
 		}
 
@@ -809,7 +809,7 @@ class ModuleObject extends MasterObject
 
 		$list_months = $this->TimeHandler->buildMonths('F');
 		$list_days   = $this->TimeHandler->buildDays();
-		$list_years  = $this->TimeHandler->buildYears(date('Y', $this->config['installed']), date('Y', time()) + 10);
+		$list_years  = $this->TimeHandler->buildYears(date('Y'), date('Y', time()) + 10);
 
 		$start_months = '';
 		foreach($list_months as $key => $val)
@@ -853,9 +853,9 @@ class ModuleObject extends MasterObject
 			$end_years .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
 		}
 
-		$types = array(''  => $this->LanguageHandler->blank, 
-					   'w' => $this->LanguageHandler->event_type_small_week, 
-					   'm' => $this->LanguageHandler->event_type_small_month, 
+		$types = array(''  => $this->LanguageHandler->blank,
+					   'w' => $this->LanguageHandler->event_type_small_week,
+					   'm' => $this->LanguageHandler->event_type_small_month,
 					   'y' => $this->LanguageHandler->event_type_small_year);
 
 		$loop_types = '';
@@ -881,7 +881,7 @@ class ModuleObject extends MasterObject
 
 			foreach($this->CacheHandler->getCacheByKey('groups') as $key => $val)
 			{
-				$group_list .= "<option value=\"{$key}\">{$val['class_title']}</option>";  
+				$group_list .= "<option value=\"{$key}\">{$val['class_title']}</option>";
 			}
 
 			$groups = eval($this->TemplateHandler->fetchTemplate('cal_group_list'));
@@ -991,7 +991,7 @@ class ModuleObject extends MasterObject
 					$this->_errors[] = 'cal_err_bad_range';
 				}
 
-				if($start_month == $end_month && 
+				if($start_month == $end_month &&
 				   $start_day   >= $end_day)
 				{
 					$this->_errors[] = 'cal_err_bad_range';
@@ -1112,8 +1112,8 @@ class ModuleObject extends MasterObject
 	function _showEditEventForm()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT * 
-		FROM " . DB_PREFIX . "events 
+		SELECT *
+		FROM " . DB_PREFIX . "events
 		WHERE event_id = {$this->_id}",
 		__FILE__, __LINE__);
 
@@ -1164,7 +1164,7 @@ class ModuleObject extends MasterObject
 
 		$list_months = $this->TimeHandler->buildMonths('F');
 		$list_days   = $this->TimeHandler->buildDays();
-		$list_years  = $this->TimeHandler->buildYears(date('Y', $this->config['installed']), date('Y', time()) + 10);
+		$list_years  = $this->TimeHandler->buildYears(date('Y'), date('Y', time()) + 10);
 
 		$start_months = '';
 		foreach($list_months as $key => $val)
@@ -1208,9 +1208,9 @@ class ModuleObject extends MasterObject
 			$end_years .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
 		}
 
-		$types = array(''  => $this->LanguageHandler->blank, 
-					   'w' => $this->LanguageHandler->event_type_small_week, 
-					   'm' => $this->LanguageHandler->event_type_small_month, 
+		$types = array(''  => $this->LanguageHandler->blank,
+					   'w' => $this->LanguageHandler->event_type_small_week,
+					   'm' => $this->LanguageHandler->event_type_small_month,
 					   'y' => $this->LanguageHandler->event_type_small_year);
 
 		$loop_types = '';
@@ -1242,7 +1242,7 @@ class ModuleObject extends MasterObject
 					$selected = " selected=\"selected\"";
 				}
 
-				$group_list .= "<option value=\"{$key}\"{$selected}>{$val['class_title']}</option>";  
+				$group_list .= "<option value=\"{$key}\"{$selected}>{$val['class_title']}</option>";
 			}
 
 			$groups = eval($this->TemplateHandler->fetchTemplate('cal_group_list'));
@@ -1378,7 +1378,7 @@ class ModuleObject extends MasterObject
 					$this->_errors[] = 'cal_err_bad_range';
 				}
 
-				if($start_month == $end_month && 
+				if($start_month == $end_month &&
 				   $start_day   >= $end_day)
 				{
 					$this->_errors[] = 'cal_err_bad_range';

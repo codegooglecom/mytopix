@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -75,7 +75,7 @@ class ModuleObject extends MasterObject
 	*/
 	var $_FileHandler;
 
-	
+
    // ! Action Method
 
    /**
@@ -89,7 +89,7 @@ class ModuleObject extends MasterObject
 	function ModuleObject(& $module, & $config, $cache)
 	{
 		$this->MasterObject($module, $config, $cache);
-	 
+
 		$this->_code   = isset($this->get['CODE'])  ? $this->get['CODE']  : 00;
 		$this->_hash   = isset($this->post['hash']) ? $this->post['hash'] : null;
 		$this->_key	= isset($this->get['key'])   ? $this->get['key']   : '';
@@ -99,12 +99,12 @@ class ModuleObject extends MasterObject
 		$this->_FileHandler  = new FileHandler($this->config);
 
 		require SYSTEM_PATH . 'lib/mail.han.php';
-		$this->_MailHandler = new MailHandler($this->config['email_incoming'], 
-											  $this->config['email_outgoing'], 
+		$this->_MailHandler = new MailHandler($this->config['email_incoming'],
+											  $this->config['email_outgoing'],
 											  $this->config['email_name']);
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -150,7 +150,7 @@ class ModuleObject extends MasterObject
 		}
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -184,12 +184,13 @@ class ModuleObject extends MasterObject
 			$coppa_field = eval($this->TemplateHandler->fetchTemplate('form_coppa_field'));
 		}
 
-		$hash	= $this->UserHandler->getUserHash();
+		$hash    = $this->UserHandler->getUserHash();
 		$content = eval($this->TemplateHandler->fetchTemplate('form_register'));
-		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
+
+		return eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -214,9 +215,9 @@ class ModuleObject extends MasterObject
 		$username = preg_replace("/\s{2,}/",	  ' ', $username);
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT members_id 
-		FROM " . DB_PREFIX . "members 
-		WHERE members_name = '{$username}'", 
+		SELECT members_id
+		FROM " . DB_PREFIX . "members
+		WHERE members_name = '{$username}'",
 		__FILE__, __LINE__);
 
 		if($sql->getNumRows() || strlen($len_user) < 3 || strlen($len_user) > 32)
@@ -253,11 +254,11 @@ class ModuleObject extends MasterObject
 		if(false == $this->config['duplicate_emails'])
 		{
 			$sql = $this->DatabaseHandler->query("
-			SELECT members_id 
-			FROM " . DB_PREFIX . "members 
-			WHERE 
+			SELECT members_id
+			FROM " . DB_PREFIX . "members
+			WHERE
 				members_email =  '{$email}' AND
-				members_id	<> 1", 
+				members_id	<> 1",
 			__FILE__, __LINE__);
 
 			if($sql->getNumRows())
@@ -295,29 +296,29 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		INSERT INTO " . DB_PREFIX . "members(
-			members_name, 
-			members_class, 
-			members_pass, 
+			members_name,
+			members_class,
+			members_pass,
 			members_pass_salt,
 			members_pass_auto,
-			members_email, 
-			members_ip, 
+			members_email,
+			members_ip,
 			members_skin,
 			members_language,
-			members_registered, 
-			members_lastaction) 
+			members_registered,
+			members_lastaction)
 		VALUES(
-			'{$username}', 
-			2, 
-			'{$pass}', 
+			'{$username}',
+			2,
+			'{$pass}',
 			'{$salt}',
 			'{$auto}',
-			'{$email}', 
-			'" . $this->UserHandler->getField('members_ip') . "', 
+			'{$email}',
+			'" . $this->UserHandler->getField('members_ip') . "',
 			'{$this->config['skin']}',
 			'{$this->config['language']}',
-			'" . time() . "', 
-			'" . time() . "')", 
+			'" . time() . "',
+			'" . time() . "')",
 		__FILE__, __LINE__);
 
 		$id = $this->DatabaseHandler->insertid();
@@ -342,15 +343,15 @@ class ModuleObject extends MasterObject
 			}
 
 			$this->DatabaseHandler->query("
-			UPDATE " . DB_PREFIX . "members SET 
+			UPDATE " . DB_PREFIX . "members SET
 				members_class = {$val_group}
 				{$coppa_sql}
-			WHERE members_id = {$id}", 
+			WHERE members_id = {$id}",
 			__FILE__, __LINE__);
 
-			$this->TemplateHandler->addTemplate(array('mail_header', 
-													  'mail_footer' , 
-													  'mail_validate_user', 
+			$this->TemplateHandler->addTemplate(array('mail_header',
+													  'mail_footer' ,
+													  'mail_validate_user',
 													  'mail_coppa'));
 
 			$sent	 = date($this->config['date_short'], time());
@@ -364,15 +365,15 @@ class ModuleObject extends MasterObject
 
 				$this->DatabaseHandler->query("
 				INSERT INTO " . DB_PREFIX . "vkeys(
-					key_user, 
-					key_hash, 
-					key_date, 
-					key_type) 
+					key_user,
+					key_hash,
+					key_date,
+					key_type)
 				VALUES(
 					{$id},
 					'{$key}',
 					" . time() . ",
-					'VALID')", 
+					'VALID')",
 				__FILE__, __LINE__);
 
 				$message .= eval($this->TemplateHandler->fetchTemplate('mail_validate_user'));
@@ -402,7 +403,7 @@ class ModuleObject extends MasterObject
 		return $this->messenger(array('MSG' => 'err_account_done'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -416,16 +417,16 @@ class ModuleObject extends MasterObject
 	function _doUserValidation()
 	{
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_name, 
+		SELECT
+			m.members_id,
+			m.members_name,
 			m.members_email,
 			m.members_pass,
 			v.key_id,
 			v.key_hash
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
-		WHERE 
+		WHERE
 			v.key_hash = '{$this->_key}' AND
 			v.key_type = 'VALID'", __FILE__, __LINE__);
 
@@ -437,10 +438,10 @@ class ModuleObject extends MasterObject
 		$row = $sql->getRow();
 
 		$this->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "members 
-		SET members_class = 2 
+		UPDATE " . DB_PREFIX . "members
+		SET members_class = 2
 		WHERE members_id = {$row['members_id']}", __FILE__, __LINE__);
-		
+
 		$this->DatabaseHandler->query("DELETE FROM " . DB_PREFIX . "vkeys WHERE key_id = {$row['key_id']}", __FILE__, __LINE__);
 
 		$this->TemplateHandler->addTemplate(array('mail_header', 'mail_footer' , 'mail_registration_complete'));
@@ -464,7 +465,7 @@ class ModuleObject extends MasterObject
 		return $this->messenger(array('MSG' => 'err_account_activated', 'LEVEL' => 1));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -482,7 +483,7 @@ class ModuleObject extends MasterObject
 		return	 eval($this->TemplateHandler->fetchTemplate('global_wrapper'));
 	}
 
-	
+
    // ! Action Method
 
    /**
@@ -508,16 +509,16 @@ class ModuleObject extends MasterObject
 		}
 
 		$sql = $this->DatabaseHandler->query("
-		SELECT 
-			m.members_id, 
-			m.members_name, 
+		SELECT
+			m.members_id,
+			m.members_name,
 			m.members_email,
 			v.key_hash
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "vkeys v ON v.key_user = m.members_id
-		WHERE 
+		WHERE
 			m.members_email = '{$email}' AND
-			v.key_type	  = 'VALID'", 
+			v.key_type	  = 'VALID'",
 		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
