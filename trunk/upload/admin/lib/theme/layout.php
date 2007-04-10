@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div id="copyright">
-				Powered By: MyTopix v 1.3.0 RC1<br/>
+				Powered By: MyTopix <?php echo $this->System->config['version']; ?><br/>
 				Copyright &copy; 2004 - 2007, <a href="http://www.jaia-interactive.com" title="Jaia Interactive">Jaia Interactive</a> all rights reserved.
 			</div>
 		</div>

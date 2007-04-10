@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -26,8 +26,8 @@
 * or user requested skin set, building the template cache,
 * loading the macro cache and template macro conversions.
 *
-* At present it isn't the best or fasted template handler 
-* around, but it does the job. This may or may not be 
+* At present it isn't the best or fasted template handler
+* around, but it does the job. This may or may not be
 * replaced in a future version. We'll see.
 *
 * @license http://www.jaia-interactive.com/licenses/mytopix/
@@ -106,7 +106,7 @@ class TemplateHandler
    // ! Accessor Method
 
    /**
-    * Load the current skin set as well as appropriate macros. 
+    * Load the current skin set as well as appropriate macros.
     * If the requested skin cannot be located, load the system
     * default skin.
     *
@@ -119,15 +119,15 @@ class TemplateHandler
 	function fetchTemplateSet()
 	{
     	$sql = $this->_SystemObject->DatabaseHandler->query("
-		SELECT 
+		SELECT
 			temp_skin,
-			temp_name, 
-			temp_code 
-		FROM  " . DB_PREFIX . "templates 
-		WHERE 
+			temp_name,
+			temp_code
+		FROM  " . DB_PREFIX . "templates
+		WHERE
             temp_skin     = {$this->skinId} AND
-		   (temp_section  = 'global'       OR 
-			temp_section  = '{$this->_module}')", 
+		   (temp_section  = 'global'       OR
+			temp_section  = '{$this->_module}')",
         __FILE__, __LINE__);
 
         if(false == $sql->getNumRows())
@@ -136,9 +136,9 @@ class TemplateHandler
             $this->_SystemObject->skinPath = SYSTEM_PATH . 'skins/1';
 
             $this->_SystemObject->DatabaseHandler->query("
-            UPDATE " . DB_PREFIX ."members SET 
-                members_skin = 1 
-            WHERE members_id = " . USER_ID, 
+            UPDATE " . DB_PREFIX ."members SET
+                members_skin = 1
+            WHERE members_id = " . USER_ID,
             __FILE__, __LINE__);
 
             $this->fetchTemplateSet();
@@ -153,11 +153,11 @@ class TemplateHandler
 		$this->_temps = str_replace(array('\\', '"', '\\$'), array('\\\\', '\\"', '\\\\$'), $this->_temps);
 
         $sql = $this->_SystemObject->DatabaseHandler->query("
-        SELECT skins_macro 
-        FROM " . DB_PREFIX . "skins 
-        WHERE skins_id = {$this->skinId}", 
+        SELECT skins_macro
+        FROM " . DB_PREFIX . "skins
+        WHERE skins_id = {$this->skinId}",
         __FILE__, __LINE__);
-        
+
         $skin = $sql->getRow();
 
         $this->macros = unserialize(stripslashes($skin['skins_macro']));
@@ -227,8 +227,8 @@ class TemplateHandler
     */
     function convertTags(& $string)
     {
-        return preg_replace('/<(lang|conf|user|sys):(.*?)>/ies', 
-                            '$this->_tagCallBack(\'\\1\', \'\\2\')', 
+        return preg_replace('/<(lang|conf|user|sys):(.*?)>/ies',
+                            '$this->_tagCallBack(\'\\1\', \'\\2\')',
                             $string);
     }
 
@@ -264,14 +264,14 @@ class TemplateHandler
 			temp_name,
 			temp_code
 		FROM  " . DB_PREFIX . "templates
-		WHERE 
-            temp_skin = {$this->skinId} AND 
-            {$search}", 
+		WHERE
+            temp_skin = {$this->skinId} AND
+            {$search}",
         __FILE__, __LINE__);
 
         while($row = $sql->getRow())
         {
-            $row['temp_code'] = str_replace(array('\\',   '"',   '\\$'), 
+            $row['temp_code'] = str_replace(array('\\',   '"',   '\\$'),
                                             array('\\\\', '\\"', '\\\\$'),
                                             $row['temp_code']);
 

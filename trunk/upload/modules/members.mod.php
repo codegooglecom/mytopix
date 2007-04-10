@@ -151,6 +151,7 @@ class ModuleObject extends MasterObject
 		}
 
 		$urlQuery = GATEWAY . "?a=members";
+
 		foreach($this->post as $key => $val)
 		{
 			$urlQuery .= "&amp;{$key}=" . urlencode($val);
@@ -158,7 +159,7 @@ class ModuleObject extends MasterObject
 
 		foreach($this->get as $key => $val)
 		{
-			$urlQuery .= "&amp;{$key}=" . urlencode($val);
+			if($key != 'p') $urlQuery .= "&amp;{$key}=" . urlencode($val);
 		}
 
 		extract($this->post);

@@ -146,6 +146,20 @@ ul#ucp_tabs li span{
 
 ul#ucp_tabs li span{ padding: 8px 10px 6px; }
 
+#avatar-gallery {
+	overflow: auto;
+}
+
+#avatar-gallery ul{
+	margin: 15px 0;
+	list-style: none;
+}
+
+#avatar-gallery li{
+	margin: 0 0 10px 20px;
+	float: left;
+}
+
 ul.extras{
 	list-style: none;
 	margin: 0;
@@ -266,6 +280,10 @@ table.emoticon,
 #bbcode_panel table{
 	border: 1px solid #272727;
 	margin: 5px 0;
+}
+
+table.emoticon {
+	width: 50%;
 }
 
 td,
@@ -723,6 +741,7 @@ blockquote span.name{
 	font-weight: normal;
 	padding: 8px 8px 5px;
 	text-align: right;
+	overflow: auto;
 }
 
 

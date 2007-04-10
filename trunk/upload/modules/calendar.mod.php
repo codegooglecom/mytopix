@@ -158,19 +158,19 @@ class ModuleObject extends MasterObject
 		$this->MasterObject($module, $config, $cache);
 
 		$this->_errors = array();
-		$this->_code   = isset($this->get['CODE'])   ?	   $this->get['CODE']   : 00;
-		$this->_id	 = isset($this->get['id'])	 ? (int) $this->get['id']	 : false;
-		$this->_hash   = isset($this->post['hash'])  ?	   $this->post['hash']  : null;
+		$this->_code   = isset($this->get['CODE'])   ?       $this->get['CODE']   : 00;
+		$this->_id     = isset($this->get['id'])     ? (int) $this->get['id']     : false;
+		$this->_hash   = isset($this->post['hash'])  ?       $this->post['hash']  : null;
 		$this->_year   = isset($this->get['year'])   ? (int) $this->get['year']   : date('Y', time());
 		$this->_month  = isset($this->get['month'])  ? (int) $this->get['month']  : date('n', time());
 		$this->_year   = isset($this->post['year'])  ? (int) $this->post['year']  : $this->_year;
 		$this->_month  = isset($this->post['month']) ? (int) $this->post['month'] : $this->_month;
 
-		$date_bits = explode(',', gmdate('Y,n,j,G,i,s,t', time()));
+		$date_bits = explode(',', $this->TimeHandler->doDateFormat('Y,n,j,G,i,s,t', time()));
 
-		$this->_today_bits = array('year'	 => $date_bits[0],
-								   'mon'	  => $date_bits[1],
-								   'mday'	 => $date_bits[2],
+		$this->_today_bits = array('year'     => $date_bits[0],
+								   'mon'      => $date_bits[1],
+								   'mday'     => $date_bits[2],
 								   'mday_ttl' => $date_bits[6]);
 
 		$this->_curr_month = false == $this->_month ? $this->_today_bits['mon']  : $this->_month;
@@ -185,9 +185,9 @@ class ModuleObject extends MasterObject
 		$this->_day_counts = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 		$this->_curr_days  = $this->_day_counts[$this->_curr_month - 1];
 
-		$this->_today_stamp	 = mktime(0,  0,  0, $this->_curr_month, 1, $this->_curr_year);
+		$this->_today_stamp     = mktime(0,  0,  0, $this->_curr_month, 1, $this->_curr_year);
 		$this->_month_end_stamp = mktime(23, 59, 0, $this->_curr_month, $this->_today_bits['mday_ttl'], $this->_curr_year);
-		$this->_first_day	   = getdate($this->_today_stamp);
+		$this->_first_day       = getdate($this->_today_stamp);
 
 		require SYSTEM_PATH . 'lib/pips.han.php';
 		$this->_PipHandler = new PipHandler($this->CacheHandler->getCacheByKey('titles'));
@@ -248,6 +248,8 @@ class ModuleObject extends MasterObject
 				return $this->_doMonth();
 				break;
 		}
+
+		return true;
 	}
 
    // ! Action Method
@@ -301,12 +303,12 @@ class ModuleObject extends MasterObject
 			event_groups
 		FROM " . DB_PREFIX ."events
 		WHERE
-			event_loop <> 1 AND
+			event_loop <> 1                          AND
 			event_start_month = {$this->_curr_month} AND
 			event_start_year  = {$this->_curr_year}  OR
-			(event_loop	   = 1		  AND
-			(event_loop_type IN ('w', 'm') OR
-			(event_loop_type  =  'y'	   AND
+			(event_loop       = 1                    AND
+			(event_loop_type IN ('w', 'm')           OR
+			(event_loop_type  =  'y'                 AND
 			event_start_month = {$this->_curr_month})))",
 		__FILE__, __LINE__);
 
@@ -372,7 +374,7 @@ class ModuleObject extends MasterObject
 						}
 					}
 
-	   				$today  += 86400;
+					$today  += 86400;
 
 					if(sizeof($event_reoccur))
 					{
@@ -380,7 +382,7 @@ class ModuleObject extends MasterObject
 						{
 							if(in_array($this->UserHandler->getField('class_id'), explode('|', $val['event_groups'])))
 							{
-								$display	= false;
+								$display    = false;
 								$event_bits = getdate($val['event_start_stamp']);
 
 								if(false == $this->_checkStartRange($val) ||
@@ -513,7 +515,7 @@ class ModuleObject extends MasterObject
 		for($i = $start; $i < date('Y', time()) + 10; $i++)
 		{
 			$selected  = $i == $this->_curr_year ? " selected=\"selected\"" : '';
-			$years	.= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+			$years    .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
 		}
 
 		$lit_month = date('F', $this->_today_stamp);
@@ -538,16 +540,15 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_curr_year == $event['event_start_year'])
 		{
-			if($this->_curr_month		 == $event['event_start_month'] &&
-			   $this->_today_bits['mday'] <  $event['event_start_day'])
+			if($this->_curr_month         == $event['event_start_month'] &&
+			   $this->_today_bits['mday'] <= $event['event_start_day'])
 			{
-
-			   return false;
+				return true;
 			}
 
 			if($this->_curr_month < $event['event_start_month'])
 			{
-			   return false;
+				return false;
 			}
 		}
 
@@ -574,16 +575,15 @@ class ModuleObject extends MasterObject
 	{
 		if($this->_curr_year == $event['event_end_year'])
 		{
-			if($this->_curr_month		 == $event['event_end_month'] &&
-			   $this->_today_bits['mday'] >  $event['event_end_day'])
+			if($this->_curr_month         == $event['event_end_month'] &&
+			   $this->_today_bits['mday'] >= $event['event_end_day'])
 			{
-
-			   return false;
+				return true;
 			}
 
 			if($this->_curr_month > $event['event_end_month'])
 			{
-			   return false;
+				return false;
 			}
 		}
 
@@ -835,22 +835,19 @@ class ModuleObject extends MasterObject
 		$end_months = '';
 		foreach($list_months as $key => $val)
 		{
-			$selected	= $key == $end_month ? " selected=\"selected\"" : '';
-			$end_months .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
+			$end_months .= "<option value=\"{$key}\">{$val}</option>";
 		}
 
 		$end_days = '';
 		foreach($list_days as $key => $val)
 		{
-			$selected  = $key == $end_day ? " selected=\"selected\"" : '';
-			$end_days .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
+			$end_days .= "<option value=\"{$key}\">{$val}</option>";
 		}
 
 		$end_years = '';
 		foreach($list_years as $key => $val)
 		{
-			$selected  = $key == $end_year ? " selected=\"selected\"" : '';
-			$end_years .= "<option value=\"{$key}\"{$selected}>{$val}</option>";
+			$end_years .= "<option value=\"{$key}\">{$val}</option>";
 		}
 
 		$types = array(''  => $this->LanguageHandler->blank,
@@ -916,6 +913,14 @@ class ModuleObject extends MasterObject
 		}
 
 		extract($this->post);
+
+		if(false == $start_day)   $start_day   = 0;
+		if(false == $start_month) $start_month = 0;
+		if(false == $start_year)  $start_year  = 0;
+
+		if(false == $end_day)     $end_day   = 0;
+		if(false == $end_month)   $end_month = 0;
+		if(false == $end_year)    $end_year  = 0;
 
 		if(false == $title)
 		{
