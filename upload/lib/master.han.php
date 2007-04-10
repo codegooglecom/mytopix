@@ -321,13 +321,36 @@ class MasterObject
 			$temp = $types['2'];
 		}
 
-		if($this->UserHandler->getField('members_newNotes'))
+		$note_count = '';
+
+		if(USER_ID != 1)
 		{
-			$this->UserHandler->setField('members_newNotes', "<strong>" . $this->UserHandler->getField('members_newNotes') . $this->LanguageHandler->note_new . "</strong>");
+			$sql = $this->DatabaseHandler->query("
+			SELECT COUNT(*) as Count
+			FROM " . DB_PREFIX . "notes
+			WHERE
+				notes_recipient = " . USER_ID . " AND
+				notes_isRead    = 0",
+			__FILE__, __LINE__);
+
+			$row = $sql->getRow();
+
+			if($row['Count'])
+			{
+				$note_count = ' (<strong>' . $row['Count'] . $this->LanguageHandler->note_new . '</strong>)';
+			}
+			else
+			{
+				$this->DatabaseHandler->query("
+				UPDATE " . DB_PREFIX . "members SET
+					members_note_inform = 0
+				WHERE members_id = " . USER_ID,
+				__FILE__, __LINE__);
+			}
 		}
 
 		$temp = $this->UserHandler->getField('members_is_banned') ? 'disabled' : $temp;
-		$temp = $this->UserHandler->getField('members_is_admin')  ? 'admin'	: $temp;
+		$temp = $this->UserHandler->getField('members_is_admin')  ? 'admin'    : $temp;
 
 		return eval($this->TemplateHandler->fetchTemplate("global_welcome_{$temp}"));
 	}

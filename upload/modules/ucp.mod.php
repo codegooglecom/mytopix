@@ -721,7 +721,7 @@ class ModuleObject extends MasterObject
 			members_noteNotify  = {$notes},
 			members_see_sigs    = {$sigs},
 			members_see_avatars = {$avatars}
-		WHERE members_id = " . USER_ID, 
+		WHERE members_id = " . USER_ID,
 		__FILE__, __LINE__ );
 
 		return $this->messenger ( array ( 'MSG' => 'err_options_done', 'LINK' => '?a=ucp&CODE=07', 'LEVEL' => 1 ) );
@@ -895,11 +895,12 @@ class ModuleObject extends MasterObject
 		WHERE
 			tr.track_user  = " . USER_ID . " AND
 			tr.track_forum = 0
-		ORDER BY 
-			tr.track_sent, 
+		ORDER BY
+			tr.track_sent,
 			tr.track_id",
 		__FILE__, __LINE__ );
 
+		$topics = '';
 
 		if ( false == $sql->getNumRows() )
 		{
@@ -926,11 +927,12 @@ class ModuleObject extends MasterObject
 		WHERE
 			tr.track_user  = " . USER_ID . " AND
 			tr.track_topic = 0
-		ORDER BY 
-			tr.track_sent, 
-			tr.track_id", 
+		ORDER BY
+			tr.track_sent,
+			tr.track_id",
 		__FILE__, __LINE__ );
 
+		$forums = '';
 
 		if ( false == $sql->getNumRows() )
 		{
@@ -1083,25 +1085,10 @@ class ModuleObject extends MasterObject
 		}
 
 		$avatar_rows = '';
-		$columns     = 0;
 
 		foreach ( $this->AvatarHandler->getGalleryAvatars ( $gallery ) as $key => $val )
 		{
-			if ( false == $columns )
-			{
-				$avatar_rows .= '<tr>';
-			}
-
 			$avatar_rows .= eval ( $this->TemplateHandler->fetchTemplate ( 'ucp_avatar_row' ) );
-
-			if ( $columns == 3 )
-			{
-				$avatar_rows .= '</tr>';
-				$columns      = 0;
-			}
-			else {
-				$columns++;
-			}
 		}
 
 		$avatar = $this->AvatarHandler->fetchUserAvatar ( $this->UserHandler->getField ( 'members_avatar_location' ), false, true );
@@ -1138,12 +1125,7 @@ class ModuleObject extends MasterObject
 			return $this->messenger ( array ( 'MSG' => 'ava_cannot_upload' ) );
 		}
 
-		if ( $this->_hash != $this->UserHandler->getUserhash() )
-		{
-			return $this->messenger ( array ( 'MSG' => 'err_invalid_access' ) );
-		}
-
-		extract ( $this->post );
+		extract ( $this->get );
 
 		if ( false == isset ( $avatar ) || false == isset ( $gallery ) )
 		{

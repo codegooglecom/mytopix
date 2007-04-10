@@ -260,8 +260,8 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "members
-		SET members_newNotes = 0
-		WHERE members_id	 = " . USER_ID,
+		SET members_note_inform = 0
+		WHERE members_id = " . USER_ID,
 		__FILE__, __LINE__);
 
 		$list       = '';
@@ -626,7 +626,7 @@ class ModuleObject extends MasterObject
 
 		$this->DatabaseHandler->query("
 		UPDATE " . DB_PREFIX . "members SET
-			members_newNotes = (members_newNotes + 1)
+			members_note_inform = 1
 		WHERE members_id = {$row['members_id']}",
 		__FILE__, __LINE__);
 

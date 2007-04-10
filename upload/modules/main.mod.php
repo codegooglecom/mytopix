@@ -115,7 +115,7 @@ class ModuleObject extends MasterObject
 	{
 		$new_note = '';
 
-		if($this->UserHandler->getField('members_newNotes'))
+		if($this->UserHandler->getField('members_note_inform'))
 		{
 			$sql = $this->DatabaseHandler->query("
 			SELECT
@@ -137,7 +137,7 @@ class ModuleObject extends MasterObject
 
 			$this->DatabaseHandler->query("
 			UPDATE " . DB_PREFIX . "members SET
-				members_newNotes = 0
+				members_note_inform = 0
 			WHERE members_id = " . USER_ID,
 			__FILE__, __LINE__);
 		}
