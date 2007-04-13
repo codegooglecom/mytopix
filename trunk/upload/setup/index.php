@@ -565,13 +565,13 @@ function message($message, $items = array(), $go_back_link = true)
 
 function makeSalt($size = 5)
 {
-	srand((double)microtime() * 1000000);
+	srand((double) microtime() * 1000000);
 
 	$salt = '';
 
 	for($i = 0; $i < $size; $i++)
 	{
-		$salt .= chr(rand(40, 126));
+		$salt .= chr(rand(48, 90));
 	}
 
 	return $salt;

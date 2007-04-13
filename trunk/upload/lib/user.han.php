@@ -3,17 +3,17 @@
 /***
  * MyTopix | Personal Message Board
  * Copyright (C) 2005 - 2007 Wilhelm Murdoch
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,7 +23,7 @@
 * User Session Handling Class
 *
 * This class is responsible for member auto-authentication,
-* guest account and search engine spider recognition. Not a 
+* guest account and search engine spider recognition. Not a
 * whole lot to this class except that it contains all methods of
 * directly pulling data from and manipulating user sessions.
 *
@@ -159,8 +159,8 @@ class UserHandler
 		if($this->_user_fields['members_id'] != 1)
 		{
 			$this->_System->DatabaseHandler->query("
-			DELETE FROM " . DB_PREFIX . "active 
-			WHERE 
+			DELETE FROM " . DB_PREFIX . "active
+			WHERE
 				active_user = {$this->_user_fields['members_id']}",
 			__FILE__, __LINE__);
 		}
@@ -178,15 +178,15 @@ class UserHandler
 		}
 
 		$sql = $this->_System->DatabaseHandler->query("
-		REPLACE INTO 
+		REPLACE INTO
 			" . DB_PREFIX ."active(
 				active_id,
 				active_ip,
 				active_user,
 				active_user_name,
-				active_location, 
+				active_location,
 				active_forum,
-				active_topic, 
+				active_topic,
 				active_time,
 				active_is_bot,
 				active_agent,
@@ -238,7 +238,7 @@ class UserHandler
 
 		for($i = 0; $i < $size; $i++)
 		{
-			$salt .= chr(rand(40, 126));
+			$salt .= chr(rand(48, 90));
 		}
 
 		return $salt;
@@ -320,7 +320,7 @@ class UserHandler
 		   $this->_System->CookieHandler->getVar('banned'))
 		{
 			$this->_System->CookieHandler->setVar('banned', 'I am a naughty person.', 3600); // Cookie lasts for one hour
-			
+
 			return true;
 		}
 
@@ -361,9 +361,9 @@ class UserHandler
 		$sql = $this->_System->DatabaseHandler->query("
 		SELECT *
 		FROM " . DB_PREFIX . "members m
-		WHERE 
+		WHERE
 			m.members_id		= {$this->_id} AND
-			m.members_pass_auto = '{$this->_pass}'", 
+			m.members_pass_auto = '{$this->_pass}'",
 		__FILE__, __LINE__);
 
 		if(false == $sql->getNumRows())
@@ -372,7 +372,7 @@ class UserHandler
 			$this->_System->CookieHandler->setVar('pass', '0');
 
 			return $this->_getGuest();
-		}			
+		}
 
 		return $sql->getRow();
 	}
@@ -393,11 +393,11 @@ class UserHandler
 		$this->_checkModule();
 
 		$sql = $this->_System->DatabaseHandler->query("
-		SELECT m.*, c.* 
+		SELECT m.*, c.*
 		FROM " . DB_PREFIX . "members m
 			LEFT JOIN " . DB_PREFIX . "class c ON m.members_class = c.class_id
-		WHERE 
-			m.members_id = 1", 
+		WHERE
+			m.members_id = 1",
 		__FILE__, __LINE__);
 
 		return $sql->getRow();
@@ -430,7 +430,7 @@ class UserHandler
 
    /**
 	* This searches any current guests to determine whether or
-	* not they are actually search engine spiders. Since we don't 
+	* not they are actually search engine spiders. Since we don't
 	* want 80+ phantom users appearing within our 'active' table, we'll
 	* just create a single session for all of them.
 	*
@@ -529,10 +529,10 @@ class UserHandler
 	function doLastAction($id)
 	{
 		$this->_System->DatabaseHandler->query("
-		UPDATE " . DB_PREFIX . "members SET 
+		UPDATE " . DB_PREFIX . "members SET
 			members_lastaction = " . time() . ",
 			members_ip		 = '{$this->_user_fields['members_ip']}'
-		WHERE members_id = {$id}", 
+		WHERE members_id = {$id}",
 		__FILE__, __LINE__);
 
 		return true;
@@ -541,7 +541,7 @@ class UserHandler
    // ! Action Method
 
    /**
-	* A simple method used to prevent bot flooding. This 
+	* A simple method used to prevent bot flooding. This
 	* creates a simple hash that is included within a 'hidden' field
 	* during the posting of any content. If the field's value is passed
 	* on to the actual post processing and matches it is a valid
@@ -558,8 +558,8 @@ class UserHandler
 	{
 		if($this->_user_fields['members_id'] != 1)
 		{
-			return md5($this->_user_fields['members_id']   . 
-					   $this->_user_fields['members_pass'] . 
+			return md5($this->_user_fields['members_id']   .
+					   $this->_user_fields['members_pass'] .
 					   $this->_user_fields['members_registered']);
 		}
 		else {
