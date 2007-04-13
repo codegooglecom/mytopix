@@ -2,584 +2,597 @@
 
 error_reporting(0);
 
-define ( 'DEBUG',        false );
-define ( 'GATEWAY',      '' );
-define ( 'INSTALLER',    true );
-define ( 'MYPANEL',      true );
-define ( 'SYSTEM_PATH',  '../' );
-define ( 'PHP_MAGIC_GPC', get_magic_quotes_gpc() );
+setup_log('BEGINNING MYTOPIX INSTALLATION:');
 
-?>
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+/***
+ * Define important constants:
+ ***/
 
-<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
-	<head>
-		<title>MyTopix - Installer</title>
-		<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
-		<link href="<?php echo SYSTEM_PATH; ?>admin/lib/theme/styles.css" rel="stylesheet" type="text/css" title="default" />
-		<style type="text/css">
+setup_log('Creating environmental constants');
 
-		#wrapper {
-			width: 450px;
-			background: transparent;
-		}
-		
-		#footer { text-align: center; }
+define('_SITE_URL_',  str_replace('setup/', '', 'http://' . preg_replace('/\/{2,}/i', '/', $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF'])) . '/'));
+define('_SITE_PATH_', str_replace('setup/', '', preg_replace('/\/{2,}/i', '/', rtrim($_SERVER['DOCUMENT_ROOT'] . '/' . dirname($_SERVER['PHP_SELF']), '/\\')) . '/'));
 
-		h3 { font-size: 13px;}
+define('DEBUG',        false);
+define('GATEWAY',      '');
+define('INSTALLER',    true);
+define('MYPANEL',      true);
+define('SYSTEM_PATH',  '../');
+define('PHP_MAGIC_GPC', get_magic_quotes_gpc());
 
-		</style>
-	</head>
-	<body style="margin: 50px; text-align: left;">
-		<div id="wrapper">
-<?php
+setup_log('... Done!');
 
-include_once SYSTEM_PATH . 'config/settings.php';
-include_once SYSTEM_PATH . 'lib/file.han.php';
-include_once SYSTEM_PATH . 'lib/http.han.php';
-include_once SYSTEM_PATH . 'lib/time.han.php';
-include_once SYSTEM_PATH . 'admin/lib/mypanel.php';
-require_once SYSTEM_PATH . 'admin/lib/form.han.php';
-require_once SYSTEM_PATH . 'admin/lib/table.han.php';
-require_once SYSTEM_PATH . 'admin/lib/tab.han.php';
+
+/***
+ * Gather all the important library files:
+ ***/
+
+setup_log('Gathering required library files');
+
+require_once SYSTEM_PATH . 'config/settings.php';
+require_once SYSTEM_PATH . 'lib/file.han.php';
+require_once SYSTEM_PATH . 'lib/http.han.php';
 require_once SYSTEM_PATH . 'lib/file.han.php';
 require_once SYSTEM_PATH . 'lib/db/database.db.php';
-require_once SYSTEM_PATH . 'lib/db/MySql.db.php';
 require_once SYSTEM_PATH . 'lib/db/MySql41.db.php';
-require_once SYSTEM_PATH . 'lib/time.han.php';
-require_once SYSTEM_PATH . 'lib/parse.han.php';
-require_once SYSTEM_PATH . 'lib/cookie.han.php';
 require_once SYSTEM_PATH . 'lib/cache.han.php';
+require_once SYSTEM_PATH . 'lib/cookie.han.php';
 
-$_GET  = HttpHandler::checkVars ( $_GET );
-$_POST = HttpHandler::checkVars ( $_POST );
+setup_log('... Done!');
 
-$CookieHandler = new CookieHandler ( $config, $_COOKIE );
-$FileHandler   = new FileHandler   ( $config );
-$TimeHandler   = new TimeHandler   ( null, $config );
-$MyPanel       = new MyPanel();
 
-if ( file_exists ( 'setup.lock' ) )
-{
-	die ( warning ( "<strong>FATAL ERROR:</strong> The installer is locked from use! You may <strong>NOT</strong> continue." ) );
-}
+/***
+ * Clean all input:
+ ***/
 
-$files = array ( SYSTEM_PATH . 'config/settings.php',
-				 SYSTEM_PATH . 'lang/',
-				 SYSTEM_PATH . 'lang/english/',
-				 SYSTEM_PATH . 'skins/',
-				 SYSTEM_PATH . 'skins/1/',
-				 SYSTEM_PATH . 'skins/1/styles.css',
-				 SYSTEM_PATH . 'skins/1/emoticons/',
-				 SYSTEM_PATH . 'uploads/attachments/',
-				 SYSTEM_PATH . 'uploads/avatars/',
-				 SYSTEM_PATH . 'setup/' );
+$_GET  = HttpHandler::checkVars($_GET);
+$_POST = HttpHandler::checkVars($_POST);
 
-$errors = '';
-
-foreach ( $files as $val )
-{
-	if ( false == is_writable ( $val ) )
-	{
-		$errors .= "\t\t\t<li>{$val}</li>\n";
-	}
-}
-
-if ( $errors )
-{
-	$errors = "\t\t<ul>\n{$errors}\t\t</ul>";
-
-	die ( warning ( "You must set the appropriate file system access permissions to the following list of files & directories before continuing. If you are not sure which CHMOD setting to use, try 0777:\n" . $errors ) );
-}
-
-if ( isset ( $_POST[ 'mode' ] ) )
-{
-	$mode = $_POST[ 'mode' ];
-}
-else if ( isset ( $_GET[ 'mode' ] ) ) {
-	$mode = $_GET[ 'mode' ];
-}
-
-if ( false == $mode )
-{
-	$mode = 'install';
-}
-
-switch($mode)
-{
-	case 'install':
-
-		$step = isset ( $_GET[ 'step' ] ) ? $_GET[ 'step' ] : 1;
-
-		switch ( $step )
-		{
-			case 1:
-
-				setup_log ( 'INSTALLING MYTOPIX' );
-				setup_log ( 'Entering database information' );
-
-				$MyPanel->addHeader ( 'Step One: Database Information' );
-
-				$MyPanel->form->startForm ( 'index.php?step=2' );
-				$MyPanel->appendBuffer ( $MyPanel->form->flushBuffer() );
-
-					$MyPanel->form->addTextBox ( 'db_user', false, false,
-												 array ( 1, 'User Name',
-												 'The username given to you by your host to connect to your database.' ) );
-
-					$MyPanel->form->addPassBox ( 'db_pass', false, false,
-												 array ( 1, 'User Password',
-												 'Word or phrase used to gain access to your database.' ) );
-
-					$MyPanel->form->addTextBox ( 'db_name', 'mytopix', false,
-												 array ( 1, 'Database Name',
-												 'The name of the database to install MyTopix&trade to.'));
-
-					$MyPanel->form->addTextBox ( 'db_host', 'localhost', false,
-												 array ( 1, 'Database Server Location',
-												 'The location of your database server <em>( usually localhost )</em>.' ) );
-
-					$MyPanel->form->addTextBox ( 'db_port', '3306', false,
-												 array ( 1, 'Database Server Port',
-												 'The port to connect to on your database server <em>( usually 3306 )</em>.' ) );
-
-					$MyPanel->form->addTextBox ( 'db_pref', 'my_', false,
-												 array ( 1, 'Database Prefix',
-												 'If you are installing into an already-in-use database, using a table prefix could clear up naming issues with other tables. This is completely optional.' ) );
-
-					$database = array ( 'MySql'   => 'MySql 4.0.x',
-										'MySql41' => 'MySql Improved' );
-
-					$MyPanel->form->addWrapSelect ( 'db_type', $database, 'MySql', false,
-													array ( 1, 'Database Engine:',
-													'Please select your database backend you wish to use from the following list.'));
-
-					$out  = $MyPanel->form->addRadio ( 'db_persist', 1, " checked=\"checked\"", '<strong>Yes, enable persistent connections.</strong>', true );
-					$out .= $MyPanel->form->addRadio ( 'db_persist', 0, false, '<strong>Do not enable persistent connections.</strong>', true );
-
-					$MyPanel->form->addWrap ( $out, 'Persistent Connections', 'Depending on your server setup, persistent connections <em>may</em> offer added efficiency when accessing your database.', true );
-
-					$MyPanel->form->addHidden ( 'mode', 'install' );
-
-				$MyPanel->form->endForm ( 'Next Step' );
-				$MyPanel->appendBuffer ( $MyPanel->form->flushBuffer() );
-
-				echo $MyPanel->buffer;
-
-				break;
-
-			case 2:
-
-				extract ( $_POST );
-
-				setup_log ( 'Processing database information' );
-
-				if ( false == $db_user )
-				{
-					setup_log ( '... ERROR: no server account username' );
-
-					die ( warning ( '<strong>ERROR:</strong> You must include a user name to access your account.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( false == $db_host )
-				{
-					setup_log ( '... ERROR: no server host' );
-
-					die ( warning ( '<strong>ERROR:</strong> You must include your database server\'s location' .
-									'!<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( false == $db_name )
-				{
-					setup_log ( '... ERROR: no database name' );
-
-					die ( warning ( '<strong>ERROR:</strong> The installation requires the name of a database to ' .
-									'install to. Please go back and include this information.<br />'               .
-									'<a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				$db_handler_name = $db_type . 'Handler';
-
-				$DB = new $db_handler_name ( $db_host, $db_port );
-				$DB->doConnect ( $db_user, $db_pass, $db_name, $db_persist );
-
-				$status = '... Pass';
-
-				if ( false == $DB->isConnected() )
-				{
-					$status = '... Fail';
-
-					die ( warning ( '<strong>ERROR:</strong> A connection to your database could not be ' .
-									'established with the information you have provided. Please '         .
-									'go back and double check your data!<br /><a href="javascript:'       .
-									'history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				setup_log ( 'Preforming database connectivity test' . $status );
-
-				require_once SYSTEM_PATH . 'config/settings.php';
-
-				$config[ 'db_user' ]    = $db_user;
-				$config[ 'db_pass' ]    = $db_pass;
-				$config[ 'db_name' ]    = $db_name;
-				$config[ 'db_host' ]    = $db_host;
-				$config[ 'db_pref' ]    = $db_pref;
-				$config[ 'db_port' ]    = $db_port;
-				$config[ 'db_persist' ] = $db_persist;
-				$config[ 'db_type' ]    = $db_type;
-
-				FileHandler::updateFileArray ( $config, 'config', SYSTEM_PATH . 'config/settings.php' );
-
-				setup_log ( 'Updating settings.php with database connectivity information' );
-
-				echo message ( '<strong>SUCCESS!</strong> A connection to your database has been established!' .
-							   ' Your settings have been updated. Please continue to the next step.' .
-							   '<br /><a href="index.php?mode=install&amp;step=3"><strong>Click to Continue »</strong></a>', true );
-				break;
-
-			case 3:
-
-				setup_log ( 'Entering community data' );
-
-				$MyPanel->addHeader ( 'Step Two: Community Information' );
-
-				$MyPanel->form->startForm ( 'index.php?step=4&amp;mode=install' );
-				$MyPanel->appendBuffer ( $MyPanel->form->flushBuffer() );
-
-					$MyPanel->form->addTextBox ( 'title', 'My Community', false,
-												 array ( 1, 'Board Title',
-												 'This will be the name of your MyTopix&trade; community.' ) );
-
-					$MyPanel->form->addTextBox ( 'site_link', false, false,
-												 array ( 1, 'Site Address (URI)',
-												 'This is the direct web address of this discussion board. <br /><strong>MUST END WITH A TRAILING SLASH</strong>' ) );
-
-					$MyPanel->form->addSelect ( 'servertime', TimeHandler::makeTimeZones(), false, false,
-												array ( 1, 'Server Timezone',
-												'Choose the timezone this server is located in.' ) );
-
-					$MyPanel->form->addSelect ( 'language', fetchPacks(), false, false,
-												array ( 1, 'Default Language',
-												'Choose your default custom language pack.' ) );
-
-				$MyPanel->form->endForm ( 'Next Step' );
-				$MyPanel->appendBuffer ( $MyPanel->form->flushBuffer() );
-
-				echo $MyPanel->buffer;
-
-				break;
-
-			case 4:
-
-				extract ( $_POST );
-
-				setup_log ( 'Processing community data' );
-
-				$current = getcwd();
-				chdir ( '../' );
-				$abs_path = getcwd();
-				chdir ( $current );
-
-				$abs_path = substr ( $abs_path, strlen ( $abs_path ) - 1, 1) != '/'
-						  ? $abs_path . '/'
-						  : $abs_path;
-
-				$config[ 'site_path' ] = PHP_OS == 'WINNT'
-									   ? str_replace ( array ( 'admin', '\\' ), array ( '', '/' ), $abs_path )
-									   : $abs_path;
-
-				if ( false == preg_match ( "#^http://#", $site_link ) )
-				{
-					$site_link = "http://{$site_link}";
-				}
-
-				if ( false == preg_match ( "#/$#", $site_link ) )
-				{
-					$site_link = "{$site_link}/";
-				}
-
-				$config[ 'site_link' ]  = $site_link;
-				$config[ 'title' ]      = stripslashes ( $title );
-				$config[ 'language' ]   = $language;
-				$config[ 'servertime' ] = $servertime;
-
-				FileHandler::updateFileArray ( $config, 'config', SYSTEM_PATH . 'config/settings.php' );
-
-				setup_log ( 'Community data processing complete' );
-
-				echo message ( '<strong>SUCCESS!</strong> Your community settings have been saved! Please' .
-							   ' continue to the next step. <br /><a href="index.php?mode=install'         .
-							   '&amp;step=5"><strong>Click to Continue »</strong></a>' );
-				break;
-
-			case 5:
-
-				setup_log ( 'Entering default administrator account profile' );
-
-				$MyPanel->addHeader('Step Three: Administrator Account' );
-
-				$MyPanel->form->startForm('index.php?step=6&amp;mode=install');
-				$MyPanel->appendBuffer($MyPanel->form->flushBuffer());
-
-					$MyPanel->form->addTextBox ( 'username', false, false,
-												 array ( 1, 'Your Account Name',
-												 'This is the name of your administrator account.' ) );
-
-					$MyPanel->form->addPassBox ( 'password',  false, false,
-												 array ( 1, 'Your Password',
-												 'The secret word or phrase you will use to access your account.' ) );
-
-					$MyPanel->form->addPassBox ( 'cpassword', false, false,
-												 array ( 1, 'Confirm Your Password',
-												 'Please confirm the above password in the field below.' ) );
-
-					$MyPanel->form->addTextBox ( 'email', false, false,
-												 array ( 1, 'Your Email Account',
-												 'This will be your account\'s registered email address.' ) );
-
-					$MyPanel->form->addTextBox ( 'cemail', false, false,
-												 array ( 1, 'Confirm Your Email Account',
-												'Please confirm the above email address.' ) );
-
-				$MyPanel->form->endForm ( 'Finish Installation ...' );
-				$MyPanel->appendBuffer ( $MyPanel->form->flushBuffer() );
-
-				echo $MyPanel->buffer;
-
-				break;
-
-			case 6:
-
-				extract ( $_POST );
-
-				setup_log ( 'Processing default administration account' );
-
-				$len_user = preg_replace ( "/&#([0-9]+);/", '_', $username );
-				$len_pass = preg_replace ( "/&#([0-9]+);/", '_', $password );
-				$username = preg_replace ( "/\s{2,}/",      ' ', $username );
-
-				if ( strlen ( $len_user ) > 32 )
-				{
-					setup_log ( '... ERROR: password is too long' );
-
-					die ( warning ( '<strong>ERROR:</strong> Please shorten your user name to under <strong>32</strong> charactors.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( strlen ( $len_user ) < 3 )
-				{
-					setup_log ( '... ERROR: password is too short' );
-
-					die ( warning ( '<strong>ERROR:</strong> Please lengthen your user name to, at least, <strong>3</strong> charactors.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( $password != $cpassword )
-				{
-					setup_log ( '... ERROR: password confirmation' );
-
-					die ( warning ( '<strong>ERROR:</strong> Please reconfirm your password, it does not match.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( false == preg_match ( "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/i", $email ) )
-				{
-					setup_log ( '... ERROR: invalid email' );
-
-					die ( warning ( '<strong>ERROR:</strong> You have entered an invalid email format.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				if ( $email != $cemail )
-				{
-					setup_log ( 'ERROR: email confirmation' );
-
-					die ( warning ( '<strong>ERROR:</strong> Please reconfirm your email address, it does not match.' .
-									'<br /><a href="javascript:history.back(-1);"><strong>« Go Back</strong></a>' ) );
-				}
-
-				setup_log ( 'Opening database connection for admin account and default system data insertion' );
-
-				$db_handler_name = $config[ 'db_type' ] . 'Handler';
-
-				$DB = new $db_handler_name ( $config[ 'db_host' ], $config[ 'db_port' ] );
-				$DB->doConnect ( $config[ 'db_user' ], $config[ 'db_pass' ], $config[ 'db_name' ], $config[ 'db_persist' ] );
-
-				$salt = makeSalt();
-				$auto = md5 ( makeSalt ( 100 ) );
-
-				$password = md5 ( md5 ( $salt ) . md5 ( $password ) );
-				$db_type  = strtolower ( $config[ 'db_type' ] );
-
-				define ( 'DB_PREFIX', $config['db_pref'] );
-
-				setup_log ( 'Installing system tables:' );
-
-				$query = array();
-
-				include_once 'install/' . $db_type . '/sql_tables.php';
-
-				foreach ( $query as $sql )
-				{
-					$DB->query ( $sql );
-				}
-
-				setup_log ( 'Installing default system information:' );
-
-				$query = array();
-
-				include_once 'install/' . $db_type . '/sql_default.php';
-
-				foreach ( $query as $sql )
-				{
-					$DB->query($sql);
-				}
-
-				setup_log ( 'Table and system default information stored' );
-
-				$username = str_replace ( '$', '&#36;', $username );
-
-				$config[ 'news_forum' ]         = 2;
-				$config[ 'installed' ]          = time();
-				$config[ 'latest_member_name' ] = stripslashes ( $username );
-				$config[ 'latest_member_id' ]   = 2;
-				$config[ 'total_members' ]      = 1;
-				$config[ 'most_online_date' ]   = time();
-
-				$config[ 'topics' ] = 1;
-				$config[ 'posts' ]  = 0;
-
-				FileHandler::updateFileArray ( $config, 'config', SYSTEM_PATH . 'config/settings.php' );
-
-				setup_log ( 'Updating settings.php with default system statistics' );
-				setup_log ( 'Installing default templates' );
-
-				$query = array();
-
-				include_once 'install/' . $db_type . '/sql_templates.php';
-
-				foreach ( $query as $sql )
-				{
-					$DB->query ( $sql );
-				}
-
-				setup_log ( 'Finishing installing default templates' );
-
-				setup_log ( 'Updating system cache groups' );
-
-				$CacheHandler = new CacheHandler ( $DB, false );
-				$CacheHandler->updateAllCache();
-				$CacheHandler->updateCache ( 'macros', $config[ 'skin' ] );
-
-				setup_log ( 'Locking installer');
-
-				$handle = @fopen ( 'setup.lock', 'w' );
-				@fwrite ( $handle, 'p00p' );
-				@fclose ( $handle );
-
-				echo message ( '<strong>SUCCESS!</strong> MyTopix is now installed and ready for use.'           .
-							   'You are now being forwarded to the logon form. Enjoy your new community!'        .
-							   '<br /><a href="' . $config['site_link'] . 'index.php?a=logon"><strong>Click to ' .
-							   'Continue »</strong></a>' );
-
-				setup_log ( 'INSTALLATION COMPLETE' );
-
-				@rename ( 'setup_log.txt', 'setup_log.bak' );
-
-				break;
-
-			default:
-
-				echo warning ( '<strong>FATAL ERROR:</strong> Invalid Access Attempt!' );
-
-				break;
-		}
-
-		break;
-
-	default:
-
-		echo warning ( '<strong>FATAL ERROR:</strong> Invalid Access Attempt!' );
-
-		break;
-}
+$Cookie = new CookieHandler($config, $_COOKIE);
 
 ?>
-		<br />
-		<div id="footer">
-			<p>Powered By: <strong>MyTopix <?php echo $config[ 'version' ]; ?></strong><br />
-			Copyright &copy; 2004 - 2007 <a href="http://www.jaia-interactive.com" title="Come and visit our website">Jaia Interactive</a>, all rights reserved</p>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>MyTopix - Installer</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+	</head>
+<body>
+
+	<?php
+
+
+	/***
+	 * Is the installer locked? OHNOES!!1
+	 ***/
+
+	setup_log('Determine if installer is locked');
+
+	$failed_lock = false;
+
+	if(file_exists('setup.lock'))
+	{
+		$failed_lock = true;
+	}
+
+	setup_log('... Done!');
+
+
+	/***
+	 * Check if the appropriate files and directories are writable:
+	 ***/
+
+	setup_log('Check file system permissions');
+
+	$chmod_items = array(SYSTEM_PATH . 'config/',
+						 SYSTEM_PATH . 'lang/',
+						 SYSTEM_PATH . 'skins/',
+						 SYSTEM_PATH . 'uploads/',
+						 SYSTEM_PATH . 'setup/');
+
+	$failed_items = array();
+
+	foreach($chmod_items as $item)
+	{
+		if(false == is_writable($item) && false == chmod($item, 0777))
+		{
+			$failed_items[] = $item;
+		}
+	}
+
+	setup_log('... Done!');
+
+
+	/***
+	 * Declare default values for the install form:
+	 ***/
+
+	setup_log('Create default install form field values');
+
+	$site_title  = 'My Community';
+
+	$admin_name  = '';
+	$admin_pass  = '';
+	$admin_email = '';
+
+	$db_name     = '';
+	$db_pass     = '';
+
+	$server      = 'localhost';
+	$database    = 'mytopix';
+	$port        = 3306;
+	$prefix      = 'my_';
+
+	?>
+
+	<div id="header">
+		<h1><span>MyTopix</span> Installer</h1>
+	</div>
+	<div id="welcome">
+		<div id="center">
+			<p>Welcome and thank you for choosing MyTopix as your community hosting solution! Before we start the installation process, we need to gather a small bit of information from you.</p>
 		</div>
 	</div>
+	<div id="wrapper">
+	<?php if(false == $failed_items && false == $failed_lock): ?>
+		<div id="quick-info">
+			<p>Just so you know, this software will be installed within:
+			<p><code><?php echo _SITE_PATH_; ?></code></p>
+			<p>And can be accessed by entering the following in your browser:</p>
+			<p><code><?php echo _SITE_URL_; ?></code></p>
+		</div>
+		<?php
+
+
+		/***
+		 * Being the installation process:
+		 ***/
+
+		if(isset($_GET['install']) && $_GET['install'] == 'giterdone')
+		{
+
+			setup_log('Install form has been submitted');
+
+			/***
+			 * Validate all input and make sure it's all perdy-like:
+			 ***/
+
+			setup_log('Validating submitted form data');
+
+			extract($_POST);
+
+			$errors = array();
+
+			if(false == $site_title)
+			{
+				$errors[] = 'Your site needs a title. Why not give it one?';
+			}
+
+			if(false == $admin_name)
+			{
+				$errors[] = 'Your primary administrative account requires a name.';
+			}
+
+			if(false == $admin_pass)
+			{
+				$errors[] = 'You need to enter a valid password for your primary administrative account.';
+			}
+
+			if(false == $admin_email)
+			{
+				$errors[] = 'You need to enter a valid email address for your primary administrative account.';
+			}
+
+			if(false == $database)
+			{
+				$errors[] = 'You need to enter an existing database to install MyTopix to.';
+			}
+
+			if(false == $port)
+			{
+				$errors[] = 'You must specify a server port to connect to.';
+			}
+
+			if($errors)
+			{
+				setup_log('... field validation errors occurred');
+
+				message('The following errors are preventing you from continuing your installation.', $errors);
+				exit();
+			}
+
+			$len_user = preg_replace("/&#([0-9]+);/", '_', $admin_name);
+			$len_pass = preg_replace("/&#([0-9]+);/", '_', $admin_pass);
+			$username = preg_replace("/\s{2,}/",      ' ', $admin_name);
+
+			if(strlen($len_user) > 32)
+			{
+				$errors[] = 'The name for your administrator account is too long.';
+			}
+
+			if(strlen($len_user) < 3)
+			{
+				$errors[] = 'The name for your administrator account is too short.';
+			}
+
+			if(false == preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*$/i", $admin_email))
+			{
+				$errors[] = 'The email address you entered is invalid.';
+			}
+
+			if($errors)
+			{
+				setup_log('... field validation errors occurred');
+
+				message('The following errors are preventing you from continuing your installation.', $errors);
+				exit();
+			}
+
+			setup_log('... Done!');
+
+			setup_log('Checking database connectivity');
+
+			$port = (int) $port;
+
+			define('DB_PREFIX', $prefix);
+
+			$DB = new MySql41Handler($server, $port);
+
+			if(false == $DB->doConnect($db_name, $db_pass, $database, false))
+			{
+				$errors[] = 'Please double-check your database settings. Something is preventing MyTopix from connecting.';
+			}
+
+			if($errors)
+			{
+				setup_log('... could not connect to database with supplied credentials');
+
+				message('The following errors are preventing you from continuing your installation.', $errors);
+				exit();
+			}
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Clean up some member stuff:
+			 ***/
+
+			setup_log('Creating default administrator logon credentials');
+
+			$admin_name = str_replace('$', '&#36;', stripslashes($admin_name));
+
+			$admin_salt = makeSalt();
+			$admin_auto = makeAutoPass();
+			$admin_pass = md5(md5($admin_salt) . md5($admin_pass));
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Create the new database configuration file:
+			 ***/
+
+			setup_log('Creating db_config.php file');
+
+			$db_config  = "<?php\n\n";
+			$db_config .= "/***\n";
+			$db_config .= " * DATABASE CONNECTION SETTINGS:\n";
+			$db_config .= " ***/\n\n";
+			$db_config .= "define('DB_HOST',    '{$server}');\n";
+			$db_config .= "define('DB_NAME',    '{$database}');\n";
+			$db_config .= "define('DB_USER',    '{$db_name}');\n";
+			$db_config .= "define('DB_PASS',    '{$db_pass}');\n";
+			$db_config .= "define('DB_PERSIST', true);\n";
+			$db_config .= "define('DB_PORT',    {$port});\n";
+			$db_config .= "define('DB_PREFIX',  '{$prefix}');\n";
+			$db_config .= "define('DB_TYPE',    'MySql41');\n\n";
+			$db_config .= "?>";
+
+			if(false == FileHandler::writeFile('db_config.php', $db_config, SYSTEM_PATH . 'config/', true))
+			{
+				setup_log('... could not create db_config.php file');
+
+				message('The following errors are preventing you from continuing your installation.', array('Cannot write the db_config.php file.'));
+				exit();
+			}
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Populate the database schema with tables:
+			 ***/
+
+			setup_log('Creating table structure');
+
+			include_once 'table-data.php';
+
+			foreach($query as $sql)
+			{
+				$DB->query($sql);
+			}
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Populate the database schema default data:
+			 ***/
+
+			setup_log('Populating new tables with default data');
+
+			include_once 'default-data.php';
+
+			foreach($query as $sql)
+			{
+				$DB->query($sql);
+			}
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Update the settings file with the latest info:
+			 ***/
+
+			setup_log('Updating settings.php file accordingly');
+
+			$config['title']              = $site_title;
+			$config['site_link']          = _SITE_URL_;
+			$config['site_path']          = _SITE_PATH_;
+			$config['most_online_date']   = time();
+			$config['most_online_count']  = 1;
+			$config['total_members']      = 1;
+			$config['installed']          = time();
+			$config['language']           = 'english';
+			$config['latest_member_id']   = 2;
+			$config['latest_member_name'] = $admin_name;
+			$config['news_forum']         = 2;
+			$config['topics' ]            = 1;
+			$config['posts' ]             = 0;
+
+			if(false == FileHandler::updateFileArray($config, 'config', SYSTEM_PATH . 'config/settings.php'))
+			{
+				setup_log('... could not update settings.php file');
+
+				message('The following errors are preventing you from continuing your installation.', array('Cannot update the settings.php file.'));
+				exit();
+			}
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Update all system cache groups:
+			 ***/
+
+			setup_log('Updating system cache groups');
+
+			$Cache = new CacheHandler($DB, $config);
+			$Cache->updateAllCache();
+			$Cache->updateCache('macros', 1);
+
+			setup_log('... Done!');
+
+
+			/***
+			 * Lock the installer:
+			 ***/
+
+			setup_log('Locking the installer');
+
+			$handle = @fopen ( 'setup.lock', 'w' );
+			@fwrite ( $handle, 'p00p' );
+			@fclose ( $handle );
+
+			setup_log('... Done!');
+
+			setup_log('Logging in the new administrator');
+
+			$Cookie->setVar('id',   2,           86400 * 365);
+			$Cookie->setVar('pass', $admin_auto, 86400 * 365);
+
+			setup_log('... Done!');
+
+			setup_log('B00YAH! MYTOPIX INSTALLATION COMPLETE!');
+
+			@rename('setup_log.txt', 'setup_log.bak');
+
+			message('Awesome, you got MyTopix installed! We hope you enjoy using our software as much as we enjoyed writing it for you! Just <a href="' . _SITE_URL_ .'index.php?a=logon" title="Click here ...">Click Here</a> to be taken to your new community. Thanks again!<br /><br /><strong>- Team Jaia</strong>', array(), false);
+			exit();
+		}
+
+		?>
+		<form method="post" action="index.php?install=giterdone">
+			<h3><span>Step 1:</span> Initial Settings:</h3>
+			<div class="section">
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="site_title">
+							<strong>Forum Title</strong>
+							-
+							<span>give your forum a nice name</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="site_title" id="site_title" value="<?php echo $site_title; ?>"/>
+				</div>
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="admin_name">
+							<strong>Admin Name</strong>
+							-
+							<span>name your primary administrative account</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="admin_name" id="admin_name" value="<?php echo $admin_name; ?>"/>
+				</div>
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="admin_pass">
+							<strong>Password</strong>
+							-
+							<span>a secret password or phrase to secure your account</span>
+						</label>
+					</p>
+					<input type="password" class="big-field" name="admin_pass" id="admin_pass" value="<?php echo $admin_pass; ?>"/>
+				</div>
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="admin_email">
+							<strong>Contact Email</strong>
+							-
+							<span>a valid email address</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="admin_email" id="admin_email" value="<?php echo $admin_email; ?>"/>
+				</div>
+			</div>
+			<h3><span>Step 2:</span> Database Settings:</h3>
+			<div class="section">
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="db_name">
+							<strong>DB User</strong>
+							-
+							<span>account name used to access your database</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="db_name" id="db_name" value="<?php echo $db_name; ?>"/>
+				</div>
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="db_pass">
+							<strong>DB Pass</strong>
+							-
+							<span>the password used to authenticate your database account</span>
+						</label>
+					</p>
+					<input type="password" class="big-field" name="db_pass" id="db_pass" value="<?php echo $db_pass; ?>"/>
+				</div>
+			</div>
+			<div class="section">
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="server">
+							<strong>Server</strong>
+							-
+							<span>what is the location of your database server?</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="server" id="server" value="<?php echo $server; ?>"/>
+				</div>
+				<div class="field-wrapper">
+					<p class="info">
+						<label for="database">
+							<strong>Database</strong>
+							-
+							<span>enter the name of your database</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="database" id="database"value="<?php echo $database; ?>"/>
+				</div>
+				<div class="field-wrapper left">
+					<p class="info">
+						<label for="port">
+							<strong>Port</strong>
+							-
+							<span>server port to connect to</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="port" id="port" value="<?php echo $port; ?>"/>
+				</div>
+				<div class="field-wrapper left">
+					<p class="info">
+						<label for="prefix">
+							<strong>Prefix</strong>
+							-
+							<span>mytopix table prefix</span>
+						</label>
+					</p>
+					<input type="text" class="big-field" name="prefix" id="prefix" value="<?php echo $prefix; ?>"/>
+				</div>
+			</div>
+			<h3><span>Step 3:</span> Almost Done!</h3>
+			<div id="quick-info">
+				<p>This is more of a precautionary measure. Just take a good look at what you entered in the form above and make sure it's correct. When you're sure everything is right, you can go ahead and submit this form.</p>
+			</div>
+			<input type="submit" class="submit" value="Click to Install MyTopix!"/>
+		</form>
+		<?php
+
+		elseif($failed_lock):
+
+			message('The following error has been reported.', array('This installer has been locked. You may NOT continue.'));
+			exit();
+
+		else:
+
+			if($failed_items)
+			{
+				message("The following directories <em>and all underlying files</em> must first have their CHMOD settings set to writable before commencing with the install process.", $failed_items);
+				exit();
+			}
+
+		endif;
+
+		?>
+		<div id="copyright">
+			Powered By: <strong>MyTopix</strong><br />
+			Copyright &copy;2004 - 2007,  <a href="http://www.jaia-interactive.com/" title="Come and visit our website">Jaia Interactive</a> all rights reserved.
+		</div>
+	</div>
+
 </body>
 
 <?php
 
-function message ( $message )
+function message($message, $items = array(), $go_back_link = true)
 {
-	$out  = "<div id=\"message\" style=\"width: 100%;\">";
-	$out .= "<h3>System Message:</h3>";
-	$out .= "<p>{$message}</p>";
-	$out .= "</div>";
-
-	return $out;
+	?>
+		<div class="message">
+			<h5><?php echo $message; ?> <?php if($go_back_link): ?><a href="javascript:history.back(-1)" title="Go back ...">Go Back</a><?php endif; ?></h5>
+			<ul>
+				<?php foreach($items as $item): ?>
+					<li><span><?php echo $item; ?></span></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	<?php
 }
 
-function warning ( $message )
+function makeSalt($size = 5)
 {
-	$out  = "<div id=\"warning\" style=\"width: 100%;\">";
-	$out .= "<h3>Warning:</h3>";
-	$out .= "<p>{$message}</p>";
-	$out .= "</div>";
-
-	return $out;
-}
-
-function setup_log ( $msg, $file = 'setup_log.txt' )
-{
-	$time = date ( "D M j G:i:s T Y", time() );
-	$msg  = $time . ' - ' . $msg . "\n";
-
-	$handle = @fopen ( $file, 'a' );
-
-	@fwrite ( $handle, $msg );
-	@fclose ( $handle );
-	@chmod  ( $file, 0777 );
-
-	return true;
-}
-
-function fetchPacks()
-{
-	$handle = opendir ( SYSTEM_PATH . 'lang/' );
-
-	while ( false !== ( $file = readdir ( $handle ) ) )
-	{
-		$ext = end ( explode ( '.', $file ) );
-
-		if ( false == file_exists ( $file ) && $file != 'index.html' && $ext != 'tar')
-		{
-			$list[ $file ] = $file;
-		}
-	}
-	closedir ( $handle );
-
-	return $list;
-}
-
-function makeSalt ( $size = 5 )
-{
-	srand ( (double) microtime() * 1000000 );
+	srand((double)microtime() * 1000000);
 
 	$salt = '';
 
-	for ( $i = 0; $i < $size; $i++ )
+	for($i = 0; $i < $size; $i++)
 	{
-		$salt .= chr ( rand ( 33, 126 ) );
+		$salt .= chr(rand(40, 126));
 	}
 
-	return addslashes ( $salt );
+	return $salt;
+}
+
+function makeAutoPass($size = 100)
+{
+	return md5(makeSalt($size));
+}
+
+function setup_log($msg, $file = 'setup_log.txt')
+{
+	$time = date("D M j G:i:s T Y", time());
+	$msg  = $time . ' - ' . $msg . "\n";
+
+	$handle = @fopen($file, 'a');
+	@fwrite($handle, $msg);
+	@fclose($handle);
+	@chmod($file, 0777);
+
+	return true;
 }
 
 ?>

@@ -266,7 +266,6 @@ class MasterObject
 
 		$this->LanguageHandler->loadPack($this->module, $this->UserHandler->getField('members_language'));
 
-
 		// Load the system time handler:
 
 		$this->TimeHandler  = new TimeHandler($this->UserHandler, $this->config);
