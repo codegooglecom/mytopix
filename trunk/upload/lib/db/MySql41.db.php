@@ -73,15 +73,17 @@ class MySql41Handler extends DatabaseHandler
                 "to run a MySQL 4.1.x installation. Please discuss this with your host.");
         }
 
-        $this->setConnectionId(mysqli_connect($this->_server_host,
+        $this->setConnectionId(@mysqli_connect($this->_server_host,
                                               $username,
                                               $password,
                                               $database,
                                               $this->_server_port));
 
-		$this->query('SELECT * FROM my_members');
+        @mysqli_autocommit($this->getConnectionId(), true);
 
-        mysqli_autocommit($this->getConnectionId(), true);
+		if(false == $this->getConnectionId()) return false;
+
+		return true;
 	}
 
    // ! Accessor Method
@@ -107,10 +109,10 @@ class MySql41Handler extends DatabaseHandler
 
 		if ( $ignore_errors )
 		{
-			$result = mysqli_query($this->getConnectionId(), $sql);
+			$result = @mysqli_query($this->getConnectionId(), $sql);
 		}
 		else {
-			$result = mysqli_query($this->getConnectionId(), $sql) or die($this->getLastError($sql, $file, $line));
+			$result = @mysqli_query($this->getConnectionId(), $sql) or die($this->getLastError($sql, $file, $line));
 		}
 
         if(DEBUG)

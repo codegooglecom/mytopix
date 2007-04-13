@@ -415,6 +415,10 @@ class ModuleObject extends MasterObject
 				$attach = '';
 			}
 
+			$row[ 'class_title' ]  = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_title'  );
+			$row[ 'class_prefix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
+			$row[ 'class_suffix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
+
 
 			/***
 			 * Is the author a guest?
@@ -493,10 +497,6 @@ class ModuleObject extends MasterObject
 				else {
 					$avatar = '';
 				}
-
-				$row[ 'class_title' ]  = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_title'  );
-				$row[ 'class_prefix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
-				$row[ 'class_suffix' ] = $this->CacheHandler->getCacheBySub ( 'groups', $row[ 'members_class' ], 'class_prefix' );
 
 				$list .= eval($this->TemplateHandler->fetchTemplate('post_row'));
 			}

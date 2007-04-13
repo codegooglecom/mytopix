@@ -147,11 +147,11 @@ class ModuleObject extends MasterObject
 			$list  = $this->ForumHandler->getForumList();
 			$forum = array_pop($list);
 
-			header("LOCATION: " . GATEWAY . "?getforum={$forum['forum_id']}");
+			//header("LOCATION: " . GATEWAY . "?getforum={$forum['forum_id']}");
 		}
 
 		$news_bit = '';
-		$news	 = $this->ForumHandler->getForumNews($this->config['news_forum']);
+		$news     = $this->ForumHandler->getForumNews($this->config['news_forum']);
 
 		if($news['news_title'] &&
 		   $this->ForumHandler->checkAccess('can_view', $this->config['news_forum']) &&
